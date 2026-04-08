@@ -17,7 +17,7 @@
   description: trait-aphrodesiacbite-desc
   category: Physical
   mutuallyExclusiveTraits:
-  - AbilityPhilitrexBite
+  - AbilityPhilterexBite
   - AbilityPomelustineBite
   cost: 0
   components:
@@ -44,7 +44,7 @@
   category: Physical
   mutuallyExclusiveTraits:
   - AbilityAphrodesiacBite
-  - AbilityPhilitrexBite
+  - AbilityPhilterexBite
   cost: 0
   components:
   - type: AphrodesiacBite
