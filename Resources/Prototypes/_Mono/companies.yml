@@ -50,7 +50,7 @@
   - Raccoon_Chan
   - DizzyEevee
   - Snakeman9
-  
+
 - type: company
   id: InterdynePharmaceuticals
   form: Protagonist
@@ -147,7 +147,7 @@
   form: Protagonist
   name: Dominos Robotics
   color: "#9900ff" # neon purple
-  
+
 - type: company
   id: TALON
   form: Protagonist
@@ -169,19 +169,19 @@
   form: Protagonist
   name: Church of the Shattered Stars
   color: "#8A0303" # crimson
-  
+
 - type: company
   id: MARR
   form: Protagonist
   name: Dusk Enclave
-  color: "#ff930a" # Orange
-  
+  color: "#00ff95" # Phosphorescent green
+
 - type: company
   id: GOLD
   form: Protagonist
   name: Golden Flotilla
   color: "#EDA500" # Gold
-  
+
 - type: company
   id: UNSA
   form: Protagonist
