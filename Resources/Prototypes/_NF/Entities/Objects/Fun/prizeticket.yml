@@ -299,9 +299,6 @@
       - id: PlushieHuman
         orGroup: Prize
         prob: 0.80
-      - id: PlushieLizardCCO
-        orGroup: Prize
-        prob: 0.80
       - id: PlushieLizardCultist
         orGroup: Prize
         prob: 0.80
