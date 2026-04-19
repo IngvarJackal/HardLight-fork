@@ -19,7 +19,7 @@
   - type: ClothingSpeedModifier
     walkModifier: 1
     sprintModifier: 0.9
-    
+
 - type: entity
   id: ClothingBackpackExplorer
   name: explorer pack
@@ -39,7 +39,7 @@
   - type: ClothingSpeedModifier
     walkModifier: 1
     sprintModifier: 0.85
-    
+
 - type: entity
   id: ClothingRucksack
   name: rucksack
@@ -90,3 +90,12 @@
     - 0,11,3,15
     - 5,11,14,15
     - 16,11,19,15
+  - type: ChameleonClothing
+    slot: [back]
+    default: ClothingBackpackTacticalHolding
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+      enum.ChameleonUiKey.Key:
+        type: ChameleonBoundUserInterface

@@ -328,9 +328,19 @@
     maxItemSize: Huge
     grid:
     - 0,0,19,9 # Frontier: Was 0,0,19,9 - FRONTIER MADE IT 0,0,7,7 AND THAT'S DUMB - Loki
+  - type: ChameleonClothing
+    slot: [back]
+    default: ClothingBackpackHolding
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+      enum.ChameleonUiKey.Key:
+        type: ChameleonBoundUserInterface
   - type: Tag
     tags:
     - ScurretWearable
+    - WhitelistChameleon
 
 - type: entity
   parent: NFClothingBackpack # Frontier: ClothingBackpack<NFClothingBackpackClown

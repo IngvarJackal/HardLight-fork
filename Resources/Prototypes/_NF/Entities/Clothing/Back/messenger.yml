@@ -656,6 +656,19 @@
       - state: inhand-right
       - state: inhand-right-unlit
         shader: unshaded
+  - type: ChameleonClothing
+    slot: [back]
+    default: ClothingBackpackMessengerHolding
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+      enum.ChameleonUiKey.Key:
+        type: ChameleonBoundUserInterface
+  - type: Tag
+    tags:
+    - ScurretWearable
+    - WhitelistChameleon
 
 ## Antagonists / Contraband
 - type: entity
