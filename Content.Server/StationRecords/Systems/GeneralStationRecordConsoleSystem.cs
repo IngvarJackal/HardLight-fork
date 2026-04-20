@@ -122,6 +122,25 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
         }
     }
 
+    public void SetTransientState(Entity<GeneralStationRecordConsoleComponent> ent, uint? activeKey, StationRecordsFilter? filter)
+    {
+        ent.Comp.ActiveKey = activeKey;
+        ent.Comp.Filter = filter;
+    }
+
+    public void ClearTransientStateOnGrid(EntityUid gridUid)
+    {
+        var query = EntityManager.EntityQueryEnumerator<GeneralStationRecordConsoleComponent, TransformComponent>();
+        while (query.MoveNext(out _, out var console, out var xform))
+        {
+            if (xform.GridUid != gridUid)
+                continue;
+
+            console.ActiveKey = null;
+            console.Filter = null;
+        }
+    }
+
     private void OnAdvertisementChanged(Entity<GeneralStationRecordConsoleComponent> ent, ref SetStationAdvertisementMsg msg)
     {
         var stationUid = _station.GetOwningStation(ent);

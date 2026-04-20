@@ -1,19 +1,26 @@
 using System.Numerics;
+using Content.Shared.GameTicking;
 using Content.Shared._Mono.Radar;
 using NFRadarBlipShape = Content.Shared._NF.Radar.RadarBlipShape;
 using Content.Shared.Projectiles;
 using Content.Shared.Shuttles.Components;
 using RadarBlipComponent = Content.Server._NF.Radar.RadarBlipComponent;
 using Robust.Shared.Map;
+using Robust.Shared.Network;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
+using Robust.Shared.Timing;
 
 namespace Content.Server._Mono.Radar;
 
 public sealed partial class RadarBlipSystem : EntitySystem
 {
+    [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SharedTransformSystem _xform = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
+
+    private readonly Dictionary<NetUserId, TimeSpan> _nextBlipRequestPerUser = new();
+    private readonly Dictionary<EntityUid, CachedRadarReport> _recentRadarReports = new();
 
     // Pooled collections to avoid per-request heap churn
     private readonly List<BlipNetData> _tempBlipsCache = new();
@@ -22,10 +29,14 @@ public sealed partial class RadarBlipSystem : EntitySystem
     private readonly List<BlipConfig> _tempPaletteCache = new();
     private readonly Dictionary<BlipConfig, ushort> _paletteIndex = new();
 
+    private static readonly TimeSpan MinRequestPeriod = TimeSpan.FromMilliseconds(500);
+    private static readonly TimeSpan ReportCacheLifetime = TimeSpan.FromMilliseconds(100);
+
     public override void Initialize()
     {
         base.Initialize();
         SubscribeNetworkEvent<RequestBlipsEvent>(OnBlipsRequested);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<RadarBlipComponent, ComponentShutdown>(OnBlipShutdown);
     }
 
@@ -35,6 +46,19 @@ public sealed partial class RadarBlipSystem : EntitySystem
             || !TryComp<RadarConsoleComponent>(radarUid, out var radar)
         )
             return;
+
+        var now = _timing.RealTime;
+        if (_nextBlipRequestPerUser.TryGetValue(args.SenderSession.UserId, out var requestTime) && now < requestTime)
+            return;
+
+        _nextBlipRequestPerUser[args.SenderSession.UserId] = now + MinRequestPeriod;
+
+        if (_recentRadarReports.TryGetValue(radarUid.Value, out var cachedReport)
+            && now - cachedReport.CreatedAt <= ReportCacheLifetime)
+        {
+            RaiseNetworkEvent(new GiveBlipsEvent(cachedReport.ConfigPalette, cachedReport.Blips, cachedReport.HitscanLines), args.SenderSession);
+            return;
+        }
 
         var sourcesEv = new GetRadarSourcesEvent();
         RaiseLocalEvent(radarUid.Value, ref sourcesEv);
@@ -48,8 +72,16 @@ public sealed partial class RadarBlipSystem : EntitySystem
 
         AssembleBlipsReport((EntityUid)radarUid, _tempSourcesCache, radar);
         AssembleHitscanReport((EntityUid)radarUid, radar);
+
+        var report = new CachedRadarReport(
+            now,
+            new List<BlipConfig>(_tempPaletteCache),
+            new List<BlipNetData>(_tempBlipsCache),
+            new List<HitscanNetData>(_tempHitscansCache));
+        _recentRadarReports[radarUid.Value] = report;
+
         // Combine the blips and hitscan lines
-        var giveEv = new GiveBlipsEvent(_tempPaletteCache, _tempBlipsCache, _tempHitscansCache);
+        var giveEv = new GiveBlipsEvent(report.ConfigPalette, report.Blips, report.HitscanLines);
         RaiseNetworkEvent(giveEv, args.SenderSession);
 
         _tempBlipsCache.Clear();
@@ -61,9 +93,17 @@ public sealed partial class RadarBlipSystem : EntitySystem
 
     private void OnBlipShutdown(EntityUid blipUid, RadarBlipComponent component, ComponentShutdown args)
     {
+        _recentRadarReports.Clear();
+
         var netBlipUid = GetNetEntity(blipUid);
         var removalEv = new BlipRemovalEvent(netBlipUid);
         RaiseNetworkEvent(removalEv);
+    }
+
+    private void OnRoundRestart(RoundRestartCleanupEvent ev)
+    {
+        _nextBlipRequestPerUser.Clear();
+        _recentRadarReports.Clear();
     }
 
     private void AssembleBlipsReport(EntityUid uid, List<EntityUid> sources, RadarConsoleComponent? component = null)
@@ -225,4 +265,10 @@ public sealed partial class RadarBlipSystem : EntitySystem
 
         return false;
     }
+
+    private sealed record CachedRadarReport(
+        TimeSpan CreatedAt,
+        List<BlipConfig> ConfigPalette,
+        List<BlipNetData> Blips,
+        List<HitscanNetData> HitscanLines);
 }

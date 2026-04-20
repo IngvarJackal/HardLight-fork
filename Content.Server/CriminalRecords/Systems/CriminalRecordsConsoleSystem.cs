@@ -77,6 +77,20 @@ public sealed class CriminalRecordsConsoleSystem : SharedCriminalRecordsConsoleS
         }
     }
 
+    public void ClearTransientStateOnGrid(EntityUid gridUid)
+    {
+        var query = EntityManager.EntityQueryEnumerator<CriminalRecordsConsoleComponent, TransformComponent>();
+        while (query.MoveNext(out _, out var console, out var xform))
+        {
+            if (xform.GridUid != gridUid)
+                continue;
+
+            console.ActiveKey = null;
+            console.Filter = null;
+            console.FilterStatus = SecurityStatus.None;
+        }
+    }
+
     private void GetOfficer(EntityUid uid, out string officer)
     {
         var tryGetIdentityShortInfoEvent = new TryGetIdentityShortInfoEvent(null, uid);

@@ -49,7 +49,7 @@ public sealed class FireControlNavControl : BaseShuttleControl
 
     #region Mono
 
-    private const float RadarUpdateInterval = 0f;
+    private static readonly float RadarUpdateInterval = (float) RadarBlipsSystem.RequestThrottle.TotalSeconds;
     private float _updateAccumulator = 0f;
     #endregion
 
@@ -172,7 +172,13 @@ public sealed class FireControlNavControl : BaseShuttleControl
 
     public void SetConsole(EntityUid? consoleEntity)
     {
+        if (_consoleEntity == consoleEntity)
+            return;
+
         _consoleEntity = consoleEntity;
+
+        if (_consoleEntity != null)
+            _blips.RequestBlips(_consoleEntity.Value, force: true);
     }
 
     public void UpdateState(NavInterfaceState state)

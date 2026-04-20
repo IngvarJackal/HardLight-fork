@@ -2818,3 +2818,59 @@ Entries:
       message: THIRTY SEVEN new wing markings!
   id: 302
   time: '2026-04-20T04:00:17.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Fix
+      message: Reduced NPC pathfinding stalls when targets or routes change rapidly.
+  id: 303
+  time: '2026-04-20T20:41:11.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Fix
+      message: >-
+        Improved NanoChat server performance during message delivery and group
+        chat updates.
+  id: 304
+  time: '2026-04-20T20:41:43.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Fix
+      message: Reduced shipyard load overhead for saved ships, especially larger ones.
+    - type: Fix
+      message: >-
+        Made shipyard appraisal safer by avoiding stateful pricing hooks while
+        still counting normal ship contents.
+  id: 305
+  time: '2026-04-20T20:42:27.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Fix
+      message: >-
+        Fixed ship saves deleting the live ship before the save file was
+        actually written.
+  id: 306
+  time: '2026-04-20T21:05:15.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Fix
+      message: >-
+        Advanced radar and gunnery consoles now display radar blips and related
+        line effects out to their configured range instead of stopping at 256m.
+  id: 307
+  time: '2026-04-20T21:12:56.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Fix
+      message: Fixed ship-saved items losing runtime actions after load.
+    - type: Fix
+      message: >-
+        Fixed saved solution containers loading with empty fill visuals until
+        their contents changed.
+  id: 308
+  time: '2026-04-20T21:24:25.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Fix
+      message: Reduced lag caused by nuclear reactor simulation under heavy load.
+  id: 309
+  time: '2026-04-20T21:41:09.0000000+00:00'

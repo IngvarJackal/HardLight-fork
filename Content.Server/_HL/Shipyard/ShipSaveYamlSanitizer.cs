@@ -142,6 +142,14 @@ public static class ShipSaveYamlSanitizer
         "Store",
     };
 
+    private static readonly HashSet<string> ActionEntityComponentTypes = new(StringComparer.Ordinal)
+    {
+        "InstantAction",
+        "EntityTargetAction",
+        "WorldTargetAction",
+        "EntityWorldTargetAction",
+    };
+
     // Component exclusion exceptions: keep entity when both component and its paired exception component exist.
     private static readonly Dictionary<string, string> ComponentExclusionExceptions = new(StringComparer.Ordinal)
     {
@@ -250,6 +258,16 @@ public static class ShipSaveYamlSanitizer
                     continue;
                 }
 
+                if (HasActionEntityComponentNode(comps))
+                {
+                    if (entMap.TryGet("uid", out ValueDataNode? removedUidNode) && removedUidNode != null && !removedUidNode.IsNull)
+                        removedEntityUids.Add(removedUidNode.Value);
+
+                    entitiesSeq.RemoveAt(i);
+                    i--;
+                    continue;
+                }
+
                 // Remove implanters containing blocked implant entities.
                 var isImplanter = entityProto?.Components.ContainsKey("Implanter") == true || HasComponentNode(comps, "Implanter");
                 if (isImplanter && HasBlockedContainedImplant(entMap, blockedContainedImplantEntityUids))
@@ -349,6 +367,8 @@ public static class ShipSaveYamlSanitizer
                     }
 
                     var typeName = typeNode.Value;
+
+                    RemoveRuntimeActionReferenceFields(compMap);
 
                     if (FilteredTypes.Contains(typeName))
                     {
@@ -550,6 +570,42 @@ public static class ShipSaveYamlSanitizer
         }
 
         return false;
+    }
+
+    private static bool HasActionEntityComponentNode(SequenceDataNode components)
+    {
+        foreach (var compNode in components)
+        {
+            if (compNode is not MappingDataNode compMap)
+                continue;
+
+            if (!compMap.TryGet("type", out ValueDataNode? typeNode) || typeNode == null)
+                continue;
+
+            if (ActionEntityComponentTypes.Contains(typeNode.Value))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static void RemoveRuntimeActionReferenceFields(MappingDataNode compMap)
+    {
+        var removeKeys = new List<string>();
+
+        foreach (var (key, _) in compMap)
+        {
+            if (key.EndsWith("ActionEntity", StringComparison.OrdinalIgnoreCase)
+                || key.EndsWith("ActionEntities", StringComparison.OrdinalIgnoreCase))
+            {
+                removeKeys.Add(key);
+            }
+        }
+
+        foreach (var key in removeKeys)
+        {
+            compMap.Remove(key);
+        }
     }
 
     private static HashSet<string> CollectBlockedContainedImplantEntityUids(SequenceDataNode protoSeq)

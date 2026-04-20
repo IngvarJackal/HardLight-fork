@@ -127,6 +127,8 @@ public sealed partial class SalvageSystem
         if (!TryComp<SalvageExpeditionComponent>(args.MapUid, out var component))
             return;
 
+        EnsureComp<ExpeditionParticipantShuttleComponent>(args.Entity);
+
         // Someone FTLd there so start announcement
         if (component.Stage != ExpeditionStage.Added)
             return;
@@ -194,7 +196,7 @@ public sealed partial class SalvageSystem
 
     private void OnFTLStarted(ref FTLStartedEvent ev)
     {
-        if (!TryComp<SalvageExpeditionComponent>(ev.FromMapUid, out var expedition))
+        if (ev.FromMapUid is not { } expeditionMapUid || !TryComp<SalvageExpeditionComponent>(expeditionMapUid, out var expedition))
             return;
 
         // HardLight: Update the station's expedition data via the console
@@ -209,21 +211,18 @@ public sealed partial class SalvageSystem
             }
         }
 
-        // Check if any shuttles remain.
-        var query = EntityQueryEnumerator<ShuttleComponent, TransformComponent>();
+        if (HasComp<ExpeditionParticipantShuttleComponent>(ev.Entity))
+            RemComp<ExpeditionParticipantShuttleComponent>(ev.Entity);
 
-        while (query.MoveNext(out _, out var xform))
-        {
-            if (xform.MapUid == ev.FromMapUid)
-                return;
-        }
+        if (HasExpeditionParticipantShuttlesOnMap(expeditionMapUid))
+            return;
 
         // Last shuttle has left so finish the mission.
-        if (ev.FromMapUid.HasValue && Exists(ev.FromMapUid.Value))
+        if (Exists(expeditionMapUid))
         {
             // HardLight: Clean up console state before deleting expedition
-            CleanupExpeditionConsoleState(ev.FromMapUid.Value);
-            QueueDel(ev.FromMapUid.Value);
+            CleanupExpeditionConsoleState(expeditionMapUid);
+            QueueDel(expeditionMapUid);
         }
     }
 
@@ -273,7 +272,7 @@ public sealed partial class SalvageSystem
                 }
 
                 ftlTime = MathF.Min(ftlTime, _shuttle.DefaultStartupTime);
-                var shuttleQuery = AllEntityQuery<ShuttleComponent, TransformComponent>();
+                var shuttleQuery = EntityQueryEnumerator<ShuttleComponent, TransformComponent, ExpeditionParticipantShuttleComponent>();
 
                 if (!TryGetExpeditionReturnMap(out var returnMapUid, out var targetSource)) // HardLight
                 {
@@ -286,7 +285,7 @@ public sealed partial class SalvageSystem
 
                 // HardLight: FTL all shuttles on the expedition map, regardless of station component
                 // This ensures shuttles get sent home even with the new console system
-                while (shuttleQuery.MoveNext(out var shuttleUid, out var shuttle, out var shuttleXform))
+                while (shuttleQuery.MoveNext(out var shuttleUid, out var shuttle, out var shuttleXform, out _))
                 {
                     if (shuttleXform.MapUid != uid || HasComp<FTLComponent>(shuttleUid))
                         continue;
@@ -513,6 +512,19 @@ public sealed partial class SalvageSystem
         return dropLocation;
     }
 
+    private bool HasExpeditionParticipantShuttlesOnMap(EntityUid expeditionMapUid)
+    {
+        var shuttleQuery = EntityQueryEnumerator<ShuttleComponent, TransformComponent, ExpeditionParticipantShuttleComponent>();
+
+        while (shuttleQuery.MoveNext(out _, out _, out var shuttleXform, out _))
+        {
+            if (shuttleXform.MapUid == expeditionMapUid)
+                return true;
+        }
+
+        return false;
+    }
+
     /// <summary>
     /// HardLight: FTL all shuttles currently on an expedition map back to the home map.
     /// </summary>
@@ -520,7 +532,7 @@ public sealed partial class SalvageSystem
     /// <param name="hyperspaceTime">Optional travel time override.</param>
     private void FTLAllShuttlesHome(EntityUid expeditionMapUid, float? hyperspaceTime = null)
     {
-        var shuttleQuery = AllEntityQuery<ShuttleComponent, TransformComponent>();
+        var shuttleQuery = EntityQueryEnumerator<ShuttleComponent, TransformComponent, ExpeditionParticipantShuttleComponent>();
         if (!TryGetExpeditionReturnMap(out var returnMapUid, out var targetSource))
         {
             Log.Error($"No valid return map found (DefaultMap or ColComm) for expedition FTL egress from {expeditionMapUid}.");
@@ -530,7 +542,7 @@ public sealed partial class SalvageSystem
         var targetMapId = Comp<MapComponent>(returnMapUid).MapId;
         var existingPositions = GetExistingGridPositions(targetMapId);
 
-        while (shuttleQuery.MoveNext(out var shuttleUid, out var shuttle, out var shuttleXform))
+        while (shuttleQuery.MoveNext(out var shuttleUid, out var shuttle, out var shuttleXform, out _))
         {
             if (shuttleXform.MapUid != expeditionMapUid || HasComp<FTLComponent>(shuttleUid))
                 continue;
@@ -551,20 +563,16 @@ public sealed partial class SalvageSystem
         if (!Exists(expeditionMapUid) || !TryComp<SalvageExpeditionComponent>(expeditionMapUid, out _))
             return;
 
-        var shuttleQuery = AllEntityQuery<ShuttleComponent, TransformComponent>();
-        while (shuttleQuery.MoveNext(out _, out _, out var shuttleXform))
+        if (HasExpeditionParticipantShuttlesOnMap(expeditionMapUid))
         {
-            if (shuttleXform.MapUid == expeditionMapUid)
+            if (attempt >= 24)
             {
-                if (attempt >= 24)
-                {
-                    Log.Warning($"Expedition {expeditionMapUid} still has shuttles after cleanup retries; skipping forced map deletion to avoid deleting active players.");
-                    return;
-                }
-
-                RobustTimer.Spawn(TimeSpan.FromSeconds(5), () => QueueExpeditionDeletionWhenEmpty(expeditionMapUid, attempt + 1));
+                Log.Warning($"Expedition {expeditionMapUid} still has expedition participant shuttles after cleanup retries; skipping forced map deletion to avoid deleting active players.");
                 return;
             }
+
+            RobustTimer.Spawn(TimeSpan.FromSeconds(5), () => QueueExpeditionDeletionWhenEmpty(expeditionMapUid, attempt + 1));
+            return;
         }
 
         QueueDel(expeditionMapUid);

@@ -68,6 +68,19 @@ public sealed class PsionicsRecordsConsoleSystem : SharedPsionicsRecordsConsoleS
         }
     }
 
+    public void ClearTransientStateOnGrid(EntityUid gridUid)
+    {
+        var query = EntityManager.EntityQueryEnumerator<PsionicsRecordsConsoleComponent, TransformComponent>();
+        while (query.MoveNext(out _, out var console, out var xform))
+        {
+            if (xform.GridUid != gridUid)
+                continue;
+
+            console.ActiveKey = null;
+            console.Filter = null;
+        }
+    }
+
     private void OnChangeStatus(Entity<PsionicsRecordsConsoleComponent> ent, ref PsionicsRecordChangeStatus msg)
     {
         // prevent malf client violating registered/reason nullability

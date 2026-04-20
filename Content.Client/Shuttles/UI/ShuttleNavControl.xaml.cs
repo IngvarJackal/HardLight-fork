@@ -93,8 +93,8 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     #region Mono
     public bool RelativePanning = false;
 
-    // These 2 handle timing updates
-    protected const float RadarUpdateInterval = 0f;
+    // Poll at the same cadence as the shared client request throttle to avoid per-frame spam.
+    protected static readonly float RadarUpdateInterval = (float) RadarBlipsSystem.RequestThrottle.TotalSeconds;
     protected float _updateAccumulator = 0f;
 
     private bool _wasPanned = false;
@@ -143,7 +143,13 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
 
     public void SetConsole(EntityUid? consoleEntity)
     {
+        if (_consoleEntity == consoleEntity)
+            return;
+
         _consoleEntity = consoleEntity;
+
+        if (_consoleEntity != null)
+            _blips.RequestBlips(_consoleEntity.Value, force: true);
     }
 
     // Mono - evil hack
