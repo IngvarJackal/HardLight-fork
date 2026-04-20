@@ -2874,3 +2874,38 @@ Entries:
       message: Reduced lag caused by nuclear reactor simulation under heavy load.
   id: 309
   time: '2026-04-20T21:41:09.0000000+00:00'
+- author: fenndragon
+  changes:
+    - type: Add
+      message: Added hotfixes to previous issues
+  id: 310
+  time: '2026-04-20T22:14:57.0000000+00:00'
+- author: Illumos
+  changes:
+    - type: Add
+      message: Futuristic gasmasks now actually work as voice masks.
+  id: 311
+  time: '2026-04-20T22:37:00.0000000+00:00'
+- author: re-silvered
+  changes:
+    - type: Fix
+      message: Gamemaster lawset
+  id: 312
+  time: '2026-04-20T22:37:28.0000000+00:00'
+- author: TrylobyteWasTaken
+  changes:
+    - type: Add
+      message: >-
+        Plastitanium sheets can now be crafted at an engineering techfab for
+        diamonds, bananium, and plasteel.  Costs are experimental and subject to
+        change.
+    - type: Add
+      message: You can now build plastitanium walls and windows.
+  id: 313
+  time: '2026-04-20T22:44:14.0000000+00:00'
+- author: fenndragon
+  changes:
+    - type: Add
+      message: Added Nonconsent Toggle
+  id: 314
+  time: '2026-04-20T22:54:47.0000000+00:00'
