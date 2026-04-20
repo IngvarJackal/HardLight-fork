@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
@@ -6,12 +7,14 @@ using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Systems;
+using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Player;
 using DroneConsoleComponent = Content.Server.Shuttles.DroneConsoleComponent;
 using DependencyAttribute = Robust.Shared.IoC.DependencyAttribute;
-using Robust.Shared.Map.Components;
 using Robust.Shared.Timing;
 
 namespace Content.Server.Physics.Controllers;
@@ -21,6 +24,8 @@ public sealed class MoverController : SharedMoverController
     [Dependency] private readonly ThrusterSystem _thruster = default!;
     [Dependency] private readonly SharedTransformSystem _xformSystem = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
 
     private Dictionary<EntityUid, (ShuttleComponent, List<(EntityUid, PilotComponent, InputMoverComponent, TransformComponent)>)> _shuttlePilots = new();
 
@@ -205,8 +210,8 @@ public sealed class MoverController : SharedMoverController
         if (button == ShuttleButtons.Wep && state)
         {
             var consoleXform = Transform(pilot.Console.Value);
-            if (consoleXform.GridUid is { } gridUid && TryComp<ShuttleComponent>(gridUid, out var shuttle))
-                ActivateWEP(shuttle);
+            if (consoleXform.GridUid is { } gridUid && TryComp<ShuttleComponent>(gridUid, out var wepShuttle))
+                ActivateWEP(gridUid, wepShuttle);
             return;
         }
 
@@ -326,21 +331,44 @@ public sealed class MoverController : SharedMoverController
     }
 
     /// <summary>
-    /// Helper function to extrapolate max velocity for a given Vector2 (really, its angle) and shuttle.
-    /// Takes local direction.
+    /// Activates WEP boost on a shuttle. Returns false if on cooldown.
+    /// Speed is scaled by grid tile count: 250 tiles → 100 m/s, log2-linear, clamped 50–125.
     /// </summary>
-    public void ActivateWEP(ShuttleComponent shuttle)
+    public bool ActivateWEP(EntityUid gridUid, ShuttleComponent shuttle)
     {
+        if (_timing.CurTime < shuttle.WepCooldownExpiry)
+            return false;
+
+        // Compute WEP max velocity from grid tile count.
+        var tileCount = ShuttleComponent.WepBaseGridSize;
+        if (TryComp<MapGridComponent>(gridUid, out var mapGrid))
+            tileCount = MathF.Max(1f, _mapSystem.GetAllTiles(gridUid, mapGrid).Count());
+
+        var rawVel = ShuttleComponent.WepBaseVelocity - 25f * MathF.Log2(tileCount / ShuttleComponent.WepBaseGridSize);
+        shuttle.WepBoostMaxVelocity = Math.Clamp(rawVel, ShuttleComponent.WepLowerVelocity, ShuttleComponent.WepUpperVelocity);
+
         shuttle.WepBoostActive = true;
         shuttle.WepBoostExpiry = _timing.CurTime + TimeSpan.FromSeconds(ShuttleComponent.WepBoostDuration);
         shuttle.WepBleedExpiry = shuttle.WepBoostExpiry + TimeSpan.FromSeconds(ShuttleComponent.WepBleedDuration);
+        shuttle.WepCooldownExpiry = shuttle.WepBoostExpiry + TimeSpan.FromSeconds(ShuttleComponent.WepCooldownDuration);
+        shuttle.WepThrustMultiplier = shuttle.WepBoostMaxVelocity / ShuttleComponent.WepLowerVelocity;
+
+        // Play looping WEP audio on the grid.
+        shuttle.WepAudioStream = _audio.Stop(shuttle.WepAudioStream);
+        var stream = _audio.PlayPvs(new SoundPathSpecifier("/Audio/_HL/Effects/wep_buzz.ogg")
+            { Params = AudioParams.Default.WithLoop(true).WithVolume(-3f) }, gridUid);
+        shuttle.WepAudioStream = stream?.Entity;
+        _audio.SetGridAudio(stream);
+
+        EntityManager.System<ShuttleConsoleSystem>().OnWEPActivated(gridUid);
+        return true;
     }
 
     public Vector2 ObtainMaxVel(Vector2 vel, ShuttleComponent shuttle, PhysicsComponent body) // mono
     {
         vel.Normalize(); // Vector2 is a struct so this acts on a copy
         var maxVel = (shuttle.WepBoostActive && _timing.CurTime < shuttle.WepBoostExpiry)
-            ? ShuttleComponent.WepBoostMaxVelocity
+            ? shuttle.WepBoostMaxVelocity
             : shuttle.BaseMaxLinearVelocity;
         return vel * maxVel;
     }
@@ -541,6 +569,10 @@ public sealed class MoverController : SharedMoverController
                     var appliedLength = MathF.Min(totalForce.Length(), maxForceLength);
                     totalForce = velDelta.Length() == 0 ? Vector2.Zero : velDelta.Normalized() * appliedLength;
                 }
+
+                // HL: WEP thrust boost (pre-computed multiplier, no extra per-tick work)
+                if (shuttle.WepBoostActive)
+                    totalForce *= shuttle.WepThrustMultiplier;
 
                 totalForce = shuttleNorthAngle.RotateVec(totalForce);
 
