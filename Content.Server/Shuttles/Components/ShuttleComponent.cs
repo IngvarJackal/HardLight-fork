@@ -1,4 +1,5 @@
 using System.Numerics;
+using Robust.Shared.Timing;
 
 namespace Content.Server.Shuttles.Components
 {
@@ -81,6 +82,30 @@ namespace Content.Server.Shuttles.Components
         /// </summary>
         [DataField]
         public TimeSpan? FTLCooldownOverride = null;
+
+        // <HL>
+        /// <summary>
+        /// Whether the WEP (War Emergency Power) boost is currently active.
+        /// </summary>
+        [ViewVariables]
+        public bool WepBoostActive = false;
+
+        /// <summary>
+        /// When the WEP boost expires.
+        /// </summary>
+        [ViewVariables]
+        public TimeSpan WepBoostExpiry = TimeSpan.Zero;
+
+        public const float WepBoostMaxVelocity = 100f;
+        public const float WepBoostDuration = 10f;
+        public const float WepBleedDuration = 1f;
+
+        /// <summary>
+        /// When the post-WEP velocity bleed-down finishes.
+        /// </summary>
+        [ViewVariables]
+        public TimeSpan WepBleedExpiry = TimeSpan.Zero;
+        // </HL>
 
         // <Mono>
         /// <summary>

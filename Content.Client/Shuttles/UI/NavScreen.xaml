@@ -94,6 +94,12 @@
                             Text="{controls:Loc 'shuttle-console-dock-toggle'}"
                             TextAlign="Center"
                             ToggleMode="True"/>
+                    <!-- HL - WEP boost -->
+                    <controls:Button Name="WEPButton"
+                            Text="{controls:Loc 'shuttle-console-wep-activate'}"
+                            TextAlign="Center"
+                            ToolTip="{controls:Loc 'shuttle-console-wep-tooltip'}"/>
+                    <!-- End HL - WEP boost -->
                     <!-- Frontier - Inertia dampener controls-->
                     <controls:BoxContainer Name="DampenerModeButtons"
                                   Orientation="Horizontal"

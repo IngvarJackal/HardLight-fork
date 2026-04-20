@@ -84,6 +84,7 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
             subs.Event<ShuttleConsoleFTLStationDockMessage>(OnStationDockFTLMessage);
             subs.Event<ShuttleConsoleExpeditionDiskActivateMessage>(OnExpeditionDiskActivateMessage);
             subs.Event<ShuttleConsoleExpeditionEndMessage>(OnExpeditionEndMessage);
+            subs.Event<ShuttleConsoleWEPMessage>(OnWEPMessage); // HL
             subs.Event<BoundUIClosedEvent>(OnConsoleUIClose);
         });
 
@@ -445,9 +446,30 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
         return (remaining > TimeSpan.Zero, remaining);
     }
 
+    // HL: WEP message handler
+    private void OnWEPMessage(Entity<ShuttleConsoleComponent> ent, ref ShuttleConsoleWEPMessage args)
+    {
+        var xform = Transform(ent.Owner);
+        if (xform.GridUid is not { } gridUid || !TryComp<ShuttleComponent>(gridUid, out var shuttle))
+            return;
+
+        var mover = EntityManager.System<Content.Server.Physics.Controllers.MoverController>();
+        mover.ActivateWEP(shuttle);
+    }
+    // End HL
+
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        // HL: expire WEP boosts
+        var wepQuery = EntityQueryEnumerator<ShuttleComponent>();
+        while (wepQuery.MoveNext(out _, out var shuttle))
+        {
+            if (shuttle.WepBoostActive && _timing.CurTime >= shuttle.WepBoostExpiry)
+                shuttle.WepBoostActive = false;
+        }
+        // End HL
 
         var toRemove = new ValueList<(EntityUid, PilotComponent)>();
         var query = EntityQueryEnumerator<PilotComponent>();

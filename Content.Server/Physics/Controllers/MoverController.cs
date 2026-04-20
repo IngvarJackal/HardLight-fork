@@ -12,6 +12,7 @@ using Robust.Shared.Player;
 using DroneConsoleComponent = Content.Server.Shuttles.DroneConsoleComponent;
 using DependencyAttribute = Robust.Shared.IoC.DependencyAttribute;
 using Robust.Shared.Map.Components;
+using Robust.Shared.Timing;
 
 namespace Content.Server.Physics.Controllers;
 
@@ -19,6 +20,7 @@ public sealed class MoverController : SharedMoverController
 {
     [Dependency] private readonly ThrusterSystem _thruster = default!;
     [Dependency] private readonly SharedTransformSystem _xformSystem = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
 
     private Dictionary<EntityUid, (ShuttleComponent, List<(EntityUid, PilotComponent, InputMoverComponent, TransformComponent)>)> _shuttlePilots = new();
 
@@ -199,6 +201,15 @@ public sealed class MoverController : SharedMoverController
         if (!TryComp<PilotComponent>(uid, out var pilot) || pilot.Console == null)
             return;
 
+        // WEP is a one-shot activation, not a held state
+        if (button == ShuttleButtons.Wep && state)
+        {
+            var consoleXform = Transform(pilot.Console.Value);
+            if (consoleXform.GridUid is { } gridUid && TryComp<ShuttleComponent>(gridUid, out var shuttle))
+                ActivateWEP(shuttle);
+            return;
+        }
+
         ResetSubtick(pilot);
 
         if (subTick >= pilot.LastInputSubTick)
@@ -318,10 +329,20 @@ public sealed class MoverController : SharedMoverController
     /// Helper function to extrapolate max velocity for a given Vector2 (really, its angle) and shuttle.
     /// Takes local direction.
     /// </summary>
+    public void ActivateWEP(ShuttleComponent shuttle)
+    {
+        shuttle.WepBoostActive = true;
+        shuttle.WepBoostExpiry = _timing.CurTime + TimeSpan.FromSeconds(ShuttleComponent.WepBoostDuration);
+        shuttle.WepBleedExpiry = shuttle.WepBoostExpiry + TimeSpan.FromSeconds(ShuttleComponent.WepBleedDuration);
+    }
+
     public Vector2 ObtainMaxVel(Vector2 vel, ShuttleComponent shuttle, PhysicsComponent body) // mono
     {
         vel.Normalize(); // Vector2 is a struct so this acts on a copy
-        return vel * shuttle.BaseMaxLinearVelocity;
+        var maxVel = (shuttle.WepBoostActive && _timing.CurTime < shuttle.WepBoostExpiry)
+            ? ShuttleComponent.WepBoostMaxVelocity
+            : shuttle.BaseMaxLinearVelocity;
+        return vel * maxVel;
     }
 
     private void HandleShuttleMovement(float frameTime)
@@ -350,6 +371,23 @@ public sealed class MoverController : SharedMoverController
             }
 
             var count = inputs.Count;
+
+            // HL: WEP bleed - decelerate to normal max speed over 1 second after WEP expires
+            if (!shuttle.WepBoostActive && _timing.CurTime < shuttle.WepBleedExpiry)
+            {
+                var speed = body.LinearVelocity.Length();
+                if (speed > shuttle.BaseMaxLinearVelocity)
+                {
+                    PhysicsSystem.SetSleepingAllowed(uid, body, false);
+                    var bleedTimeRemaining = (float)(shuttle.WepBleedExpiry - _timing.CurTime).TotalSeconds;
+                    var excessSpeed = speed - shuttle.BaseMaxLinearVelocity;
+                    var dv = MathF.Min(excessSpeed * frameTime / bleedTimeRemaining, excessSpeed);
+                    var brakeForce = -body.LinearVelocity.Normalized() * dv * body.Mass / frameTime;
+                    PhysicsSystem.ApplyForce(uid, brakeForce, body: body);
+                }
+            }
+            // End HL
+
             if (count == 0)
             {
                 _thruster.DisableLinearThrusters(shuttle);

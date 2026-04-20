@@ -23,6 +23,7 @@ public sealed partial class NavScreen : BoxContainer
 
     public event Action? ActivateExpeditionDisk;
     public event Action? EndExpedition;
+    public event Action? ActivateWEP; // HL
 
     public NavScreen()
     {
@@ -41,6 +42,7 @@ public sealed partial class NavScreen : BoxContainer
 
         ExpeditionDiskActivate.OnPressed += _ => ActivateExpeditionDisk?.Invoke();
         ExpeditionEnd.OnPressed += _ => EndExpedition?.Invoke();
+        WEPButton.OnPressed += _ => ActivateWEP?.Invoke(); // HL
 
         NfInitialize(); // Frontier Initialization for the NavScreen
     }
