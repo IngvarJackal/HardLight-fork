@@ -12,6 +12,7 @@ using Content.Shared._Starlight.NullSpace;
 using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Server.Atmos.EntitySystems;
+using Content.Server.Carrying;
 using Content.Shared.Stunnable;
 using Robust.Shared.Player;
 using Robust.Shared.Audio;
@@ -28,6 +29,7 @@ public sealed class EtherealSystem : SharedEtherealSystem
     [Dependency] private readonly EyeSystem _eye = default!;
     [Dependency] private readonly NpcFactionSystem _factions = default!;
     [Dependency] private readonly PullingSystem _pulling = default!;
+    [Dependency] private readonly CarryingSystem _carrying = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly SharedStunSystem _stun = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
@@ -72,6 +74,12 @@ public sealed class EtherealSystem : SharedEtherealSystem
         {
             _pulling.TryStopPull(pullerComp.Pulling.Value, subjectPulling);
         }
+
+        if (TryComp<CarryingComponent>(uid, out var carrying))
+            _carrying.DropCarried(uid, carrying.Carried);
+
+        if (TryComp<BeingCarriedComponent>(uid, out var beingCarried))
+            _carrying.DropCarried(beingCarried.Carrier, uid);
     }
 
     public override void OnShutdown(EntityUid uid, NullSpaceComponent component, ComponentShutdown args)

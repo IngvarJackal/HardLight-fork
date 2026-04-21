@@ -72,7 +72,11 @@ public sealed class EtherealPhaseSystem : EntitySystem
     private void Toggle(EntityUid uid, NullPhaseComponent component, bool toggle)
     {
         if (toggle)
+        {
             _actionsSystem.AddAction(uid, ref component.PhaseAction, "NullPhaseAction", uid);
+            if (component.UseDelay.HasValue)
+                _actionsSystem.SetUseDelay(component.PhaseAction, TimeSpan.FromSeconds(component.UseDelay.Value));
+        }
         else
             _actionsSystem.RemoveAction(uid, component.PhaseAction);
     }

@@ -1,3 +1,4 @@
+using Content.Shared.Damage.Components;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Throwing;
 using Content.Shared.Weapons.Ranged.Events;
@@ -85,6 +86,8 @@ public abstract class SharedEtherealSystem : EntitySystem
 
     private void PreventCollision(EntityUid uid, NullSpaceComponent component, ref PreventCollideEvent args)
     {
+        if (HasComp<StaminaDamageOnCollideComponent>(args.OtherEntity))
+            return;
         if (!_net.IsClient)
             args.Cancelled = true;
     }
