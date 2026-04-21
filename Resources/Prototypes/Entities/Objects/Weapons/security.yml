@@ -243,18 +243,9 @@
     - type: BluespacePulseOnTrigger
       radius: 10
       stunSeconds: 4
+      cooldown: 5
     - type: BluespaceFlasherVisuals
       radius: 10
-    - type: TriggerOnProximity
-      enabled: true
-      cooldown: 5
-      shape:
-        !type:PhysShapeCircle
-          radius: 10
-      triggerSpeed: 0.1
-      whitelist:
-        components:
-        - NullSpace
     - type: Sprite
       sprite: _HL/Objects/Weapons/bflash.rsi
       layers:

@@ -1,5 +1,6 @@
 using Content.Server.Explosion.EntitySystems;
 using Content.Shared._Starlight.NullSpace;
+using Content.Shared._Starlight;
 using Content.Shared.Stunnable;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
@@ -54,7 +55,8 @@ public sealed class BluespacePulseOnTriggerSystem : EntitySystem
             var stunTime = TimeSpan.FromSeconds(comp.StunSeconds);
             foreach (var ent in found)
             {
-                _audio.PlayPvs(NullSpaceCutoffSound, ent);
+                if (HasComp<ShadekinComponent>(ent))
+                    _audio.PlayPvs(NullSpaceCutoffSound, ent);
                 RemComp<NullSpaceComponent>(ent);
                 _stun.TryParalyze(ent, stunTime, true);
             }
