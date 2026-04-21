@@ -36,6 +36,8 @@ public sealed class EtherealPhaseSystem : EntitySystem
         SubscribeLocalEvent<NullPhaseComponent, GotEquippedEvent>(OnEquipped);
         SubscribeLocalEvent<NullPhaseComponent, GotUnequippedEvent>(OnUnequipped);
         SubscribeLocalEvent<NullPhaseComponent, NullPhaseActionEvent>(OnPhaseAction);
+        SubscribeLocalEvent<NullHarnessComponent, GotEquippedEvent>(OnHarnessEquipped);
+        SubscribeLocalEvent<NullHarnessComponent, GotUnequippedEvent>(OnHarnessUnequipped);
     }
 
     private void OnStartup(EntityUid uid, NullPhaseComponent component, ComponentStartup args)
@@ -62,8 +64,28 @@ public sealed class EtherealPhaseSystem : EntitySystem
         RemComp<NullPhaseComponent>(args.Equipee);
     }
 
+    private void OnHarnessEquipped(EntityUid uid, NullHarnessComponent component, GotEquippedEvent args)
+    {
+        if (!TryComp<ClothingComponent>(uid, out var clothing) || !clothing.Slots.HasFlag(args.SlotFlags))
+            return;
+
+        EnsureComp<BlockNullPhaseComponent>(args.Equipee);
+    }
+
+    private void OnHarnessUnequipped(EntityUid uid, NullHarnessComponent component, GotUnequippedEvent args)
+    {
+        RemComp<BlockNullPhaseComponent>(args.Equipee);
+    }
+
     private void OnPhaseAction(EntityUid uid, NullPhaseComponent component, NullPhaseActionEvent args)
     {
+        if (HasComp<BlockNullPhaseComponent>(args.Performer))
+        {
+            _popup.PopupEntity(Loc.GetString("null-harness-blocks-phase"), args.Performer, args.Performer);
+            args.Handled = true;
+            return;
+        }
+
         // Perform phase on the user performing the action, not the provider entity.
         Phase(args.Performer);
         args.Handled = true;

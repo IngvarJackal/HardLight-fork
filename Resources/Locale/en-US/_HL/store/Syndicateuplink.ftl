@@ -9,3 +9,12 @@ uplink-toolbelt-desc = It can hold various tools while looking fresh as fuck. Co
 # Armor
 uplink-clothing-chameleon-thieving-gloves-name = chameleon thieving gloves
 uplink-clothing-chameleon-thieving-gloves-desc = Discreetly steal from pockets and improve your thieving technique with these fancy new gloves. They can change appearance to match any pair of gloves!
+
+# NullSpace
+uplink-nullspace-teleporter-name = nullspace teleporter
+uplink-nullspace-teleporter-desc = A bluespace backpack that lets you phase in and out of NullSpace. Originally developed during experiments on Shadekin.
+
+uplink-nullspace-goggles-name = nullspace goggles
+uplink-nullspace-goggles-desc = Unusual goggles that let you peer into NullSpace, seeing those who hide within.
+
+null-harness-blocks-phase = The null harness prevents you from entering NullSpace!
