@@ -17,6 +17,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Maths;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
+#nullable enable
 namespace Content.IntegrationTests.Tests.Shuttle;
 
 /// <summary>
