@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.Markdown.Mapping;
 using Robust.Shared.Serialization.Markdown.Sequence;
@@ -427,6 +425,21 @@ public static class ShipSaveYamlSanitizer
                         compMap.Remove("CurrentTechnologyCards");
                         compMap.Remove("mainDiscipline");
                         compMap.Remove("MainDiscipline");
+                    }
+
+                    if (typeName == "Shuttle")
+                    {
+                        // Strip WEP runtime state — these fields are never [DataField] but guard against future changes.
+                        compMap.Remove("wepBoostActive");
+                        compMap.Remove("wepBoostExpiry");
+                        compMap.Remove("wepBoostMaxVelocity");
+                        compMap.Remove("wepBleedExpiry");
+                        compMap.Remove("wepCooldownExpiry");
+                        compMap.Remove("wepThrustMultiplier");
+                        compMap.Remove("wepAudioStream");
+                        compMap.Remove("wepPowerApplied");
+                        compMap.Remove("wepCurrentLoad");
+                        compMap.Remove("wepLastLoadUpdateTime");
                     }
 
                     if (typeName == "Battery")

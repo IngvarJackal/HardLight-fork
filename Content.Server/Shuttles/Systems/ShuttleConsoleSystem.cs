@@ -563,6 +563,32 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
     private void OnConsoleShutdown(EntityUid uid, ShuttleConsoleComponent component, ComponentShutdown args)
     {
         ClearPilots(component);
+
+        // HL: clean up WEP state so a destroyed console doesn't leave stuck audio or power load.
+        var xform = Transform(uid);
+        if (xform.GridUid is not { } gridUid || !TryComp<ShuttleComponent>(gridUid, out var shuttle))
+            return;
+
+        if (!shuttle.WepBoostActive && !shuttle.WepPowerApplied)
+            return;
+
+        shuttle.WepAudioStream = _audio.Stop(shuttle.WepAudioStream);
+        shuttle.WepBoostActive = false;
+        shuttle.WepThrustMultiplier = 1f;
+
+        if (shuttle.WepCurrentLoad > 0f)
+        {
+            var loadQuery = EntityQueryEnumerator<ShuttleConsoleComponent, ApcPowerReceiverComponent, TransformComponent>();
+            while (loadQuery.MoveNext(out var consoleUid, out _, out var receiver, out var consoleXform))
+            {
+                if (consoleXform.GridUid == gridUid && consoleUid != uid)
+                    receiver.Load = MathF.Max(0f, receiver.Load - shuttle.WepCurrentLoad);
+            }
+            shuttle.WepCurrentLoad = 0f;
+        }
+
+        shuttle.WepPowerApplied = false;
+        RefreshShuttleConsoles();
     }
 
     public void AddPilot(EntityUid uid, EntityUid entity, ShuttleConsoleComponent component)
