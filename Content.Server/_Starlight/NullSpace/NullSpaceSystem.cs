@@ -83,8 +83,12 @@ public sealed class EtherealSystem : SharedEtherealSystem
             _pulling.TryStopPull(pullerComp.Pulling.Value, subjectPulling);
         }
 
-        if (TryComp<CarryingComponent>(uid, out var carrying))
+        if (TryComp<CarryingComponent>(uid, out var carrying)
+            && !HasComp<PressureImmunityComponent>(carrying.Carried))
+        {
             EnsureComp<PressureImmunityComponent>(carrying.Carried);
+            EnsureComp<NullCarryPressureImmunityComponent>(carrying.Carried);
+        }
     }
 
     public override void OnShutdown(EntityUid uid, NullSpaceComponent component, ComponentShutdown args)
@@ -126,8 +130,12 @@ public sealed class EtherealSystem : SharedEtherealSystem
             _pulling.TryStopPull(pullerComp.Pulling.Value, subjectPulling);
         }
 
-        if (TryComp<CarryingComponent>(uid, out var carrying))
+        if (TryComp<CarryingComponent>(uid, out var carrying)
+            && HasComp<NullCarryPressureImmunityComponent>(carrying.Carried))
+        {
+            RemComp<NullCarryPressureImmunityComponent>(carrying.Carried);
             RemComp<PressureImmunityComponent>(carrying.Carried);
+        }
     }
 
     public void SuppressFactions(EntityUid uid, NullSpaceComponent component, bool set)
@@ -165,7 +173,7 @@ public sealed class EtherealSystem : SharedEtherealSystem
         var radius = args.Radius;
         var stunTime = System.TimeSpan.FromSeconds(args.StunSeconds);
 
-        var origin = args.Performer;
+        var origin = args.Source;
         foreach (var ent in _lookup.GetEntitiesInRange(origin, radius))
         {
             if (!HasComp<NullSpaceComponent>(ent))

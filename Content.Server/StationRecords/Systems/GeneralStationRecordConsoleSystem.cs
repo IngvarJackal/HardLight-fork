@@ -1,7 +1,7 @@
 using System.Linq;
 using Content.Server.Station.Systems;
 using Content.Server.StationRecords.Components;
-using Content.Server._HL.ColComm; // HardLight
+using Content.Server.Access.Systems;
 using Content.Shared.StationRecords;
 using Robust.Server.GameObjects;
 using Content.Shared.Roles; // Frontier
@@ -12,6 +12,7 @@ using Content.Server._NF.Station.Components; // Frontier
 using Content.Server.Administration.Logs; // Frontier
 using Content.Shared.Database; // Frontier
 using Content.Shared._NF.StationRecords; // Frontier
+using Content.Shared._NF.Shipyard.Components;
 
 namespace Content.Server.StationRecords.Systems;
 
@@ -21,7 +22,7 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly StationRecordsSystem _stationRecords = default!;
     [Dependency] private readonly StationJobsSystem _stationJobsSystem = default!; // Frontier
-    [Dependency] private readonly ColcommJobSystem _colcommJobs = default!; // HardLight
+    [Dependency] private readonly IdCardSystem _idCard = default!;
     [Dependency] private readonly AccessReaderSystem _access = default!; // Frontier
     [Dependency] private readonly IPrototypeManager _proto = default!; // Frontier
     [Dependency] private readonly IAdminLogManager _adminLog = default!; // Frontier
@@ -74,40 +75,31 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
         var stationUid = _station.GetOwningStation(ent);
         if (stationUid is EntityUid station)
         {
-            // Frontier start: Check access; hack because we don't have an AccessReaderComponent, it's the station
-            if (TryComp(stationUid, out StationJobsComponent? stationJobs) &&
-                (stationJobs.Groups.Count > 0 || stationJobs.Tags.Count > 0))
+            if (!TryComp(station, out StationJobsComponent? stationJobs))
             {
-                var accessSources = _access.FindPotentialAccessItems(msg.Actor);
-                var access = _access.FindAccessTags(msg.Actor, accessSources);
-
-                // Check access groups and tags
-                bool hasAccess = stationJobs.Tags.Any(access.Contains);
-                if (!hasAccess)
-                {
-                    foreach (var group in stationJobs.Groups)
-                    {
-                        if (!_proto.TryIndex(group, out var accessGroup))
-                            continue;
-
-                        hasAccess = accessGroup.Tags.Any(access.Contains);
-                        if (hasAccess)
-                            break;
-                    }
-                }
-
-                if (!hasAccess)
-                {
-                    UpdateUserInterface(ent);
-                    return;
-                }
+                UpdateUserInterface(ent);
+                return;
             }
-            // Frontier end
-            if (_colcommJobs.TryGetColcommRegistry(out var colcomm)) // HardLight
+
+            if (!_stationJobsSystem.IsShipCrewHiringStation(station))
             {
-                _colcommJobs.TryAdjustJobSlot(colcomm, msg.JobProto, msg.Amount, clamp: true);
-                _stationJobsSystem.UpdateJobsAvailable();
+                UpdateUserInterface(ent);
+                return;
             }
+
+            if (!CanEditStationJobs(msg.Actor, ent.Owner, station, stationJobs))
+            {
+                UpdateUserInterface(ent);
+                return;
+            }
+
+            if (!_stationJobsSystem.IsAdvertisedLateJoinJob(station, msg.JobProto))
+            {
+                UpdateUserInterface(ent);
+                return;
+            }
+
+            _stationJobsSystem.TryAdjustJobCapacity(station, msg.JobProto, msg.Amount, clamp: true, stationJobs: stationJobs);
 
             UpdateUserInterface(ent);
         }
@@ -147,6 +139,12 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
         if (stationUid is EntityUid station
             && TryComp<ExtraShuttleInformationComponent>(station, out var vesselInfo))
         {
+            if (!CanEditShipRecords(msg.Actor, ent.Owner))
+            {
+                UpdateUserInterface(ent);
+                return;
+            }
+
             vesselInfo.Advertisement = msg.Advertisement;
             _adminLog.Add(LogType.ShuttleInfoChanged, $"{ToPrettyString(msg.Actor):actor} set their shuttle {ToPrettyString(station)}'s ad text to {vesselInfo.Advertisement}");
             UpdateUserInterface(ent);
@@ -163,12 +161,14 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
         // Frontier: jobs, advertisements
         IReadOnlyDictionary<ProtoId<JobPrototype>, int?>? jobList = null;
         string? advertisement = null;
-        if (_colcommJobs.TryGetColcommRegistry(out var colcomm)) // HardLight
-            jobList = colcomm.Comp.CurrentSlots;
 
         if (owningStation != null)
         {
-            if (TryComp<ExtraShuttleInformationComponent>(owningStation, out var extraVessel))
+            if (_stationJobsSystem.IsShipCrewHiringStation(owningStation.Value)
+                && TryComp<StationJobsComponent>(owningStation.Value, out var stationJobs))
+                jobList = _stationJobsSystem.GetJobs(owningStation.Value, stationJobs);
+
+            if (TryComp<ExtraShuttleInformationComponent>(owningStation.Value, out var extraVessel))
                 advertisement = extraVessel.Advertisement;
         }
 
@@ -203,5 +203,51 @@ public sealed class GeneralStationRecordConsoleSystem : EntitySystem
 
         GeneralStationRecordConsoleState newState = new(id, record, listing, jobList, console.Filter, ent.Comp.CanDeleteEntries, advertisement);
         _ui.SetUiState(uid, GeneralStationRecordConsoleKey.Key, newState);
+    }
+
+    private bool CanEditStationJobs(EntityUid actor, EntityUid console, EntityUid station, StationJobsComponent stationJobs)
+    {
+        if (_stationJobsSystem.IsShipCrewHiringStation(station))
+            return CanEditShipRecords(actor, console);
+
+        if (stationJobs.Groups.Count == 0 && stationJobs.Tags.Count == 0)
+            return true;
+
+        var accessSources = _access.FindPotentialAccessItems(actor);
+        var access = _access.FindAccessTags(actor, accessSources);
+
+        if (stationJobs.Tags.Any(access.Contains))
+            return true;
+
+        foreach (var group in stationJobs.Groups)
+        {
+            if (!_proto.TryIndex(group, out var accessGroup))
+                continue;
+
+            if (accessGroup.Tags.Any(access.Contains))
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool CanEditShipRecords(EntityUid actor, EntityUid target)
+    {
+        if (!_idCard.TryFindIdCard(actor, out var idCard)
+            || !TryComp(idCard, out ShuttleDeedComponent? shuttleDeed)
+            || shuttleDeed.ShuttleUid == null
+            || !TryGetEntity(shuttleDeed.ShuttleUid.Value, out var shuttleUid))
+        {
+            return false;
+        }
+
+        var shuttleStation = _station.GetOwningStation(shuttleUid);
+        var targetStation = _station.GetOwningStation(target);
+
+        if (shuttleStation != null && targetStation != null)
+            return shuttleStation == targetStation;
+
+        return TryComp(target, out TransformComponent? targetXform)
+            && shuttleUid == targetXform.GridUid;
     }
 }

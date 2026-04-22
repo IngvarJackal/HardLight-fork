@@ -16,9 +16,10 @@ public sealed partial class RadarBlipsSystem : EntitySystem
     private const double BlipStaleSeconds = 3.0;
     private static readonly List<(NetEntity? Grid, Vector2 Start, Vector2 End, float Thickness, Color Color)> EmptyHitscanList = new();
     private TimeSpan _lastRequestTime = TimeSpan.Zero;
-    public static readonly TimeSpan RequestThrottle = TimeSpan.FromMilliseconds(500);
+    public static readonly TimeSpan RequestThrottle = TimeSpan.FromMilliseconds(225);
 
     private TimeSpan _lastUpdatedTime;
+    private TimeSpan _lastHitscanUpdatedTime;
     private List<BlipNetData> _blips = new();
     private List<HitscanNetData> _hitscans = new();
     private List<BlipConfig> _configPalette = new();
@@ -27,11 +28,13 @@ public sealed partial class RadarBlipsSystem : EntitySystem
 
     // cached results to avoid allocating on every draw/frame
     private readonly List<BlipData> _cachedBlipData = new();
+    private readonly List<Vector2> _renderSourcePositions = new();
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeNetworkEvent<GiveBlipsEvent>(HandleReceiveBlips);
+        SubscribeNetworkEvent<GiveHitscanLinesEvent>(HandleReceiveHitscans);
         SubscribeNetworkEvent<BlipRemovalEvent>(RemoveBlip);
     }
 
@@ -41,6 +44,13 @@ public sealed partial class RadarBlipsSystem : EntitySystem
         _blips = ev.Blips;
         _hitscans = ev.HitscanLines;
         _lastUpdatedTime = _timing.CurTime;
+        _lastHitscanUpdatedTime = _timing.CurTime;
+    }
+
+    private void HandleReceiveHitscans(GiveHitscanLinesEvent ev, EntitySessionEventArgs args)
+    {
+        _hitscans = ev.HitscanLines;
+        _lastHitscanUpdatedTime = _timing.CurTime;
     }
 
     private void RemoveBlip(BlipRemovalEvent args)
@@ -115,7 +125,7 @@ public sealed partial class RadarBlipsSystem : EntitySystem
     /// </summary>
     public List<HitscanNetData> GetHitscanLines()
     {
-        if (_timing.CurTime.TotalSeconds - _lastUpdatedTime.TotalSeconds > BlipStaleSeconds)
+        if (_timing.CurTime.TotalSeconds - _lastHitscanUpdatedTime.TotalSeconds > BlipStaleSeconds)
             return new();
 
         return _hitscans;
@@ -124,12 +134,13 @@ public sealed partial class RadarBlipsSystem : EntitySystem
     /// <summary>
     /// Gets the hitscan lines to be rendered on the radar
     /// </summary>
-    public List<(Vector2 Start, Vector2 End, float Thickness, Color Color)> GetWorldHitscanLines()
+    public List<(Vector2 Start, Vector2 End, float Thickness, Color Color)> GetWorldHitscanLines(IReadOnlyList<EntityUid>? sourceEntities = null)
     {
-        if (_timing.CurTime.TotalSeconds - _lastUpdatedTime.TotalSeconds > BlipStaleSeconds)
+        if (_timing.CurTime.TotalSeconds - _lastHitscanUpdatedTime.TotalSeconds > BlipStaleSeconds)
             return new List<(Vector2, Vector2, float, Color)>();
 
         var result = new List<(Vector2, Vector2, float, Color)>(_hitscans.Count);
+        var sourcePositions = GetRenderSourcePositions(sourceEntities);
 
         foreach (var hitscan in _hitscans)
         {
@@ -142,11 +153,7 @@ public sealed partial class RadarBlipsSystem : EntitySystem
                 worldEnd = hitscan.End;
 
                 // Distance culling - check if either end of the line is in range
-                var startDist = Vector2.DistanceSquared(worldStart, _radarWorldPosition);
-                var endDist = Vector2.DistanceSquared(worldEnd, _radarWorldPosition);
-
-                if (startDist > _radarRenderDistanceSq &&
-                    endDist > _radarRenderDistanceSq)
+                if (!IsLineInRenderRange(worldStart, worldEnd, sourcePositions))
                     continue;
 
                 result.Add((worldStart, worldEnd, hitscan.Thickness, hitscan.Color));
@@ -168,11 +175,7 @@ public sealed partial class RadarBlipsSystem : EntitySystem
                 worldEnd = worldPos + rotatedLocalEnd;
 
                 // Distance culling - check if either end of the line is in range
-                var startDist = Vector2.DistanceSquared(worldStart, _radarWorldPosition);
-                var endDist = Vector2.DistanceSquared(worldEnd, _radarWorldPosition);
-
-                if (startDist > _radarRenderDistanceSq &&
-                    endDist > _radarRenderDistanceSq)
+                if (!IsLineInRenderRange(worldStart, worldEnd, sourcePositions))
                     continue;
 
                 result.Add((worldStart, worldEnd, hitscan.Thickness, hitscan.Color));
@@ -185,27 +188,23 @@ public sealed partial class RadarBlipsSystem : EntitySystem
     /// <summary>
     /// Gets the raw hitscan data which includes grid information for more accurate rendering.
     /// </summary>
-    public List<(NetEntity? Grid, Vector2 Start, Vector2 End, float Thickness, Color Color)> GetRawHitscanLines()
+    public List<(NetEntity? Grid, Vector2 Start, Vector2 End, float Thickness, Color Color)> GetRawHitscanLines(IReadOnlyList<EntityUid>? sourceEntities = null)
     {
-        if (_timing.CurTime.TotalSeconds - _lastUpdatedTime.TotalSeconds > BlipStaleSeconds)
+        if (_timing.CurTime.TotalSeconds - _lastHitscanUpdatedTime.TotalSeconds > BlipStaleSeconds)
             return EmptyHitscanList;
 
         if (_hitscans.Count == 0)
             return EmptyHitscanList;
 
         var filteredHitscans = new List<(NetEntity? Grid, Vector2 Start, Vector2 End, float Thickness, Color Color)>(_hitscans.Count);
+        var sourcePositions = GetRenderSourcePositions(sourceEntities);
 
         foreach (var hitscan in _hitscans)
         {
             // For non-grid hitscans, do direct distance check
             if (hitscan.Grid == null)
             {
-                // Check if either endpoint is in range
-                var startDist = Vector2.DistanceSquared(hitscan.Start, _radarWorldPosition);
-                var endDist = Vector2.DistanceSquared(hitscan.End, _radarWorldPosition);
-
-                if (startDist <= _radarRenderDistanceSq ||
-                    endDist <= _radarRenderDistanceSq)
+                if (IsLineInRenderRange(hitscan.Start, hitscan.End, sourcePositions))
                 {
                     filteredHitscans.Add((hitscan.Grid, hitscan.Start, hitscan.End, hitscan.Thickness, hitscan.Color));
                 }
@@ -224,12 +223,7 @@ public sealed partial class RadarBlipsSystem : EntitySystem
                 var worldStart = worldPos + rotatedLocalStart;
                 var worldEnd = worldPos + rotatedLocalEnd;
 
-                // Check if either endpoint is in range
-                var startDist = Vector2.DistanceSquared(worldStart, _radarWorldPosition);
-                var endDist = Vector2.DistanceSquared(worldEnd, _radarWorldPosition);
-
-                if (startDist <= _radarRenderDistanceSq ||
-                    endDist <= _radarRenderDistanceSq)
+                if (IsLineInRenderRange(worldStart, worldEnd, sourcePositions))
                 {
                     filteredHitscans.Add((hitscan.Grid, hitscan.Start, hitscan.End, hitscan.Thickness, hitscan.Color));
                 }
@@ -237,6 +231,53 @@ public sealed partial class RadarBlipsSystem : EntitySystem
         }
 
         return filteredHitscans;
+    }
+
+    private List<Vector2> GetRenderSourcePositions(IReadOnlyList<EntityUid>? sourceEntities)
+    {
+        _renderSourcePositions.Clear();
+
+        if (sourceEntities != null)
+        {
+            foreach (var source in sourceEntities)
+            {
+                if (Exists(source))
+                    _renderSourcePositions.Add(_xform.GetWorldPosition(source));
+            }
+        }
+
+        if (_renderSourcePositions.Count == 0)
+            _renderSourcePositions.Add(_radarWorldPosition);
+
+        return _renderSourcePositions;
+    }
+
+    // Mono: cull against segment distance so long beams crossing the radar range still render.
+    private bool IsLineInRenderRange(Vector2 start, Vector2 end, List<Vector2> sourcePositions)
+    {
+        foreach (var sourcePosition in sourcePositions)
+        {
+            if (DistanceSquaredToSegment(sourcePosition, start, end) <= _radarRenderDistanceSq)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static float DistanceSquaredToSegment(Vector2 point, Vector2 start, Vector2 end)
+    {
+        var segment = end - start;
+        var lengthSquared = segment.LengthSquared();
+
+        if (lengthSquared <= float.Epsilon)
+            return Vector2.DistanceSquared(point, start);
+
+        var t = Vector2.Dot(point - start, segment) / lengthSquared;
+        t = Math.Clamp(t, 0f, 1f);
+        var closestPoint = start + segment * t;
+        return Vector2.DistanceSquared(point, closestPoint);
     }
 }
 

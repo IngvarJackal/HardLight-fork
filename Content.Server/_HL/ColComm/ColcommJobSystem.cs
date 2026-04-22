@@ -25,15 +25,12 @@ public sealed class ColcommJobSystem : EntitySystem
         // Let other systems deduct active role counts for
         // crew that persisted from the previous round.
         RaiseLocalEvent(new ColcommRegistryRoundStartEvent { Colcomm = colcomm });
-
-        Dirty(colcomm);
     }
 
     // First-time initialization from a freshly created ColComm entity.
     public void InitRegistry(Entity<ColcommJobRegistryComponent> colcomm)
     {
         ResetToDefaults(colcomm);
-        Dirty(colcomm);
     }
 
     // Sets the job configuration on ColComm creation and initializes the registry.
@@ -44,7 +41,6 @@ public sealed class ColcommJobSystem : EntitySystem
 
         colcomm.Comp.ConfiguredJobs = configuredJobs;
         ResetToDefaults(colcomm);
-        Dirty(colcomm);
     }
 
     private void ResetToDefaults(Entity<ColcommJobRegistryComponent> colcomm)
@@ -73,8 +69,6 @@ public sealed class ColcommJobSystem : EntitySystem
 
             colcomm.Comp.CurrentSlots[job] = Math.Max(current.Value - count, 0);
         }
-
-        Dirty(colcomm);
     }
 
     // Returns the ColComm grid entity that holds the registry, if one exists.
@@ -110,7 +104,6 @@ public sealed class ColcommJobSystem : EntitySystem
             return false;
 
         colcomm.Comp.CurrentSlots[jobId] = Math.Max(newVal, 0);
-        Dirty(colcomm);
         return true;
     }
 
@@ -124,7 +117,6 @@ public sealed class ColcommJobSystem : EntitySystem
         }
 
         colcomm.Comp.CurrentSlots[jobId] = amount;
-        Dirty(colcomm);
         return true;
     }
 
@@ -138,7 +130,6 @@ public sealed class ColcommJobSystem : EntitySystem
         }
 
         colcomm.Comp.MidRoundMaxSlots[jobId] = amount;
-        Dirty(colcomm);
         return true;
     }
 
@@ -149,7 +140,6 @@ public sealed class ColcommJobSystem : EntitySystem
     {
         colcomm.Comp.PlayerJobs.TryAdd(userId, new HashSet<ProtoId<JobPrototype>>());
         colcomm.Comp.PlayerJobs[userId].Add(jobId);
-        Dirty(colcomm);
         return true;
     }
 
@@ -161,8 +151,6 @@ public sealed class ColcommJobSystem : EntitySystem
         jobs.Remove(jobId);
         if (jobs.Count == 0)
             colcomm.Comp.PlayerJobs.Remove(userId);
-
-        Dirty(colcomm);
         return true;
     }
 }

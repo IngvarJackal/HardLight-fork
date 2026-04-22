@@ -28,6 +28,10 @@ shuttle-console-nav-settings = Settings
 shuttle-console-iff-toggle = Show IFF
 shuttle-console-dock-toggle = Show docks
 shuttle-console-iffshuttles-toggle = Show shuttles
+shuttle-console-wep-activate = WEP
+shuttle-console-wep-active = WEP ACTIVE
+shuttle-console-wep-cooldown = WEP (cooldown)
+shuttle-console-wep-tooltip = War Emergency Power (Z key), consumes a lot of power to recharge
 
 # MAP
 

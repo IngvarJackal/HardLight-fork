@@ -407,9 +407,6 @@ public sealed partial class EmergencyShuttleSystem : EntitySystem
     {
         // This is handled on map-init, so that Colcomm has finished initializing by the time the StationPostInitEvent
         // gets raised
-        if (!_emergencyShuttleEnabled)
-            return;
-
         // Post mapinit? fancy
         if (TryComp(component.Entity, out TransformComponent? xform))
         {
@@ -417,6 +414,7 @@ public sealed partial class EmergencyShuttleSystem : EntitySystem
             return;
         }
 
+        // ColComm hosts the job registry and other station services even when evac is disabled.
         AddColcomm(uid, component);
     }
 

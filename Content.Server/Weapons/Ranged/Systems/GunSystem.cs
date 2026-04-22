@@ -262,7 +262,7 @@ public sealed partial class GunSystem : SharedGunSystem
 
                             var hit = result.HitEntity;
 
-                            FireEffects(fromEffect, result.Distance, dir.Normalized().ToAngle(), hitscan, hit, user);
+                                FireEffects(fromEffect, result.Distance, dir.Normalized().ToAngle(), hitscan, hit, user, gunUid);
 
                             var ev = new HitScanReflectAttemptEvent(user, gunUid, hitscan.Reflective, dir, false);
                             RaiseLocalEvent(hit, ref ev);
@@ -322,7 +322,7 @@ public sealed partial class GunSystem : SharedGunSystem
                     }
                     else
                     {
-                        FireEffects(fromEffect, hitscan.MaxLength, dir.ToAngle(), hitscan, null, user);
+                        FireEffects(fromEffect, hitscan.MaxLength, dir.ToAngle(), hitscan, null, user, gunUid);
                     }
 
                     // Notify listeners about hitscan raycast result (e.g., to spawn effects/entities on hit)
@@ -485,12 +485,12 @@ public sealed partial class GunSystem : SharedGunSystem
     // TODO: Pseudo RNG so the client can predict these.
     #region Hitscan effects
 
-    private void FireEffects(EntityCoordinates fromCoordinates, float distance, Angle angle, HitscanPrototype hitscan, EntityUid? hitEntity = null, EntityUid? user = null)
+    private void FireEffects(EntityCoordinates fromCoordinates, float distance, Angle angle, HitscanPrototype hitscan, EntityUid? hitEntity = null, EntityUid? user = null, EntityUid? gunUid = null)
     {
         // Raise custom event for radar tracking
-        // Use the actual user as shooter instead of trying to derive from coordinates
+        // Keep both the firing gun and the user so radar logic can key off the weapon entity.
         var shooter = user ?? GetShooterFromCoordinates(fromCoordinates);
-        var radarEv = new _Mono.Radar.HitscanRadarSystem.HitscanFireEffectEvent(fromCoordinates, distance, angle, hitscan, hitEntity, shooter);
+        var radarEv = new _Mono.Radar.HitscanRadarSystem.HitscanFireEffectEvent(fromCoordinates, distance, angle, hitscan, hitEntity, gunUid, shooter);
         RaiseLocalEvent(radarEv);
 
         // Lord

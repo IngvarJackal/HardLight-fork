@@ -2,9 +2,9 @@ using System.Numerics;
 using Content.Shared.GameTicking;
 using Content.Shared._Mono.Radar;
 using NFRadarBlipShape = Content.Shared._NF.Radar.RadarBlipShape;
-using Content.Shared.Projectiles;
 using Content.Shared.Shuttles.Components;
 using RadarBlipComponent = Content.Server._NF.Radar.RadarBlipComponent;
+using Robust.Server.GameObjects;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Physics.Components;
@@ -16,6 +16,8 @@ namespace Content.Server._Mono.Radar;
 public sealed partial class RadarBlipSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly EntityLookupSystem _lookup = default!;
+    [Dependency] private readonly HitscanRadarSystem _hitscanRadar = default!;
     [Dependency] private readonly SharedTransformSystem _xform = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
 
@@ -26,11 +28,19 @@ public sealed partial class RadarBlipSystem : EntitySystem
     private readonly List<BlipNetData> _tempBlipsCache = new();
     private readonly List<HitscanNetData> _tempHitscansCache = new();
     private readonly List<EntityUid> _tempSourcesCache = new();
+    private readonly List<MapCoordinates> _tempSourceMapCoordinatesCache = new();
+    private readonly List<Vector2> _tempSourcePositionsCache = new();
+    private readonly HashSet<EntityUid> _tempSourceGridsCache = new();
     private readonly List<BlipConfig> _tempPaletteCache = new();
+    private readonly HashSet<EntityUid> _tempCandidateEntities = new();
     private readonly Dictionary<BlipConfig, ushort> _paletteIndex = new();
+    private EntityQuery<RadarBlipComponent> _blipQuery;
+    private EntityQuery<TransformComponent> _transformQuery;
+    private EntityQuery<PhysicsComponent> _physicsQuery;
+    private bool _hasGridlessSource;
 
-    private static readonly TimeSpan MinRequestPeriod = TimeSpan.FromMilliseconds(500);
-    private static readonly TimeSpan ReportCacheLifetime = TimeSpan.FromMilliseconds(100);
+    private static readonly TimeSpan MinRequestPeriod = TimeSpan.FromMilliseconds(225);
+    private static readonly TimeSpan ReportCacheLifetime = TimeSpan.FromMilliseconds(75);
 
     public override void Initialize()
     {
@@ -38,6 +48,10 @@ public sealed partial class RadarBlipSystem : EntitySystem
         SubscribeNetworkEvent<RequestBlipsEvent>(OnBlipsRequested);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<RadarBlipComponent, ComponentShutdown>(OnBlipShutdown);
+
+        _blipQuery = GetEntityQuery<RadarBlipComponent>();
+        _transformQuery = GetEntityQuery<TransformComponent>();
+        _physicsQuery = GetEntityQuery<PhysicsComponent>();
     }
 
     private void OnBlipsRequested(RequestBlipsEvent ev, EntitySessionEventArgs args)
@@ -53,40 +67,92 @@ public sealed partial class RadarBlipSystem : EntitySystem
 
         _nextBlipRequestPerUser[args.SenderSession.UserId] = now + MinRequestPeriod;
 
+        PrepareRadarSources(radarUid.Value);
+
         if (_recentRadarReports.TryGetValue(radarUid.Value, out var cachedReport)
             && now - cachedReport.CreatedAt <= ReportCacheLifetime)
         {
-            RaiseNetworkEvent(new GiveBlipsEvent(cachedReport.ConfigPalette, cachedReport.Blips, cachedReport.HitscanLines), args.SenderSession);
+            _hitscanRadar.CopyVisibleHitscans(_tempSourcePositionsCache, radar.MaxRange, _tempHitscansCache);
+            RaiseNetworkEvent(new GiveBlipsEvent(cachedReport.ConfigPalette, cachedReport.Blips, new List<HitscanNetData>(_tempHitscansCache)), args.SenderSession);
+            ClearTemporaryState();
             return;
         }
 
-        var sourcesEv = new GetRadarSourcesEvent();
-        RaiseLocalEvent(radarUid.Value, ref sourcesEv);
+        CollectRadarCandidates(radar.MaxRange);
 
-        // Reuse pooled sources list
-        _tempSourcesCache.Clear();
-        if (sourcesEv.Sources != null)
-            _tempSourcesCache.AddRange(sourcesEv.Sources);
-        else
-            _tempSourcesCache.Add(radarUid.Value);
-
-        AssembleBlipsReport((EntityUid)radarUid, _tempSourcesCache, radar);
-        AssembleHitscanReport((EntityUid)radarUid, radar);
+        AssembleBlipsReport((EntityUid)radarUid, _tempSourcePositionsCache, radar);
+        _hitscanRadar.CopyVisibleHitscans(_tempSourcePositionsCache, radar.MaxRange, _tempHitscansCache);
 
         var report = new CachedRadarReport(
             now,
             new List<BlipConfig>(_tempPaletteCache),
-            new List<BlipNetData>(_tempBlipsCache),
-            new List<HitscanNetData>(_tempHitscansCache));
+            new List<BlipNetData>(_tempBlipsCache));
         _recentRadarReports[radarUid.Value] = report;
 
         // Combine the blips and hitscan lines
-        var giveEv = new GiveBlipsEvent(report.ConfigPalette, report.Blips, report.HitscanLines);
+        var giveEv = new GiveBlipsEvent(report.ConfigPalette, report.Blips, new List<HitscanNetData>(_tempHitscansCache));
         RaiseNetworkEvent(giveEv, args.SenderSession);
 
+        ClearTemporaryState();
+    }
+
+    private void PrepareRadarSources(EntityUid radarUid)
+    {
+        var sourcesEv = new GetRadarSourcesEvent();
+        RaiseLocalEvent(radarUid, ref sourcesEv);
+
+        _tempSourcesCache.Clear();
+        if (sourcesEv.Sources != null)
+            _tempSourcesCache.AddRange(sourcesEv.Sources);
+        else
+            _tempSourcesCache.Add(radarUid);
+
+        _tempSourcePositionsCache.Clear();
+        _tempSourceMapCoordinatesCache.Clear();
+        _tempSourceGridsCache.Clear();
+        _hasGridlessSource = false;
+        _tempCandidateEntities.Clear();
+        var radarMapId = Transform(radarUid).MapID;
+
+        foreach (var source in _tempSourcesCache)
+        {
+            if (TerminatingOrDeleted(source))
+                continue;
+
+            var sourceMap = _xform.GetMapCoordinates(source);
+            if (sourceMap.MapId != radarMapId)
+                continue;
+
+            if (Transform(source).GridUid is { } sourceGrid)
+                _tempSourceGridsCache.Add(sourceGrid);
+            else
+                _hasGridlessSource = true;
+
+            _tempSourceMapCoordinatesCache.Add(sourceMap);
+            _tempSourcePositionsCache.Add(_xform.GetWorldPosition(source));
+        }
+    }
+
+    private void CollectRadarCandidates(float radarRange)
+    {
+        _tempCandidateEntities.Clear();
+
+        foreach (var sourceMap in _tempSourceMapCoordinatesCache)
+        {
+            _lookup.GetEntitiesInRange(sourceMap.MapId, sourceMap.Position, radarRange, _tempCandidateEntities);
+        }
+    }
+
+    private void ClearTemporaryState()
+    {
         _tempBlipsCache.Clear();
         _tempHitscansCache.Clear();
         _tempSourcesCache.Clear();
+        _tempSourceMapCoordinatesCache.Clear();
+        _tempSourcePositionsCache.Clear();
+        _tempSourceGridsCache.Clear();
+        _hasGridlessSource = false;
+        _tempCandidateEntities.Clear();
         _tempPaletteCache.Clear();
         _paletteIndex.Clear();
     }
@@ -104,31 +170,36 @@ public sealed partial class RadarBlipSystem : EntitySystem
     {
         _nextBlipRequestPerUser.Clear();
         _recentRadarReports.Clear();
+        _tempCandidateEntities.Clear();
+        _tempSourceGridsCache.Clear();
+        _hasGridlessSource = false;
     }
 
-    private void AssembleBlipsReport(EntityUid uid, List<EntityUid> sources, RadarConsoleComponent? component = null)
+    private void AssembleBlipsReport(EntityUid uid, List<Vector2> sourcePositions, RadarConsoleComponent? component = null)
     {
         if (!Resolve(uid, ref component))
             return;
 
         var radarXform = Transform(uid);
-        var radarGrid = radarXform.GridUid;
         var radarMapId = radarXform.MapID;
 
-        var blipQuery = EntityQueryEnumerator<RadarBlipComponent, TransformComponent, PhysicsComponent>();
-
-        while (blipQuery.MoveNext(out var blipUid, out var blip, out var blipXform, out var blipPhysics))
+        foreach (var blipUid in _tempCandidateEntities)
         {
+            if (!_blipQuery.TryComp(blipUid, out var blip)
+                || !_transformQuery.TryComp(blipUid, out var blipXform)
+                || !_physicsQuery.TryComp(blipUid, out var blipPhysics))
+                continue;
+
             if (!blip.Enabled
                 || blipXform.MapID != radarMapId
-                || !NearAnySources(_xform.GetWorldPosition(blipXform), sources, component.MaxRange)
+                || !NearAnySources(_xform.GetWorldPosition(blipXform), sourcePositions, component.MaxRange)
             )
                 continue;
 
             var blipGrid = blipXform.GridUid;
 
             if (blip.RequireNoGrid && blipGrid != null // if we want no grid but we are on a grid
-                || !blip.VisibleFromOtherGrids && blipGrid != radarGrid // or if we don't want to be visible from other grids but we're on another grid
+                || !blip.VisibleFromOtherGrids && !MatchesAnyRadarSourceGrid(blipGrid)
             )
                 continue; // don't show this blip
 
@@ -207,68 +278,28 @@ public sealed partial class RadarBlipSystem : EntitySystem
         return index;
     }
 
-    /// <summary>
-    /// Assembles trajectory information for hitscan projectiles to be displayed on radar
-    /// </summary>
-    private void AssembleHitscanReport(EntityUid uid, RadarConsoleComponent? component = null)
-    {
-        if (!Resolve(uid, ref component))
-            return;
-
-        var radarPosition = _xform.GetWorldPosition(uid);
-
-        var hitscanQuery = EntityQueryEnumerator<HitscanRadarComponent>();
-
-        while (hitscanQuery.MoveNext(out _, out var hitscan))
-        {
-            if (!hitscan.Enabled)
-                continue;
-
-            // Check if either the start or end point is within radar range
-            var startDistance = (hitscan.StartPosition - radarPosition).Length();
-            var endDistance = (hitscan.EndPosition - radarPosition).Length();
-
-            if (startDistance > component.MaxRange && endDistance > component.MaxRange)
-                continue;
-
-            // If there's an origin grid, use that for coordinate system
-            if (hitscan.OriginGrid != null && hitscan.OriginGrid.Value.IsValid())
-            {
-                var gridUid = hitscan.OriginGrid.Value;
-
-                // Convert world positions to grid-local coordinates
-                var gridMatrix = _xform.GetWorldMatrix(gridUid);
-                Matrix3x2.Invert(gridMatrix, out var invGridMatrix);
-
-                var localStart = Vector2.Transform(hitscan.StartPosition, invGridMatrix);
-                var localEnd = Vector2.Transform(hitscan.EndPosition, invGridMatrix);
-
-                _tempHitscansCache.Add(new HitscanNetData(GetNetEntity(gridUid), localStart, localEnd, hitscan.LineThickness, hitscan.RadarColor));
-            }
-            else
-            {
-                // Use world coordinates with null grid
-                _tempHitscansCache.Add(new HitscanNetData(null, hitscan.StartPosition, hitscan.EndPosition, hitscan.LineThickness, hitscan.RadarColor));
-            }
-        }
-    }
-
-    private bool NearAnySources(Vector2 coord, List<EntityUid> sources, float range)
+    private bool NearAnySources(Vector2 coord, List<Vector2> sourcePositions, float range)
     {
         var rsqr = range * range;
-        foreach (var source in sources)
+        foreach (var sourcePosition in sourcePositions)
         {
-            var pos = _xform.GetWorldPosition(source);
-            if ((pos - coord).LengthSquared() < rsqr)
+            if ((sourcePosition - coord).LengthSquared() < rsqr)
                 return true;
         }
 
         return false;
     }
 
+    private bool MatchesAnyRadarSourceGrid(EntityUid? blipGrid)
+    {
+        if (blipGrid == null)
+            return _hasGridlessSource;
+
+        return _tempSourceGridsCache.Contains(blipGrid.Value);
+    }
+
     private sealed record CachedRadarReport(
         TimeSpan CreatedAt,
         List<BlipConfig> ConfigPalette,
-        List<BlipNetData> Blips,
-        List<HitscanNetData> HitscanLines);
+        List<BlipNetData> Blips);
 }

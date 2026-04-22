@@ -2915,3 +2915,31 @@ Entries:
       message: Plastitanium walls now build off girders.
   id: 315
   time: '2026-04-20T23:05:01.0000000+00:00'
+- author: fenndragon
+  changes:
+    - type: Add
+      message: Added more patreon sprites
+    - type: Add
+      message: Added the last of the Shadekin countermeasures
+    - type: Add
+      message: Added recipe to build Beam prisms
+    - type: Fix
+      message: Fixed serverside issues with bodies and organs
+  id: 316
+  time: '2026-04-22T06:01:27.0000000+00:00'
+- author: IngvarJackal
+  changes:
+    - type: Add
+      message: Added War Emergency Power to shuttle consoles
+  id: 317
+  time: '2026-04-22T06:01:49.0000000+00:00'
+- author: Illumos
+  changes:
+    - type: Remove
+      message: Synths and IPCs no longer get Binary access (instead Trinary).
+    - type: Remove
+      message: The RD no longer gets Binary access (instead Trinary).
+    - type: Add
+      message: Synthetic trait now gives you access to Trinary.
+  id: 318
+  time: '2026-04-22T06:05:45.0000000+00:00'

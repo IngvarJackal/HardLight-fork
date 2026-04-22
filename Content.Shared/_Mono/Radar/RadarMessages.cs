@@ -75,6 +75,17 @@ public sealed class GiveBlipsEvent : EntityEventArgs
 }
 
 [Serializable, NetSerializable]
+public sealed class GiveHitscanLinesEvent : EntityEventArgs
+{
+    public readonly List<HitscanNetData> HitscanLines;
+
+    public GiveHitscanLinesEvent(List<HitscanNetData> hitscanLines)
+    {
+        HitscanLines = hitscanLines;
+    }
+}
+
+[Serializable, NetSerializable]
 public sealed class RequestBlipsEvent : EntityEventArgs
 {
     public NetEntity Radar;

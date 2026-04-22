@@ -56,8 +56,9 @@ public sealed class JobTrackingSystem : SharedJobTrackingSystem
             if (!job.Active || job.Job is not { } jobId)
                 continue;
 
-            activeCounts.TryGetValue(jobId, out var existing);
-            activeCounts[jobId] = existing + 1;
+            var colcommJobId = _stationJobs.GetColcommJobId(jobId);
+            activeCounts.TryGetValue(colcommJobId, out var existing);
+            activeCounts[colcommJobId] = existing + 1;
         }
 
         if (activeCounts.Count > 0)
@@ -78,7 +79,7 @@ public sealed class JobTrackingSystem : SharedJobTrackingSystem
             RaiseLocalEvent(new JobTrackingStateChangedEvent());
         }
 
-        if (!JobShouldBeReopened(job))
+        if (!ShouldReopenTrackedJob(ent.Comp.SpawnStation, job))
             return;
 
         if (!_player.TryGetSessionByEntity(ent, out var session))
@@ -89,7 +90,7 @@ public sealed class JobTrackingSystem : SharedJobTrackingSystem
 
     private void OnJobMindRemoved(Entity<JobTrackingComponent> ent, ref MindRemovedMessage ev)
     {
-        if (ent.Comp.Job == null || !ent.Comp.Active || !JobShouldBeReopened(ent.Comp.Job.Value))
+        if (ent.Comp.Job == null || !ent.Comp.Active || !ShouldReopenTrackedJob(ent.Comp.SpawnStation, ent.Comp.Job.Value))
             return;
 
         OpenJob(ent, ev.Mind.Comp.UserId); // HardLight: Added ev.Mind.Comp.UserId
@@ -97,7 +98,7 @@ public sealed class JobTrackingSystem : SharedJobTrackingSystem
 
     private void OnJobBeforeCryoEntered(Entity<JobTrackingComponent> ent, ref CryosleepBeforeMindRemovedEvent ev)
     {
-        if (ent.Comp.Job == null || !ent.Comp.Active || !JobShouldBeReopened(ent.Comp.Job.Value))
+        if (ent.Comp.Job == null || !ent.Comp.Active || !ShouldReopenTrackedJob(ent.Comp.SpawnStation, ent.Comp.Job.Value))
             return;
 
         OpenJob(ent, ev.User); // HardLight: Added ev.User
@@ -109,41 +110,47 @@ public sealed class JobTrackingSystem : SharedJobTrackingSystem
         if (ent.Comp.Job is not { } job)
             return;
 
-        if (!_colcommJobs.TryGetColcommRegistry(out var colcomm)) // HardLight: TryComp<StationJobsComponent>(ent.Comp.SpawnStation, out var stationJobs)<_colcommJobs.TryGetColcommRegistry(out var colcomm)
-            return;
-
         ent.Comp.Active = false;
         RaiseLocalEvent(new JobTrackingStateChangedEvent()); // HardLight
 
-        if (!_colcommJobs.TryGetJobSlot(colcomm, job, out var slots) || slots == null) // HardLight
-            return;
-
-        // HardLight start
-        // Only reopen if total occupancy (others still active) + current slots
-        // hasn't already reached the configured cap.
-        var occupiedJobs = GetNumberOfActiveRoles(job, includeAfk: true, exclude: ent, includeOutsideDefaultMap: true);
-        var midRoundMax = colcomm.Comp.MidRoundMaxSlots.GetValueOrDefault(job, 0);
-
-        if (slots + occupiedJobs >= midRoundMax)
-            return;
-
-        _colcommJobs.TryAdjustJobSlot(colcomm, job, 1);
-
-        // Mirror the slot open to the physical station display (best-effort).
-        if (TryComp<StationJobsComponent>(ent.Comp.SpawnStation, out var stationJobs))
-            _stationJobs.TryAdjustJobSlot(ent.Comp.SpawnStation, job, 1, stationJobs: stationJobs);
+        TryComp<StationJobsComponent>(ent.Comp.SpawnStation, out var stationJobs);
+        var stationJob = _stationJobs.GetStationTrackingJobId(ent.Comp.SpawnStation, job, stationJobs);
 
         NetUserId? trackedUserId = userId;
         if (trackedUserId == null && _player.TryGetSessionByEntity(ent, out var session))
             trackedUserId = session.UserId;
 
-        if (trackedUserId != null)
+        if (trackedUserId != null && stationJobs != null)
+            _stationJobs.TryUntrackPlayerJob(ent.Comp.SpawnStation, trackedUserId.Value, stationJob, stationJobs);
+
+        if (stationJobs != null)
+            _stationJobs.TryReopenTrackedJobSlot(ent.Comp.SpawnStation, stationJob, stationJobs);
+
+        var colcommJob = _stationJobs.GetColcommJobId(job);
+
+        if (_colcommJobs.TryGetColcommRegistry(out var colcomm)
+            && _colcommJobs.TryGetJobSlot(colcomm, colcommJob, out var slots)
+            && slots != null)
         {
-            _colcommJobs.TryUntrackPlayerJob(colcomm, trackedUserId.Value, job);
-            if (stationJobs != null)
-                _stationJobs.TryUntrackPlayerJob(ent.Comp.SpawnStation, trackedUserId.Value, job, stationJobs);
+            // Only reopen the global pool if it has spare capacity for this role.
+            var occupiedJobs = GetNumberOfActiveColcommRoles(colcommJob, includeAfk: true, exclude: ent, includeOutsideDefaultMap: true);
+            var midRoundMax = colcomm.Comp.MidRoundMaxSlots.GetValueOrDefault(colcommJob, 0);
+
+            if (slots + occupiedJobs < midRoundMax)
+                _colcommJobs.TryAdjustJobSlot(colcomm, colcommJob, 1);
+
+            if (trackedUserId != null)
+                _colcommJobs.TryUntrackPlayerJob(colcomm, trackedUserId.Value, colcommJob);
         }
-        // HardqLight end
+    }
+
+    public void EnsureTrackedJob(EntityUid uid, ProtoId<JobPrototype> jobId, EntityUid spawnStation, bool active = true)
+    {
+        var jobComp = EnsureComp<JobTrackingComponent>(uid);
+        jobComp.Job = jobId;
+        jobComp.SpawnStation = spawnStation;
+        jobComp.Active = active;
+        Dirty(uid, jobComp);
     }
 
     // HardLight: CloseJob consumes a reopened slot and re-tracks the player in ColComm/station job registries.
@@ -158,31 +165,75 @@ public sealed class JobTrackingSystem : SharedJobTrackingSystem
             RaiseLocalEvent(new JobTrackingStateChangedEvent());
         }
 
-        if (!JobShouldBeReopened(job))
+        if (!ShouldReopenTrackedJob(ent.Comp.SpawnStation, job))
             return;
 
-        if (!_colcommJobs.TryGetColcommRegistry(out var colcomm))
-            return;
+        var stationJob = _stationJobs.GetStationTrackingJobId(ent.Comp.SpawnStation, job);
 
-        if (_colcommJobs.IsPlayerJobTracked(colcomm, userId, job))
-            return;
-
-        if (!_colcommJobs.TryGetJobSlot(colcomm, job, out var slots) || slots == null)
-            return;
-
-        if (slots > 0)
+        if (TryComp<StationJobsComponent>(ent.Comp.SpawnStation, out var stationJobs)
+            && !_stationJobs.IsPlayerJobTracked(ent.Comp.SpawnStation, userId, stationJob, stationJobs))
         {
-            _colcommJobs.TryAdjustJobSlot(colcomm, job, -1, clamp: true);
+            if (_stationJobs.TryGetJobSlot(ent.Comp.SpawnStation, stationJob, out var localSlots) && localSlots > 0)
+                _stationJobs.TryAdjustJobSlot(ent.Comp.SpawnStation, stationJob, -1, clamp: true, stationJobs: stationJobs);
 
-            if (!_stationJobs.IsPlayerJobTracked(ent.Comp.SpawnStation, userId, job)
-                && TryComp<StationJobsComponent>(ent.Comp.SpawnStation, out var stationJobs))
-            {
-                _stationJobs.TryAdjustJobSlot(ent.Comp.SpawnStation, job, -1, clamp: true, stationJobs: stationJobs);
-                _stationJobs.TryTrackPlayerJob(ent.Comp.SpawnStation, userId, job, stationJobs);
-            }
+            _stationJobs.TryTrackPlayerJob(ent.Comp.SpawnStation, userId, stationJob, stationJobs);
         }
 
-        _colcommJobs.TryTrackPlayerJob(colcomm, userId, job);
+        var colcommJob = _stationJobs.GetColcommJobId(job);
+
+        if (!_colcommJobs.TryGetColcommRegistry(out var colcomm)
+            || !_colcommJobs.TryGetJobSlot(colcomm, colcommJob, out var slots)
+            || _colcommJobs.IsPlayerJobTracked(colcomm, userId, colcommJob))
+        {
+            return;
+        }
+
+        if (slots > 0)
+            _colcommJobs.TryAdjustJobSlot(colcomm, colcommJob, -1, clamp: true);
+
+        _colcommJobs.TryTrackPlayerJob(colcomm, userId, colcommJob);
+    }
+
+    private bool ShouldReopenTrackedJob(EntityUid spawnStation, ProtoId<JobPrototype> job)
+    {
+        if (JobShouldBeReopened(job))
+            return true;
+
+        return _stationJobs.GetStationTrackingJobId(spawnStation, job) != job;
+    }
+
+    private int GetNumberOfActiveColcommRoles(
+        ProtoId<JobPrototype> colcommJobId,
+        bool includeAfk = true,
+        EntityUid? exclude = null,
+        bool includeOutsideDefaultMap = false)
+    {
+        var activeJobCount = 0;
+        var jobQuery = AllEntityQuery<JobTrackingComponent, MindContainerComponent, TransformComponent>();
+        while (jobQuery.MoveNext(out var uid, out var job, out _, out var xform))
+        {
+            if (exclude == uid)
+                continue;
+
+            if (!job.Active
+                || job.Job is not { } trackedJob
+                || _stationJobs.GetColcommJobId(trackedJob) != colcommJobId
+                || (!includeOutsideDefaultMap && xform.MapID != _gameTicker.DefaultMap))
+                continue;
+
+            if (_player.TryGetSessionByEntity(uid, out var session))
+            {
+                if (session.State.Status != SessionStatus.InGame)
+                    continue;
+
+                if (!includeAfk && _afk.IsAfk(session))
+                    continue;
+            }
+
+            activeJobCount++;
+        }
+
+        return activeJobCount;
     }
 
     /// <summary>

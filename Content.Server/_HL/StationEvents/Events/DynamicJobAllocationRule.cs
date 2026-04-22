@@ -34,6 +34,8 @@ public sealed class DynamicJobAllocationRule : StationEventSystem<DynamicJobAllo
     {
         base.Initialize();
 
+        SubscribeLocalEvent<ColcommJobRegistryComponent, ComponentStartup>(OnColcommRegistryStartup);
+        SubscribeLocalEvent<ColcommRegistryRoundStartEvent>(OnColcommRegistryRoundStart);
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawnComplete);
         SubscribeLocalEvent<PlayerJoinedLobbyEvent>(OnPlayerJoinedLobby);
         SubscribeLocalEvent<JobTrackingStateChangedEvent>(OnJobTrackingStateChanged);
@@ -56,6 +58,7 @@ public sealed class DynamicJobAllocationRule : StationEventSystem<DynamicJobAllo
     protected override void Started(EntityUid uid, DynamicJobAllocationRuleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
         base.Started(uid, component, gameRule, args);
+        AdjustJobSlots(uid, component);
         QueueRecalculation();
     }
 
@@ -84,6 +87,8 @@ public sealed class DynamicJobAllocationRule : StationEventSystem<DynamicJobAllo
     }
 
     // HardLight start
+    private void OnColcommRegistryStartup(EntityUid uid, ColcommJobRegistryComponent component, ref ComponentStartup args) => QueueRecalculation();
+    private void OnColcommRegistryRoundStart(ColcommRegistryRoundStartEvent ev) => QueueRecalculation();
     private void OnPlayerSpawnComplete(PlayerSpawnCompleteEvent ev) => QueueRecalculation();
     private void OnJobTrackingStateChanged(JobTrackingStateChangedEvent ev) => QueueRecalculation();
     private void OnTrackedJobShutdown(EntityUid uid, JobTrackingComponent component, ref ComponentShutdown args) => QueueRecalculation();
@@ -153,11 +158,12 @@ public sealed class DynamicJobAllocationRule : StationEventSystem<DynamicJobAllo
 
         // Mirror to every physical station's StationJobsComponent for lobby display.
         var stationQuery = EntityQueryEnumerator<Station.Components.StationJobsComponent>();
-        while (stationQuery.MoveNext(out var stationUid, out _))
+        while (stationQuery.MoveNext(out var stationUid, out var stationJobs))
         // HardLight end
         {
-            _stationJobs.TrySetJobMidRoundMax(stationUid, component.MercenaryJob, desiredTotal);
-            _stationJobs.TrySetJobSlot(stationUid, component.MercenaryJob, availableSlots);
+            var stationJobId = _stationJobs.GetStationTrackingJobId(stationUid, component.MercenaryJob, stationJobs);
+            _stationJobs.TrySetJobMidRoundMax(stationUid, stationJobId, desiredTotal, stationJobs: stationJobs);
+            _stationJobs.TrySetJobSlot(stationUid, stationJobId, availableSlots, stationJobs: stationJobs);
         }
     }
 
@@ -165,6 +171,7 @@ public sealed class DynamicJobAllocationRule : StationEventSystem<DynamicJobAllo
     private static bool IsMercenaryJob(ProtoId<JobPrototype> jobId, DynamicJobAllocationRuleComponent component)
     {
         return string.Equals(jobId, component.MercenaryJob, StringComparison.Ordinal)
-               || string.Equals(jobId, LegacyFreelancerJobId, StringComparison.Ordinal);
+               || string.Equals(jobId, LegacyFreelancerJobId, StringComparison.Ordinal)
+               || string.Equals(jobId, StationJobsSystem.ShipFreelancerInterviewJobId, StringComparison.Ordinal);
     }
 }

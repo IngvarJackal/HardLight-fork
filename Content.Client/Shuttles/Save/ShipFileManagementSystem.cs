@@ -394,6 +394,14 @@ namespace Content.Client.Shuttles.Save
             }
         }
 
+        public void ReloadSavedShips()
+        {
+            AvailableShips.Clear();
+            CachedShipData.Clear();
+            ShipMetadataCache.Clear();
+            LoadExistingShips();
+        }
+
         public List<string> GetSavedShipFiles()
         {
             /*

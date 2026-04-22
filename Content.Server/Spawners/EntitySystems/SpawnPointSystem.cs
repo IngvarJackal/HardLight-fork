@@ -1,7 +1,11 @@
 using Content.Server.GameTicking;
 using Content.Server.Spawners.Components;
+using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
+using Content.Shared.Maps;
+using Content.Shared.Physics;
 using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
 using Robust.Shared.Random;
 
 namespace Content.Server.Spawners.EntitySystems;
@@ -10,8 +14,10 @@ public sealed class SpawnPointSystem : EntitySystem
 {
     [Dependency] private readonly GameTicker _gameTicker = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly StationSystem _stationSystem = default!;
     [Dependency] private readonly StationSpawningSystem _stationSpawning = default!;
+    [Dependency] private readonly TurfSystem _turf = default!;
 
     public override void Initialize()
     {
@@ -63,6 +69,13 @@ public sealed class SpawnPointSystem : EntitySystem
             }
         }
 
+        if (possiblePositions.Count == 0
+            && args.Station is { } station
+            && TryFindStationFallbackPosition(station, out var stationFallback))
+        {
+            possiblePositions.Add(stationFallback);
+        }
+
         if (possiblePositions.Count == 0)
         {
             // Ok we've still not returned, but we need to put them /somewhere/.
@@ -88,5 +101,54 @@ public sealed class SpawnPointSystem : EntitySystem
             args.HumanoidCharacterProfile,
             args.Station,
             session: args.Session); // Frontier
+    }
+
+    private bool TryFindStationFallbackPosition(EntityUid station, out EntityCoordinates coords)
+    {
+        coords = EntityCoordinates.Invalid;
+
+        if (!TryComp<StationDataComponent>(station, out var stationData))
+            return false;
+
+        var largestGrid = _stationSystem.GetLargestGrid(stationData);
+        if (largestGrid is { } gridUid
+            && TryFindGridFallbackPosition(gridUid, out coords))
+        {
+            return true;
+        }
+
+        foreach (var memberGrid in stationData.Grids)
+        {
+            if (memberGrid == largestGrid)
+                continue;
+
+            if (TryFindGridFallbackPosition(memberGrid, out coords))
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool TryFindGridFallbackPosition(EntityUid gridUid, out EntityCoordinates coords)
+    {
+        coords = EntityCoordinates.Invalid;
+
+        if (!TryComp<MapGridComponent>(gridUid, out var grid))
+            return false;
+
+        var candidateTiles = new List<TileRef>();
+        foreach (var tile in _mapSystem.GetAllTiles(gridUid, grid))
+        {
+            if (tile.Tile.IsEmpty || _turf.IsTileBlocked(tile, CollisionGroup.MobMask))
+                continue;
+
+            candidateTiles.Add(tile);
+        }
+
+        if (candidateTiles.Count == 0)
+            return false;
+
+        coords = _turf.GetTileCenter(_random.Pick(candidateTiles));
+        return true;
     }
 }

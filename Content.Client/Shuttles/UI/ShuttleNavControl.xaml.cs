@@ -94,8 +94,8 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     public bool RelativePanning = false;
 
     // Poll at the same cadence as the shared client request throttle to avoid per-frame spam.
-    protected static readonly float RadarUpdateInterval = (float) RadarBlipsSystem.RequestThrottle.TotalSeconds;
-    protected float _updateAccumulator = 0f;
+    protected static readonly float RadarRequestInterval = (float) RadarBlipsSystem.RequestThrottle.TotalSeconds;
+    protected float _requestAccumulator = 0f;
 
     private bool _wasPanned = false;
     private EntityCoordinates? _oldCoordinates;
@@ -147,6 +147,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
             return;
 
         _consoleEntity = consoleEntity;
+        _requestAccumulator = 0f;
 
         if (_consoleEntity != null)
             _blips.RequestBlips(_consoleEntity.Value, force: true);
@@ -215,11 +216,11 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
     {
         base.FrameUpdate(args);
 
-        _updateAccumulator += args.DeltaSeconds;
+        _requestAccumulator += args.DeltaSeconds;
 
-        if (_updateAccumulator >= RadarUpdateInterval)
+        if (_requestAccumulator >= RadarRequestInterval)
         {
-            _updateAccumulator = 0; // I'm not subtracting because frame updates can majorly lag in a way normal ones cannot.
+            _requestAccumulator = 0; // I'm not subtracting because frame updates can majorly lag in a way normal ones cannot.
 
             if (_consoleEntity != null)
                 _blips.RequestBlips((EntityUid)_consoleEntity);
@@ -613,13 +614,6 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         }
 
         #region Mono
-        // Draw radar line
-        // First, figure out which angle to draw.
-        var updateRatio = _updateAccumulator / RadarUpdateInterval;
-
-        Angle angle = updateRatio * Math.Tau;
-        var origin = ScalePosition(-new Vector2(Offset.X, -Offset.Y));
-        handle.DrawLine(origin, origin + angle.ToVec() * ScaledMinimapRadius * 1.42f, Color.Red.WithAlpha(0.1f));
 
         // Get blips
         var rawBlips = _blips.GetCurrentBlips();
@@ -653,7 +647,7 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
         }
 
         // Draw hitscan lines from the radar blips system
-        var hitscanLines = _blips.GetRawHitscanLines();
+        var hitscanLines = _blips.GetRawHitscanLines(Detectors);
         foreach (var line in hitscanLines)
         {
             Vector2 startPosInView;
@@ -682,8 +676,14 @@ public partial class ShuttleNavControl : BaseShuttleControl // Mono
                 continue;
             }
 
-            // Only draw lines if at least one endpoint is within view
-            if (monoViewBounds.Contains(startPosInView) || monoViewBounds.Contains(endPosInView))
+            var lineBounds = new Box2(
+                Math.Min(startPosInView.X, endPosInView.X),
+                Math.Min(startPosInView.Y, endPosInView.Y),
+                Math.Max(startPosInView.X, endPosInView.X),
+                Math.Max(startPosInView.Y, endPosInView.Y)
+            );
+
+            if (monoViewBounds.Intersects(lineBounds))
             {
                 // Draw the line with the specified thickness and color
                 handle.DrawLine(startPosInView, endPosInView, line.Color);
