@@ -30,8 +30,8 @@ shuttle-console-dock-toggle = Docks
 shuttle-console-iffshuttles-toggle = Shuttles
 shuttle-console-maximum-speed = Max speed
 shuttle-console-wep-activate = WEP
-shuttle-console-wep-active = WEP ACTIVE
-shuttle-console-wep-cooldown = WEP (cooldown)
+shuttle-console-wep-active = !!WEP!!
+shuttle-console-wep-cooldown = WEP
 shuttle-console-wep-tooltip = War Emergency Power (Z key), consumes a lot of power to recharge
 
 # MAP
