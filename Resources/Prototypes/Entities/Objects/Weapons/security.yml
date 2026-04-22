@@ -244,6 +244,7 @@
       radius: 10
       stunSeconds: 4
       cooldown: 5
+      continuous: true
     - type: BluespaceFlasherVisuals
       radius: 10
     - type: Sprite

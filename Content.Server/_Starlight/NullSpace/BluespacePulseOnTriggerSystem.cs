@@ -9,9 +9,9 @@ using Robust.Shared.Timing;
 namespace Content.Server._Starlight.NullSpace;
 
 /// <summary>
-/// Periodically scans for NullSpace entities within range and pulses to remove them + stun.
-/// Uses Update-based detection instead of TriggerOnProximity because NullSpace entities
-/// cancel all physics contacts, making physics-based proximity sensors blind to them.
+/// Handles BluespaceFlasher (continuous polling) and BluespacecryStal items (single trigger-event).
+/// NullSpace entities cancel all physics contacts so TriggerOnProximity can't detect them;
+/// continuous entities use an Update loop with EntityLookupSystem instead.
 /// </summary>
 public sealed class BluespacePulseOnTriggerSystem : EntitySystem
 {
@@ -23,6 +23,12 @@ public sealed class BluespacePulseOnTriggerSystem : EntitySystem
 
     private static readonly SoundPathSpecifier NullSpaceCutoffSound = new("/Audio/_HL/Effects/ma cutoff.ogg");
 
+    public override void Initialize()
+    {
+        base.Initialize();
+        SubscribeLocalEvent<BluespacePulseOnTriggerComponent, TriggerEvent>(OnTrigger);
+    }
+
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -30,12 +36,14 @@ public sealed class BluespacePulseOnTriggerSystem : EntitySystem
         var curTime = _timing.CurTime;
         var query = EntityQueryEnumerator<BluespacePulseOnTriggerComponent, TransformComponent>();
 
-        while (query.MoveNext(out var uid, out var comp, out var xform))
+        while (query.MoveNext(out var uid, out var comp, out _))
         {
+            if (!comp.Continuous)
+                continue;
+
             if (curTime < comp.NextTrigger)
                 continue;
 
-            // Collect NullSpace entities in range before modifying any components
             var found = new List<EntityUid>();
             foreach (var ent in _lookup.GetEntitiesInRange(uid, comp.Radius))
             {
@@ -47,19 +55,35 @@ public sealed class BluespacePulseOnTriggerSystem : EntitySystem
                 continue;
 
             comp.NextTrigger = curTime + comp.Cooldown;
-
-            // Fire effects (EmitSoundOnTrigger + SpawnOnTrigger)
             _trigger.Trigger(uid);
+            PulseEntities(found, comp.StunSeconds);
+        }
+    }
 
-            // Remove NullSpace and stun all detected entities
-            var stunTime = TimeSpan.FromSeconds(comp.StunSeconds);
-            foreach (var ent in found)
-            {
-                if (HasComp<ShadekinComponent>(ent))
-                    _audio.PlayPvs(NullSpaceCutoffSound, ent);
-                RemComp<NullSpaceComponent>(ent);
-                _stun.TryParalyze(ent, stunTime, true);
-            }
+    private void OnTrigger(EntityUid uid, BluespacePulseOnTriggerComponent comp, TriggerEvent args)
+    {
+        if (comp.Continuous)
+            return; // handled by Update loop
+
+        var found = new List<EntityUid>();
+        foreach (var ent in _lookup.GetEntitiesInRange(uid, comp.Radius))
+        {
+            if (HasComp<NullSpaceComponent>(ent))
+                found.Add(ent);
+        }
+
+        PulseEntities(found, comp.StunSeconds);
+    }
+
+    private void PulseEntities(List<EntityUid> entities, float stunSeconds)
+    {
+        var stunTime = TimeSpan.FromSeconds(stunSeconds);
+        foreach (var ent in entities)
+        {
+            if (HasComp<ShadekinComponent>(ent))
+                _audio.PlayPvs(NullSpaceCutoffSound, ent);
+            RemComp<NullSpaceComponent>(ent);
+            _stun.TryParalyze(ent, stunTime, true);
         }
     }
 }
