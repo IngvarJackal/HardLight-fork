@@ -17,6 +17,9 @@ namespace Content.Server._Starlight.NullSpace;
 /// </summary>
 public sealed class BluespacePulseOnTriggerSystem : EntitySystem
 {
+    private float _updateAccumulator;
+    private const float UpdateInterval = 2f;
+
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly TriggerSystem _trigger = default!;
@@ -35,6 +38,11 @@ public sealed class BluespacePulseOnTriggerSystem : EntitySystem
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        _updateAccumulator += frameTime;
+        if (_updateAccumulator < UpdateInterval)
+            return;
+        _updateAccumulator -= UpdateInterval;
 
         var curTime = _timing.CurTime;
         var query = EntityQueryEnumerator<BluespacePulseOnTriggerComponent, TransformComponent>();
