@@ -1,6 +1,8 @@
 using Content.Server.Explosion.EntitySystems;
+using Content.Server.Stack;
 using Content.Shared._Starlight.NullSpace;
 using Content.Shared._Starlight;
+using Content.Shared.Stacks;
 using Content.Shared.Stunnable;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
@@ -20,6 +22,7 @@ public sealed class BluespacePulseOnTriggerSystem : EntitySystem
     [Dependency] private readonly TriggerSystem _trigger = default!;
     [Dependency] private readonly SharedStunSystem _stun = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly StackSystem _stack = default!;
 
     private static readonly SoundPathSpecifier NullSpaceCutoffSound = new("/Audio/_HL/Effects/ma cutoff.ogg");
 
@@ -64,6 +67,10 @@ public sealed class BluespacePulseOnTriggerSystem : EntitySystem
     {
         if (comp.Continuous)
             return; // handled by Update loop
+
+        // Consume one crystal from the stack; if it's depleted the entity gets deleted.
+        if (TryComp<StackComponent>(uid, out var stackComp))
+            _stack.Use(uid, 1, stackComp);
 
         var found = new List<EntityUid>();
         foreach (var ent in _lookup.GetEntitiesInRange(uid, comp.Radius))
