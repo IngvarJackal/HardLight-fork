@@ -1,0 +1,97 @@
+# Shadekin-exclusive traits. Require the Shadekin component.
+
+- type: trait
+  id: LightSensitivity
+  name: hl-trait-light-sensitivity-name
+  description: hl-trait-light-sensitivity-desc
+  category: Physical
+  cost: -2
+  whitelist:
+    components:
+    - Shadekin
+  mutuallyExclusiveTraits:
+  - ExtremeLightSensitivity
+  components:
+  - type: LightSensitivity
+    burnThreshold: 3
+    slowdownThreshold: 3
+    speedMultiplier: 0.8
+
+- type: trait
+  id: ExtremeLightSensitivity
+  name: hl-trait-extreme-light-sensitivity-name
+  description: hl-trait-extreme-light-sensitivity-desc
+  category: Physical
+  cost: -5
+  whitelist:
+    components:
+    - Shadekin
+  mutuallyExclusiveTraits:
+  - LightSensitivity
+  components:
+  - type: LightSensitivity
+    burnThreshold: 2
+    slowdownThreshold: 3
+    speedMultiplier: 0.7
+
+- type: trait
+  id: ShadekinRegeneration
+  name: hl-trait-shadekin-regeneration-name
+  description: hl-trait-shadekin-regeneration-desc
+  category: Physical
+  cost: 2
+  replaceComponents: true
+  whitelist:
+    components:
+    - Shadekin
+  mutuallyExclusiveTraits:
+  - ExtremeShadekinRegeneration
+  - PlateletFactories
+  requirements:
+  - !type:TraitsRequirement
+    traits:
+    - LightSensitivity
+    - ExtremeLightSensitivity
+  components:
+  - type: ShadekinRegeneration
+    healPerSecond: 0.18
+    intervalSeconds: 1
+    healTypes:
+    - Blunt
+    - Slash
+    - Piercing
+    - Heat
+    - Shock
+    - Cold
+
+- type: trait
+  id: ExtremeShadekinRegeneration
+  name: hl-trait-extreme-shadekin-regeneration-name
+  description: hl-trait-extreme-shadekin-regeneration-desc
+  category: Physical
+  cost: 5
+  replaceComponents: true
+  whitelist:
+    components:
+    - Shadekin
+  mutuallyExclusiveTraits:
+  - ShadekinRegeneration
+  - PlateletFactories
+  requirements:
+  - !type:TraitsRequirement
+    traits:
+    - ExtremeLightSensitivity
+  components:
+  - type: ShadekinRegeneration
+    healPerSecond: 0.36
+    intervalSeconds: 1
+    healTypes:
+    - Blunt
+    - Slash
+    - Piercing
+    - Heat
+    - Shock
+    - Cold
+    - Caustic
+    - Poison
+    - Radiation
