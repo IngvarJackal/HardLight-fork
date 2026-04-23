@@ -4,7 +4,6 @@ using Content.Shared._Starlight;
 using Content.Shared.Alert;
 using Content.Shared.Damage;
 using Content.Shared.Movement.Systems;
-using Robust.Shared.Log;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
@@ -21,15 +20,12 @@ public sealed class LightSensitivitySystem : EntitySystem
     [Dependency] private readonly AlertsSystem _alerts = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly ILogManager _logManager = default!;
     [Dependency] private readonly MovementSpeedModifierSystem _speed = default!;
     [Dependency] private readonly ShadekinSystem _shadekin = default!;
-    private ISawmill _sawmill = default!;
 
     public override void Initialize()
     {
         base.Initialize();
-        _sawmill = _logManager.GetSawmill("shadekin.debug");
         SubscribeLocalEvent<LightSensitivityComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshSpeedModifiers);
     }
 
@@ -90,6 +86,5 @@ public sealed class LightSensitivitySystem : EntitySystem
         var damage = new DamageSpecifier();
         damage.DamageDict.Add("Heat", multiplier);
         _damageable.TryChangeDamage(uid, damage, true, false);
-        _sawmill.Error($"[LightSensitivity.Burn] {ToPrettyString(uid)} exposure={comp.CurrentLightExposure} clause=LightSensitivityComponent(burnThreshold={comp.BurnThreshold}, slowdownThreshold={comp.SlowdownThreshold}, speedMult={comp.SpeedMultiplier}) Heat+{multiplier}");
     }
 }

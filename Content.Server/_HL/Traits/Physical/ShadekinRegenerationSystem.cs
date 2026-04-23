@@ -1,10 +1,8 @@
-using System.Linq;
 using Content.Shared._HL.Traits.Physical;
 using Content.Shared._Starlight;
 using Content.Shared.Damage;
 using Content.Shared.FixedPoint;
 using Content.Shared.Mobs.Systems;
-using Robust.Shared.Log;
 using Robust.Shared.Timing;
 
 namespace Content.Server._HL.Traits.Physical;
@@ -16,16 +14,8 @@ namespace Content.Server._HL.Traits.Physical;
 public sealed class ShadekinRegenerationSystem : EntitySystem
 {
     [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly ILogManager _logManager = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
-    private ISawmill _sawmill = default!;
-
-    public override void Initialize()
-    {
-        base.Initialize();
-        _sawmill = _logManager.GetSawmill("shadekin.debug");
-    }
 
     public override void Update(float frameTime)
     {
@@ -63,8 +53,6 @@ public sealed class ShadekinRegenerationSystem : EntitySystem
                 continue;
 
             _damageable.TryChangeDamage(uid, healSpec, true, false, damageable);
-            var healSummary = string.Join(", ", healSpec.DamageDict.Select(kv => $"{kv.Key}:{kv.Value}"));
-            _sawmill.Error($"[DarkRegen] {ToPrettyString(uid)} exposure=0 critMult={critMult} amountPerTick={amountPerTick:F3} healing=[{healSummary}]");
         }
     }
 }

@@ -13,7 +13,6 @@ using Robust.Shared.Player;
 using Content.Shared.Chat;
 using Robust.Shared.Timing;
 using Content.Shared._HL.Traits.Physical;
-using Robust.Shared.Log;
 
 
 namespace Content.Server._Starlight;
@@ -22,9 +21,7 @@ public sealed class ShadekinSystem : EntitySystem
 {
     private const float BaseSlowdownMultiplier = 0.9f;
 
-    [Dependency] private readonly ILogManager _logManager = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
-    private ISawmill _sawmill = default!;
     [Dependency] private readonly AlertsSystem _alerts = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
@@ -57,7 +54,6 @@ public sealed class ShadekinSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        _sawmill = _logManager.GetSawmill("shadekin.debug");
         SubscribeLocalEvent<ShadekinComponent, ComponentStartup>(OnInit);
         SubscribeLocalEvent<ShadekinComponent, EyeColorInitEvent>(OnEyeColorChange);
         SubscribeLocalEvent<ShadekinComponent, ShadekinAlertEvent>(OnShadekinAlert);
@@ -194,17 +190,9 @@ public sealed class ShadekinSystem : EntitySystem
 
     private void ApplyLightDamage(EntityUid uid, float state)
     {
-        var threshold = 4;
-        string clause;
-        if (TryComp<LightSensitivityComponent>(uid, out var sensitivity))
-        {
-            threshold = sensitivity.BurnThreshold;
-            clause = $"LightSensitivityComponent(burnThreshold={threshold}, slowdownThreshold={sensitivity.SlowdownThreshold}, speedMult={sensitivity.SpeedMultiplier})";
-        }
-        else
-        {
-            clause = "default-shadekin(burnThreshold=4)";
-        }
+        var threshold = TryComp<LightSensitivityComponent>(uid, out var sensitivity)
+            ? sensitivity.BurnThreshold
+            : 4;
 
         if (state < threshold)
             return;
@@ -213,7 +201,6 @@ public sealed class ShadekinSystem : EntitySystem
         var damage = new DamageSpecifier();
         damage.DamageDict.Add("Heat", multiplier);
         _damageable.TryChangeDamage(uid, damage, true, false);
-        _sawmill.Error($"[ApplyLightDamage] {ToPrettyString(uid)} exposure={state} clause={clause} Heat+{multiplier}");
     }
 
     private void OnRefreshMovementSpeedModifiers(EntityUid uid, ShadekinComponent component, RefreshMovementSpeedModifiersEvent args)
@@ -251,7 +238,6 @@ public sealed class ShadekinSystem : EntitySystem
         heal.DamageDict.Add("Slash", -0.03f);
         heal.DamageDict.Add("Piercing", -0.03f);
         _damageable.TryChangeDamage(uid, heal, true, false, damageable);
-        _sawmill.Error($"[ApplyDimLightHealing] {ToPrettyString(uid)} exposure=1 clause=dim-light totalDamage={damageable.TotalDamage} Heat/Blunt/Slash/Piercing -0.03 each");
     }
 
     public override void Update(float frameTime)
