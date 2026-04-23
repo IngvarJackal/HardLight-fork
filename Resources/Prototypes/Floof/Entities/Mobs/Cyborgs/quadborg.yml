@@ -300,6 +300,18 @@
       shader: unshaded
       map: ["light"]
       visible: false
+  - type: BorgChassis
+    maxModules: 8
+    moduleWhitelist:
+      tags:
+      - BorgModuleGeneric
+      - BorgModuleSecurity
+      - BorgModuleMedical
+      - BorgModuleSyndicate
+      - BorgModuleSyndicateAssault
+      - XenoborgModuleGeneric
+    hasMindState: assaultquadr
+    noMindState: assaultquadl
   - type: SpriteMovement
     movementLayers:
       movement:
@@ -337,6 +349,18 @@
       shader: unshaded
       map: ["light"]
       visible: false
+  - type: BorgChassis
+    maxModules: 8
+    moduleWhitelist:
+      tags:
+      - BorgModuleGeneric
+      - BorgModuleSecurity
+      - BorgModuleMedical
+      - BorgModuleSyndicate
+      - BorgModuleSyndicateAssault
+      - XenoborgModuleGeneric
+    hasMindState: chewsr
+    noMindState: chews
   - type: SpriteMovement
     movementLayers:
       movement:
@@ -373,7 +397,19 @@
     - state: wolfdogl
       shader: unshaded
       map: ["light"]
-      visible: false
+      visible: false  
+  - type: BorgChassis
+    maxModules: 8
+    moduleWhitelist:
+      tags:
+      - BorgModuleGeneric
+      - BorgModuleSecurity
+      - BorgModuleMedical
+      - BorgModuleSyndicate
+      - BorgModuleSyndicateAssault
+      - XenoborgModuleGeneric
+    hasMindState: wolfdogr
+    noMindState: wolfdogl
   - type: SpriteMovement
     movementLayers:
       movement:

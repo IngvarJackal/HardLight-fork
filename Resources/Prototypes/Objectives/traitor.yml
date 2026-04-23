@@ -169,8 +169,8 @@
     - !type:TargetObjectiveMindFilter
       blacklist:
         components:
-        - RandomTraitorAlive
-        - RandomTraitorProgress
+        - KeepAliveCondition
+        - HelpProgressCondition
   - type: ObjectiveReward
     # Reward for them surviving the round
     amount: 15000
@@ -203,8 +203,8 @@
     - !type:TargetObjectiveMindFilter
       blacklist:
         components:
-        - RandomTraitorAlive
-        - RandomTraitorProgress
+        - KeepAliveCondition
+        - HelpProgressCondition
   - type: ObjectiveReward
     # Reward for them succeeding in their objective
     amount: 10000

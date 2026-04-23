@@ -36,6 +36,7 @@ using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Configuration;
 using Robust.Shared.Map;
+using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Player;
@@ -282,6 +283,7 @@ namespace Content.Server.Ghost
             {
                 _physics.SetLinearVelocity(uid, Vector2.Zero, body: physics);
                 _physics.SetCanCollide(uid, false, dirty: false, body: physics);
+                _physics.TrySetBodyType(uid, Robust.Shared.Physics.BodyType.Static, body: physics);
             }
 
             QueueDel(uid);

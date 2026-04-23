@@ -498,6 +498,9 @@ namespace Content.Server.Kitchen.EntitySystems
 
         private void OnAnchorChanged(EntityUid uid, MicrowaveComponent component, ref AnchorStateChangedEvent args)
         {
+            if (TerminatingOrDeleted(uid))
+                return;
+
             if (!args.Anchored)
                 _container.EmptyContainer(component.Storage, force: TerminatingOrDeleted(uid));
         }

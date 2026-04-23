@@ -61,6 +61,7 @@ public abstract class SharedActionsSystem : EntitySystem
         SubscribeLocalEvent<ActionsComponent, DidUnequipEvent>(OnDidUnequip);
         SubscribeLocalEvent<ActionsComponent, DidUnequipHandEvent>(OnHandUnequipped);
         SubscribeLocalEvent<ActionsComponent, RejuvenateEvent>(OnRejuventate);
+        SubscribeLocalEvent<ActionsComponent, ComponentStartup>(OnActionsStartup);
 
         SubscribeLocalEvent<ActionsComponent, ComponentShutdown>(OnShutdown);
 
@@ -88,6 +89,11 @@ public abstract class SharedActionsSystem : EntitySystem
     {
         if (component.AttachedEntity != null && !TerminatingOrDeleted(component.AttachedEntity.Value))
             RemoveAction(component.AttachedEntity.Value, uid, action: component);
+    }
+
+    private void OnActionsStartup(EntityUid uid, ActionsComponent component, ComponentStartup args)
+    {
+        SanitizeActionReferences(uid, component);
     }
 
     private void OnShutdown(EntityUid uid, ActionsComponent component, ComponentShutdown args)
@@ -286,7 +292,53 @@ public abstract class SharedActionsSystem : EntitySystem
 
     private void OnActionsGetState(EntityUid uid, ActionsComponent component, ref ComponentGetState args)
     {
-        args.State = new ActionsComponentState(GetNetEntitySet(component.Actions));
+        args.State = new ActionsComponentState(GetActionNetEntities(uid, component));
+    }
+
+    private HashSet<NetEntity> GetActionNetEntities(EntityUid uid, ActionsComponent component)
+    {
+        var removed = false;
+        var netEntities = new HashSet<NetEntity>(component.Actions.Count);
+
+        foreach (var actionId in component.Actions.ToArray())
+        {
+            if (actionId.IsValid()
+                && !TerminatingOrDeleted(actionId)
+                && HasComp<MetaDataComponent>(actionId)
+                && TryGetNetEntity(actionId, out var netEntity)
+                && netEntity != null)
+            {
+                netEntities.Add(netEntity.Value);
+                continue;
+            }
+
+            component.Actions.Remove(actionId);
+            removed = true;
+        }
+
+        if (removed)
+            Dirty(uid, component);
+
+        return netEntities;
+    }
+
+    private void SanitizeActionReferences(EntityUid uid, ActionsComponent component)
+    {
+        var removed = false;
+
+        foreach (var actionId in component.Actions.ToArray())
+        {
+            if (actionId.IsValid()
+                && !TerminatingOrDeleted(actionId)
+                && HasComp<MetaDataComponent>(actionId))
+                continue;
+
+            component.Actions.Remove(actionId);
+            removed = true;
+        }
+
+        if (removed)
+            Dirty(uid, component);
     }
 
     #endregion

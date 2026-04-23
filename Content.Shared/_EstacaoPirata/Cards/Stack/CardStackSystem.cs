@@ -207,6 +207,10 @@ public sealed class CardStackSystem : EntitySystem
     private void OnStartup(EntityUid uid, CardStackComponent component, ComponentStartup args)
     {
         component.ItemContainer = _container.EnsureContainer<Container>(uid, ContainerId);
+
+        component.Cards.Clear();
+        component.Cards.AddRange(component.ItemContainer.ContainedEntities);
+        Dirty(uid, component);
     }
 
     private void OnMapInit(EntityUid uid, CardStackComponent comp, MapInitEvent args)
