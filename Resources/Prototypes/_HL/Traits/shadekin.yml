@@ -80,6 +80,7 @@
     - Heat
     - Shock
     - Cold
+    - Asphyxiation
 
 - type: trait
   id: ExtremeShadekinRegeneration
@@ -114,3 +115,4 @@
     - Caustic
     - Poison
     - Radiation
+    - Asphyxiation
