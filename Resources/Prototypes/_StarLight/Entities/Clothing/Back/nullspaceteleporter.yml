@@ -16,4 +16,5 @@
       slots: BACK
       sprite: _Starlight/Clothing/Back/nullspaceteleporter.rsi
     - type: NullPhase
-      useDelay: 60
+      exitDelay: 120
+      forcedEjectionPenalty: 600

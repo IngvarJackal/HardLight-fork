@@ -18,3 +18,4 @@ uplink-nullspace-goggles-name = nullspace goggles
 uplink-nullspace-goggles-desc = Unusual goggles that let you peer into NullSpace, seeing those who hide within.
 
 null-harness-blocks-phase = The null harness prevents you from entering NullSpace!
+null-phase-cooldown-locked = The teleporter is still recharging — you cannot remove it yet!

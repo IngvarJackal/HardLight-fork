@@ -18,6 +18,7 @@ using Robust.Shared.Player;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Content.Shared._Starlight;
+using Content.Shared.Actions;
 
 namespace Content.Server._Starlight.NullSpace;
 
@@ -33,6 +34,7 @@ public sealed class EtherealSystem : SharedEtherealSystem
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly SharedStunSystem _stun = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly SharedActionsSystem _actionsSystem = default!;
 
     public override void Initialize()
     {
@@ -93,6 +95,14 @@ public sealed class EtherealSystem : SharedEtherealSystem
 
     public override void OnShutdown(EntityUid uid, NullSpaceComponent component, ComponentShutdown args)
     {
+        if (TryComp<NullPhaseComponent>(uid, out var phaseComp))
+        {
+            if (phaseComp.VoluntaryExit)
+                phaseComp.VoluntaryExit = false;
+            else
+                _actionsSystem.SetIfBiggerCooldown(phaseComp.PhaseAction, TimeSpan.FromSeconds(phaseComp.ForcedEjectionPenalty));
+        }
+
         base.OnShutdown(uid, component, args);
 
         if (TryComp<VisibilityComponent>(uid, out var visibility))
