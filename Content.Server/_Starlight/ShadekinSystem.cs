@@ -235,7 +235,8 @@ public sealed class ShadekinSystem : EntitySystem
 
     private void ApplyDimLightHealing(EntityUid uid, ShadekinComponent component)
     {
-        if (component.LightExposure > 1)
+        // Only fires in dim light (level 1). Total darkness is handled exclusively by ShadekinRegenerationSystem.
+        if (component.LightExposure != 1)
             return;
 
         if (!_mobState.IsAlive(uid))
@@ -244,16 +245,13 @@ public sealed class ShadekinSystem : EntitySystem
         if (!TryComp<DamageableComponent>(uid, out var damageable) || damageable.TotalDamage <= 0)
             return;
 
-        var isDark = component.LightExposure == 0;
-        var clause = isDark ? "total-darkness" : "dim-light";
-        var amount = isDark ? -0.09f : -0.03f;
         var heal = new DamageSpecifier();
-        heal.DamageDict.Add("Heat", amount);
-        heal.DamageDict.Add("Blunt", amount);
-        heal.DamageDict.Add("Slash", amount);
-        heal.DamageDict.Add("Piercing", amount);
+        heal.DamageDict.Add("Heat", -0.03f);
+        heal.DamageDict.Add("Blunt", -0.03f);
+        heal.DamageDict.Add("Slash", -0.03f);
+        heal.DamageDict.Add("Piercing", -0.03f);
         _damageable.TryChangeDamage(uid, heal, true, false, damageable);
-        _sawmill.Error($"[ApplyDimLightHealing] {ToPrettyString(uid)} exposure={component.LightExposure} clause={clause} totalDamage={damageable.TotalDamage} Heat/Blunt/Slash/Piercing {amount} each");
+        _sawmill.Error($"[ApplyDimLightHealing] {ToPrettyString(uid)} exposure=1 clause=dim-light totalDamage={damageable.TotalDamage} Heat/Blunt/Slash/Piercing -0.03 each");
     }
 
     public override void Update(float frameTime)
