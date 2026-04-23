@@ -244,14 +244,16 @@ public sealed class ShadekinSystem : EntitySystem
         if (!TryComp<DamageableComponent>(uid, out var damageable) || damageable.TotalDamage <= 0)
             return;
 
-        var clause = component.LightExposure == 0 ? "total-darkness" : "dim-light";
+        var isDark = component.LightExposure == 0;
+        var clause = isDark ? "total-darkness" : "dim-light";
+        var amount = isDark ? -0.09f : -0.03f;
         var heal = new DamageSpecifier();
-        heal.DamageDict.Add("Heat", -0.07f);
-        heal.DamageDict.Add("Blunt", -0.07f);
-        heal.DamageDict.Add("Slash", -0.07f);
-        heal.DamageDict.Add("Piercing", -0.07f);
+        heal.DamageDict.Add("Heat", amount);
+        heal.DamageDict.Add("Blunt", amount);
+        heal.DamageDict.Add("Slash", amount);
+        heal.DamageDict.Add("Piercing", amount);
         _damageable.TryChangeDamage(uid, heal, true, false, damageable);
-        _sawmill.Error($"[ApplyDimLightHealing] {ToPrettyString(uid)} exposure={component.LightExposure} clause={clause} totalDamage={damageable.TotalDamage} Heat/Blunt/Slash/Piercing -0.07 each");
+        _sawmill.Error($"[ApplyDimLightHealing] {ToPrettyString(uid)} exposure={component.LightExposure} clause={clause} totalDamage={damageable.TotalDamage} Heat/Blunt/Slash/Piercing {amount} each");
     }
 
     public override void Update(float frameTime)

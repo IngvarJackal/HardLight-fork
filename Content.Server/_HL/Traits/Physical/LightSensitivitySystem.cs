@@ -61,24 +61,24 @@ public sealed class LightSensitivitySystem : EntitySystem
 
             comp.NextUpdate = curTime + comp.UpdateCooldown;
 
-            comp.CurrentLightExposure = _shadekin.GetLightExposure(uid);
+            // Discretize to 0-4 scale matching ShadekinSystem so thresholds (burnThreshold, slowdownThreshold)
+            // behave identically for non-shadekins as they do for shadekins.
+            var raw = _shadekin.GetLightExposure(uid);
+            comp.CurrentLightExposure = DiscretizeExposure(raw);
 
             ApplyBurnDamage(uid, comp);
             _speed.RefreshMovementSpeedModifiers(uid);
-            UpdateLightAlert(uid, comp.CurrentLightExposure);
+            _alerts.ShowAlert(uid, LightExposureAlert, (short) comp.CurrentLightExposure);
         }
     }
 
-    private void UpdateLightAlert(EntityUid uid, float rawExposure)
+    private static float DiscretizeExposure(float raw)
     {
-        short level;
-        if (rawExposure >= 15f) level = 4;
-        else if (rawExposure >= 10f) level = 3;
-        else if (rawExposure >= 5f) level = 2;
-        else if (rawExposure >= 0.8f) level = 1;
-        else level = 0;
-
-        _alerts.ShowAlert(uid, LightExposureAlert, level);
+        if (raw >= 15f) return 4f;
+        if (raw >= 10f) return 3f;
+        if (raw >= 5f) return 2f;
+        if (raw >= 0.8f) return 1f;
+        return 0f;
     }
 
     private void ApplyBurnDamage(EntityUid uid, LightSensitivityComponent comp)

@@ -7,6 +7,9 @@
   cost: -1
   speciesBlacklist:
   - Shadekin
+  mutuallyExclusiveTraits:
+  - LightSensitivity
+  - ExtremeLightSensitivity
   components:
   - type: LightSensitivity
     burnThreshold: 4
@@ -20,6 +23,7 @@
   category: Physical
   cost: -2
   mutuallyExclusiveTraits:
+  - MildLightSensitivity
   - ExtremeLightSensitivity
   components:
   - type: LightSensitivity
@@ -34,6 +38,7 @@
   category: Physical
   cost: -5
   mutuallyExclusiveTraits:
+  - MildLightSensitivity
   - LightSensitivity
   components:
   - type: LightSensitivity
