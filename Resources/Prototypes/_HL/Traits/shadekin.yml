@@ -1,4 +1,17 @@
-# Shadekin-exclusive traits. Require the Shadekin component.
+# Available to all species except Shadekin (who have the mechanic natively).
+- type: trait
+  id: MildLightSensitivity
+  name: hl-trait-mild-light-sensitivity-name
+  description: hl-trait-mild-light-sensitivity-desc
+  category: Physical
+  cost: -1
+  speciesBlacklist:
+  - Shadekin
+  components:
+  - type: LightSensitivity
+    burnThreshold: 4
+    slowdownThreshold: 3
+    speedMultiplier: 0.9
 
 - type: trait
   id: LightSensitivity
@@ -6,15 +19,12 @@
   description: hl-trait-light-sensitivity-desc
   category: Physical
   cost: -2
-  whitelist:
-    components:
-    - Shadekin
   mutuallyExclusiveTraits:
   - ExtremeLightSensitivity
   components:
   - type: LightSensitivity
     burnThreshold: 3
-    slowdownThreshold: 3
+    slowdownThreshold: 2
     speedMultiplier: 0.8
 
 - type: trait
@@ -23,16 +33,17 @@
   description: hl-trait-extreme-light-sensitivity-desc
   category: Physical
   cost: -5
-  whitelist:
-    components:
-    - Shadekin
   mutuallyExclusiveTraits:
   - LightSensitivity
   components:
   - type: LightSensitivity
     burnThreshold: 2
-    slowdownThreshold: 3
+    slowdownThreshold: 2
     speedMultiplier: 0.7
+
+
+# Shadekin-exclusive regen traits to replace platelets
+# replaceComponents: true overrides the base ShadekinRegenerationComponent on BaseMobShadekin.
 
 - type: trait
   id: ShadekinRegeneration
@@ -56,6 +67,7 @@
   - type: ShadekinRegeneration
     healPerSecond: 0.18
     intervalSeconds: 1
+    critMultiplier: 0.5
     healTypes:
     - Blunt
     - Slash
@@ -77,6 +89,7 @@
   mutuallyExclusiveTraits:
   - ShadekinRegeneration
   - PlateletFactories
+  - LightSensitivity
   requirements:
   - !type:TraitsRequirement
     traits:
@@ -85,6 +98,7 @@
   - type: ShadekinRegeneration
     healPerSecond: 0.36
     intervalSeconds: 1
+    critMultiplier: 0.5
     healTypes:
     - Blunt
     - Slash

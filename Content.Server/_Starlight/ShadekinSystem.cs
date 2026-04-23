@@ -1,32 +1,30 @@
 using Content.Shared.Humanoid;
 using Content.Shared.Alert;
-using Content.Shared.Actions;
-using System.Linq;
-using Microsoft.CodeAnalysis;
 using Content.Shared.Mobs.Systems;
 using Robust.Server.GameObjects;
 using Content.Shared.Examine;
 using Robust.Server.Containers;
 using Content.Shared._Starlight;
-using Content.Server._Starlight;
-using Content.Shared.Damage.Components;
-using Content.Shared.Mobs.Components;
-using Content.Shared.Mobs;
 using Content.Shared.Movement.Systems;
-using Content.Shared.Movement.Components;
 using Content.Shared.Eye.Blinding.Components;
 using Content.Shared.Damage;
 using Content.Server.Chat.Managers;
 using Robust.Shared.Player;
 using Content.Shared.Chat;
 using Robust.Shared.Timing;
+using Content.Shared._HL.Traits.Physical;
+using Robust.Shared.Log;
 
 
 namespace Content.Server._Starlight;
 
 public sealed class ShadekinSystem : EntitySystem
 {
+    private const float BaseSlowdownMultiplier = 0.9f;
+
+    [Dependency] private readonly ILogManager _logManager = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    private ISawmill _sawmill = default!;
     [Dependency] private readonly AlertsSystem _alerts = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
@@ -59,6 +57,7 @@ public sealed class ShadekinSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
+        _sawmill = _logManager.GetSawmill("shadekin.debug");
         SubscribeLocalEvent<ShadekinComponent, ComponentStartup>(OnInit);
         SubscribeLocalEvent<ShadekinComponent, EyeColorInitEvent>(OnEyeColorChange);
         SubscribeLocalEvent<ShadekinComponent, ShadekinAlertEvent>(OnShadekinAlert);
@@ -185,33 +184,6 @@ public sealed class ShadekinSystem : EntitySystem
         return illumination;
     }
 
-    private void SetPassiveBuff(EntityUid uid, float state)
-    {
-        if (!TryComp<PassiveDamageComponent>(uid, out var passive))
-            return;
-
-        if (state >= 2)
-        {
-            passive.DamageCap = 1;
-        }
-        else if (state == 1)
-        {
-            passive.DamageCap = 20;
-            passive.AllowedStates.Clear();
-            passive.AllowedStates.Add(MobState.Alive);
-            passive.Interval = 1f;
-        }
-        else
-        {
-            passive.DamageCap = 0;
-            passive.AllowedStates.Clear();
-            passive.AllowedStates.Add(MobState.Alive);
-            passive.AllowedStates.Add(MobState.Critical);
-            passive.AllowedStates.Add(MobState.Dead);
-            passive.Interval = 0.5f;
-        }
-    }
-
     private void ToggleNightVision(EntityUid uid, float state)
     {
         if (state > 0)
@@ -222,25 +194,64 @@ public sealed class ShadekinSystem : EntitySystem
 
     private void ApplyLightDamage(EntityUid uid, float state)
     {
-        if (state < 4)
+        var threshold = 4;
+        string clause;
+        if (TryComp<LightSensitivityComponent>(uid, out var sensitivity))
+        {
+            threshold = sensitivity.BurnThreshold;
+            clause = $"LightSensitivityComponent(burnThreshold={threshold}, slowdownThreshold={sensitivity.SlowdownThreshold}, speedMult={sensitivity.SpeedMultiplier})";
+        }
+        else
+        {
+            clause = "default-shadekin(burnThreshold=4)";
+        }
+
+        if (state < threshold)
             return;
 
+        var multiplier = (int) state - threshold + 1;
         var damage = new DamageSpecifier();
-        damage.DamageDict.Add("Heat", 1);
+        damage.DamageDict.Add("Heat", multiplier);
         _damageable.TryChangeDamage(uid, damage, true, false);
-
+        _sawmill.Error($"[ApplyLightDamage] {ToPrettyString(uid)} exposure={state} clause={clause} Heat+{multiplier}");
     }
 
     private void OnRefreshMovementSpeedModifiers(EntityUid uid, ShadekinComponent component, RefreshMovementSpeedModifiersEvent args)
     {
-        if (component.LightExposure < 3)
+        if (TryComp<LightSensitivityComponent>(uid, out var sensitivity))
+        {
+            if (component.LightExposure < sensitivity.SlowdownThreshold)
+                return;
+
+            args.ModifySpeed(sensitivity.SpeedMultiplier, sensitivity.SpeedMultiplier);
+            return;
+        }
+
+        if (component.LightExposure < 4)
             return;
 
-        if (!TryComp<MovementSpeedModifierComponent>(uid, out var movement))
+        args.ModifySpeed(BaseSlowdownMultiplier, BaseSlowdownMultiplier);
+    }
+
+    private void ApplyDimLightHealing(EntityUid uid, ShadekinComponent component)
+    {
+        if (component.LightExposure > 1)
             return;
 
-        var sprintDif = movement.BaseWalkSpeed / movement.BaseSprintSpeed;
-        args.ModifySpeed(1f, sprintDif);
+        if (!_mobState.IsAlive(uid))
+            return;
+
+        if (!TryComp<DamageableComponent>(uid, out var damageable) || damageable.TotalDamage <= 0)
+            return;
+
+        var clause = component.LightExposure == 0 ? "total-darkness" : "dim-light";
+        var heal = new DamageSpecifier();
+        heal.DamageDict.Add("Heat", -0.07f);
+        heal.DamageDict.Add("Blunt", -0.07f);
+        heal.DamageDict.Add("Slash", -0.07f);
+        heal.DamageDict.Add("Piercing", -0.07f);
+        _damageable.TryChangeDamage(uid, heal, true, false, damageable);
+        _sawmill.Error($"[ApplyDimLightHealing] {ToPrettyString(uid)} exposure={component.LightExposure} clause={clause} totalDamage={damageable.TotalDamage} Heat/Blunt/Slash/Piercing -0.07 each");
     }
 
     public override void Update(float frameTime)
@@ -271,9 +282,9 @@ public sealed class ShadekinSystem : EntitySystem
             else
                 component.LightExposure = 0;
 
-            SetPassiveBuff(uid, component.LightExposure);
             ToggleNightVision(uid, component.LightExposure);
             ApplyLightDamage(uid, component.LightExposure);
+            ApplyDimLightHealing(uid, component);
             _speed.RefreshMovementSpeedModifiers(uid);
 
             UpdateAlert(uid, component);

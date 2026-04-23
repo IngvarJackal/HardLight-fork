@@ -792,6 +792,24 @@ namespace Content.Client.Lobby.UI
                                 tooltipParts.Add($"You must not be: {string.Join(", ", names)}");
                         }
 
+                        foreach (var requirement in trait.Requirements)
+                        {
+                            if (requirement is TraitsRequirement traitsReq)
+                            {
+                                var names = new List<string>();
+                                foreach (var reqId in traitsReq.Traits)
+                                {
+                                    if (_prototypeManager.TryIndex(reqId, out var reqProto))
+                                        names.Add($"[color=#FFD700]{Loc.GetString(reqProto.Name)}[/color]");
+                                }
+                                if (names.Count > 0)
+                                {
+                                    var label = traitsReq.Inverted ? "Must not have" : "Requires one of";
+                                    tooltipParts.Add($"{label}: {string.Join(", ", names)}");
+                                }
+                            }
+                        }
+
                         if (tooltipParts.Count > 0)
                             selector.SetTooltip(string.Join("\n", tooltipParts));
                     }
@@ -841,8 +859,6 @@ namespace Content.Client.Lobby.UI
                         }
 
                         SetDirty();
-
-                        UpdateTraitIncompatibilityVisibility(allSelectors);
 
                         // Instead of refreshing the entire UI, just update the point counter if needed
                         if (category is { MaxTraitPoints: >= 0 })
@@ -900,6 +916,9 @@ namespace Content.Client.Lobby.UI
                             // Update all trait colors based on the new point total
                             RefreshTraitColors(categoryButton, category, currentPoints);
                         }
+
+                        // Must run after RefreshTraitColors so requirement-based gray-out isn't overridden.
+                        UpdateTraitIncompatibilityVisibility(allSelectors);
                     };
                     selectors.Add(selector);
                 }
@@ -1008,14 +1027,17 @@ namespace Content.Client.Lobby.UI
         {
             var selected = Profile?.TraitPreferences ?? new HashSet<ProtoId<TraitPrototype>>();
             var currentSpecies = Profile?.Species;
+            IReadOnlyDictionary<string, TimeSpan> emptyPlayTimes = new Dictionary<string, TimeSpan>();
 
             foreach (var (traitId, selector) in allSelectors)
             {
                 var hide = false;
+                var unavailable = false;
 
                 if (selected.Contains(traitId))
                 {
                     selector.Visible = true;
+                    selector.SetUnavailable(false);
                     continue;
                 }
 
@@ -1029,9 +1051,14 @@ namespace Content.Client.Lobby.UI
                 {
                     ProtoId<SpeciesPrototype> speciesId = currentSpecies.Value;
                     if (thisProto.SpeciesBlacklist.Contains(speciesId))
-                    {
                         hide = true;
-                    }
+                }
+
+                // Whitelist check: uses the preview dummy entity which carries species components.
+                if (!hide && thisProto.Whitelist != null && _entManager.EntityExists(PreviewDummy))
+                {
+                    if (_whitelist.IsWhitelistFail(thisProto.Whitelist, PreviewDummy))
+                        hide = true;
                 }
 
                 if (!hide)
@@ -1049,7 +1076,21 @@ namespace Content.Client.Lobby.UI
                     }
                 }
 
+                // Requirements check: gray out traits whose prerequisites aren't yet selected.
+                if (!hide && thisProto.Requirements.Count > 0)
+                {
+                    foreach (var requirement in thisProto.Requirements)
+                    {
+                        if (!requirement.Check(_entManager, _prototypeManager, Profile, emptyPlayTimes, out _))
+                        {
+                            unavailable = true;
+                            break;
+                        }
+                    }
+                }
+
                 selector.Visible = !hide;
+                selector.SetUnavailable(unavailable);
             }
         }
 

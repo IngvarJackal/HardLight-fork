@@ -64,15 +64,14 @@
           Heat: 1.5
     - type: TypingIndicator
       proto: alien
-    - type: PassiveDamage # Slight passive regen. Assuming one damage type, comes out to about 4 damage a minute.
-      allowedStates:
-        - Alive
-      damageCap: 20
-      damage:
-        types:
-          Heat: -0.07
-        groups:
-          Brute: -0.07
+    - type: ShadekinRegeneration # Base darkness regen: 30% of platelets (0.09/s) for Heat and Brute types.
+      healPerSecond: 0.09
+      intervalSeconds: 1
+      healTypes:
+      - Blunt
+      - Slash
+      - Piercing
+      - Heat
     - type: Destructible
       thresholds:
         - trigger: !type:DamageTypeTrigger
@@ -152,3 +151,4 @@
   components:
     - type: HumanoidAppearance
       species: Shadekin
+    - type: Shadekin # needed so whitelist: components: [Shadekin] works in the character editor
