@@ -87,7 +87,7 @@
   name: hl-trait-extreme-shadekin-regeneration-name
   description: hl-trait-extreme-shadekin-regeneration-desc
   category: Physical
-  cost: 5
+  cost: 10
   replaceComponents: true
   whitelist:
     components:
