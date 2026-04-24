@@ -94,7 +94,7 @@
 - type: radioChannel
   id: DuskEnclave
   name: chat-radio-dusk-enclave
-  keycode: 'h'
+  keycode: "'"
   frequency: 1375
   color: "#00ff95"
   longRange: true
