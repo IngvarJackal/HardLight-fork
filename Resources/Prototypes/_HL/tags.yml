@@ -371,4 +371,5 @@
 - type: Tag
   id: ForgedRifleMagazine
 
-
+- type: Tag
+  id: Pouch

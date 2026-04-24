@@ -86,7 +86,6 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IResourceManager _resourceManager = default!;
     [Dependency] private readonly SharedContainerSystem _containerSystem = default!;
-    [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly SharedDeviceLinkSystem _deviceLink = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!; // HardLight
     [Dependency] private readonly AppearanceSystem _appearance = default!; // HardLight
@@ -100,6 +99,19 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
     private EntityQuery<TransformComponent> _transformQuery;
     private readonly Dictionary<Guid, PendingShipSave> _pendingTrackedSaves = new();
     private static readonly TimeSpan PendingShipSaveTimeout = TimeSpan.FromMinutes(2);
+
+    private IEnumerable<EntityUid> EnumerateEntitiesOnGrid(EntityUid gridUid)
+    {
+        var xformQuery = _entityManager.EntityQueryEnumerator<TransformComponent>();
+        while (xformQuery.MoveNext(out var uid, out var xform))
+        {
+            if (uid == gridUid)
+                continue;
+
+            if (xform.GridUid == gridUid)
+                yield return uid;
+        }
+    }
 
     private sealed class PendingShipSave
     {
@@ -146,15 +158,19 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             return;
 
         var now = _timing.RealTime;
-        var expired = new List<Guid>();
+        // Lazy-allocate: most ticks have no expirations, so avoid the per-tick List allocation entirely.
+        List<Guid>? expired = null;
 
         foreach (var (requestId, pending) in _pendingTrackedSaves)
         {
             if (now - pending.CreatedAt < PendingShipSaveTimeout)
                 continue;
 
-            expired.Add(requestId);
+            (expired ??= new List<Guid>()).Add(requestId);
         }
+
+        if (expired == null)
+            return;
 
         foreach (var requestId in expired)
         {
@@ -586,7 +602,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             _sawmill.Info($"PurgeTransientEntities: Scanning grid {gridUid} for transient entities (loose + contained)"); */
 
             // 1. Collect all entities spatially present on the grid (this won't include items inside containers)
-            foreach (var ent in _lookup.GetEntitiesIntersecting(gridUid, grid.LocalAABB))
+            foreach (var ent in EnumerateEntitiesOnGrid(gridUid))
             {
                 if (ent == gridUid)
                     continue;
@@ -598,7 +614,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             }
 
             // 2. Traverse container graphs on every anchored entity to collect ALL contained descendants
-            foreach (var ent in _lookup.GetEntitiesIntersecting(gridUid, grid.LocalAABB))
+            foreach (var ent in EnumerateEntitiesOnGrid(gridUid))
             {
                 if (ent == gridUid)
                     continue;
@@ -921,7 +937,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         if (_gridQuery.TryComp(gridUid, out var grid))
         {
             var gridBounds = grid.LocalAABB;
-            foreach (var entity in _lookup.GetEntitiesIntersecting(gridUid, gridBounds))
+            foreach (var entity in EnumerateEntitiesOnGrid(gridUid))
             {
                 if (entity != gridUid) // Don't include the grid itself
                     allEntities.Add(entity);
@@ -946,7 +962,7 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         if (_gridQuery.TryComp(gridUid, out grid))
         {
             var gridBounds = grid.LocalAABB;
-            foreach (var entity in _lookup.GetEntitiesIntersecting(gridUid, gridBounds))
+            foreach (var entity in EnumerateEntitiesOnGrid(gridUid))
             {
                 if (entity != gridUid) // Don't include the grid itself
                     remainingEntities.Add(entity);

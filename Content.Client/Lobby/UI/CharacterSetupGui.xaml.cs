@@ -64,6 +64,29 @@ namespace Content.Client.Lobby.UI
             StatsButton.OnPressed += _ => new PlaytimeStatsWindow().OpenCentered();
 
             _cfg.OnValueChanged(CCVars.SeeOwnNotes, p => AdminRemarksButton.Visible = p, true);
+
+            // HardLight: Self-heal if this GUI is constructed before prefs arrive.
+            // Without this, ReloadCharacterPickers silently early-returns to an empty
+            // list (see the ServerDataLoaded check below) and there is no other trigger
+            // to repaint short of toggling LobbyGui.SwitchState or restarting the client.
+            _preferencesManager.OnServerDataLoaded += OnPreferencesLoaded;
+        }
+
+        private void OnPreferencesLoaded()
+        {
+            if (Disposed)
+                return;
+            // Only repaint if we're actually visible in the tree; OnStateEntered will
+            // call ReloadCharacterPickers anyway when the lobby parents us.
+            if (Parent != null)
+                ReloadCharacterPickers();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _preferencesManager.OnServerDataLoaded -= OnPreferencesLoaded;
+            base.Dispose(disposing);
         }
 
         /// <summary>

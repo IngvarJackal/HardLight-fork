@@ -16,6 +16,12 @@ namespace Content.Server.Power.EntitySystems
     {
         [Dependency] private readonly IGameTiming _timing = default!;
 
+        // Reused to avoid a fresh ValueList backing array per tick / per net sync.
+        // Two separate fields so PostSync and Update cannot stomp on each other if any
+        // ChargeChangedEvent subscriber were ever to re-raise either event.
+        private readonly List<(EntityUid Uid, float Charge)> _scratchPostSyncUpdates = new();
+        private readonly List<(EntityUid Uid, float Charge)> _scratchAutoRechargeUpdates = new();
+
         public override void Initialize()
         {
             base.Initialize();
@@ -79,7 +85,8 @@ namespace Content.Server.Power.EntitySystems
         {
             // Ignoring entity pausing. If the entity was paused, neither component's data should have been changed.
             var enumerator = AllEntityQuery<PowerNetworkBatteryComponent, BatteryComponent>();
-            var updates = new ValueList<(EntityUid Uid, float Charge)>(Count<PowerNetworkBatteryComponent>());
+            var updates = _scratchPostSyncUpdates;
+            updates.Clear();
 
             while (enumerator.MoveNext(out var uid, out var netBat, out var bat))
             {
@@ -90,12 +97,15 @@ namespace Content.Server.Power.EntitySystems
             {
                 SetCharge(update.Uid, update.Charge);
             }
+
+            updates.Clear();
         }
 
         public override void Update(float frameTime)
         {
             var query = EntityQueryEnumerator<BatterySelfRechargerComponent, BatteryComponent>();
-            var updates = new ValueList<(EntityUid Uid, float Charge)>(Count<BatterySelfRechargerComponent>());
+            var updates = _scratchAutoRechargeUpdates;
+            updates.Clear();
 
             while (query.MoveNext(out var uid, out var comp, out var batt))
             {
@@ -116,6 +126,8 @@ namespace Content.Server.Power.EntitySystems
             {
                 SetCharge(update.Uid, update.Charge);
             }
+
+            updates.Clear();
         }
 
         /// <summary>

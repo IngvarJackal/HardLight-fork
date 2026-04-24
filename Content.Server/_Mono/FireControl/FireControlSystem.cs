@@ -592,6 +592,7 @@ public sealed partial class FireControlSystem : EntitySystem
         }
 
         // Check if there's any obstacles in the line of sight, only considering entities on the same grid
+        // returnOnFirstHit + GetEnumerator avoids materializing a list just to test emptiness.
         var raycastResults = _physics.IntersectRayWithPredicate(
             mapId,
             ray,
@@ -599,10 +600,10 @@ public sealed partial class FireControlSystem : EntitySystem
             IgnoreEntityNotOnSameGrid,
             rayDistance,
             returnOnFirstHit: true // We only need to know if there's ANY obstacle
-        ).ToList();
+        );
 
         // Has line of sight if there are no obstacles in the path
-        return raycastResults.Count == 0;
+        return !raycastResults.Any();
     }
 
     /// <summary>
@@ -666,19 +667,19 @@ public sealed partial class FireControlSystem : EntitySystem
             // Initialize ray collision
             var ray = new CollisionRay(position, direction, collisionMask: (int)(CollisionGroup.Opaque | CollisionGroup.Impassable));
 
-            // Check if there's any obstacles in this direction, only considering entities on the same grid
-            var raycastResults = _physics.IntersectRayWithPredicate(
+            // returnOnFirstHit + Any() avoids materializing a list per ray; we only care whether
+            // there's any obstacle in this direction, not what or how many.
+            var hasObstacle = _physics.IntersectRayWithPredicate(
                 mapId,
                 ray,
                 weapon,
                 IgnoreEntityNotOnSameGrid,
                 maxDistance,
-                returnOnFirstHit: false
-            ).ToList();
+                returnOnFirstHit: true
+            ).Any();
 
             // Direction is clear if there are no obstacles
-            var canFire = raycastResults.Count == 0;
-            directions[angle * 180 / MathF.PI] = canFire;
+            directions[angle * 180 / MathF.PI] = !hasObstacle;
         }
 
         return directions;

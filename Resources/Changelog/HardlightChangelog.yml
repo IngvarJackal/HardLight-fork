@@ -3007,3 +3007,82 @@ Entries:
         paths.
   id: 325
   time: '2026-04-23T02:09:28.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Tweak
+      message: >-
+        Reduced hitching and rubberbanding in several hot combat, cleanup, and
+        ship systems by cutting unnecessary per-tick allocations and log spam.
+    - type: Tweak
+      message: >-
+        Reduced client hitching when using repair-tool ghost previews around
+        multiple grids.
+  id: 326
+  time: '2026-04-23T23:33:27.0000000+00:00'
+- author: Illumos
+  changes:
+    - type: Tweak
+      message: Glasses now properly fix short-sightedness.
+  id: 327
+  time: '2026-04-23T23:34:43.0000000+00:00'
+- author: Illumos
+  changes:
+    - type: Tweak
+      message: Generic pouches are now 2x4
+    - type: Tweak
+      message: Engineering pouches are now 2x6, but can only fit tools.
+    - type: Tweak
+      message: >-
+        First Aid pouches are now 3x4 (1/4th of a medical bag), but can only fit
+        topicals.
+    - type: Tweak
+      message: >-
+        Botanist pouches are now 4x4, but can only fit seeds, vials, and
+        bottles.
+    - type: Tweak
+      message: >-
+        Janitorial pouches are now 4x4, but can only fit soap, janitorial tools,
+        and buckets.
+    - type: Tweak
+      message: >-
+        Private security pouches are now a generous 4x6, but can only fit
+        magazines.
+  id: 328
+  time: '2026-04-23T23:43:31.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Fix
+      message: >-
+        Sold and deleted shipyard ships no longer leave behind zombie entries in
+        the station list and shuttle-records consoles. Records carried forward
+        by round persistence are pruned at round start if their grid no longer
+        exists.
+  id: 329
+  time: '2026-04-23T23:49:42.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Fix
+      message: >-
+        use the existing per-station `TryGetJobSlot` helper, which already
+        returns `MIN(localSlots, globalSlots)` and gates on
+        `IsAdvertisedLateJoinJob` exactly the way `TryAssignJob` does.
+    - type: Fix
+      message: >-
+        Late-join lobby now shows the same job slot counts that the join check
+        actually enforces, so jobs that look open really are open.
+  id: 330
+  time: '2026-04-24T00:16:07.0000000+00:00'
+- author: re-silvered
+  changes:
+    - type: Add
+      message: Vampirism trait!
+  id: 331
+  time: '2026-04-24T01:27:23.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Fix
+      message: >-
+        Fixed character editor sometimes showing an empty slot list on connect,
+        requiring a client restart.
+  id: 332
+  time: '2026-04-24T01:31:45.0000000+00:00'
