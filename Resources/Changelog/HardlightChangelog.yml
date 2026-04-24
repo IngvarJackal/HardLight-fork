@@ -3086,3 +3086,37 @@ Entries:
         requiring a client restart.
   id: 332
   time: '2026-04-24T01:31:45.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Fix
+      message: >-
+        Fixed character editor only showing the first character when any other
+        saved profile referenced a missing prototype.
+  id: 333
+  time: '2026-04-24T19:12:28.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Fix
+      message: >-
+        Old saved ships are now automatically scrubbed of stale runtime data on
+        load, eliminating the entity-lookup log spam and missing-component
+        issues that affected ships saved before the ship-save sanitizer existed.
+  id: 334
+  time: '2026-04-24T19:12:46.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Fix
+      message: >-
+        Loading an apartment/room save no longer leaves furniture, walls and
+        other
+  id: 335
+  time: '2026-04-24T20:42:39.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Fix
+      message: >-
+        Gunnery consoles on loaded ships now reconnect to their fire-control
+        server on startup, so ship weapons can fire without needing a later
+        power cycle.
+  id: 336
+  time: '2026-04-24T21:04:55.0000000+00:00'

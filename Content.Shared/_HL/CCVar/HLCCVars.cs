@@ -96,6 +96,33 @@ public sealed class HLCCVars
     public static readonly CVarDef<bool> ShipLoadLogProgress =
         CVarDef.Create("hardlight.shipload.log_progress", false, CVar.SERVERONLY, desc: "Log ship load progress each tick.");
 
+    // Shipyard purchase docking-search caps. The full N×M dock-pair search becomes pathological
+    // on large stations + large ships (140 × 40 = 5,600 candidate pairs, each running CanDock,
+    // FindGridsIntersecting, and an inner aggregation sweep). On purchase we only need *a* valid
+    // dock — not the global optimum — so we sample a spatially-spread, priority-aware subset of
+    // docks from each side. If the capped search returns nothing, the call site falls back to the
+    // full uncapped search so a purchase can never fail solely due to the optimization.
+    public static readonly CVarDef<bool> ShipyardPurchaseDockCapEnabled =
+        CVarDef.Create("hardlight.shipyard.purchase_dock_cap_enabled", true, CVar.SERVERONLY,
+            desc: "If true, shipyard purchase docking only considers a capped, spatially spread subset of docks per side. Falls back to full search on miss.");
+
+    public static readonly CVarDef<int> ShipyardPurchaseDockCapShuttle =
+        CVarDef.Create("hardlight.shipyard.purchase_dock_cap_shuttle", 8, CVar.SERVERONLY,
+            desc: "Max shuttle-side docks considered during shipyard purchase docking. <= 0 disables the cap on this side.");
+
+    public static readonly CVarDef<int> ShipyardPurchaseDockCapGrid =
+        CVarDef.Create("hardlight.shipyard.purchase_dock_cap_grid", 12, CVar.SERVERONLY,
+            desc: "Max station-side docks considered during shipyard purchase docking. <= 0 disables the cap on this side.");
+
+    /// <summary>
+    /// HardLight: number of UseDelay component resets to process per tick during the post-load
+    /// sanitize phase of a freshly loaded ship. Set to 0 to disable spreading and do all resets
+    /// synchronously (original behavior).
+    /// </summary>
+    public static readonly CVarDef<int> ShipLoadDeferredUseDelayBudget =
+        CVarDef.Create("hardlight.shipload.deferred_usedelay_budget", 32, CVar.SERVERONLY,
+            desc: "Per-tick budget for deferred UseDelay resets after ship load. 0 disables deferral (sync reset).");
+
     /// <summary>
     ///     Goobstation: Whether or not to allow mech weaponry to be used out of mechs.
     /// </summary>

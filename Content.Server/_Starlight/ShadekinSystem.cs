@@ -103,7 +103,13 @@ public sealed class ShadekinSystem : EntitySystem
         var oppositeMapDiff = (-lightRot).RotateVec(mapDiff);
         var angle = oppositeMapDiff.ToWorldAngle();
 
-        if (angle == double.NaN && _transform.ContainsEntity(targetUid, lightUid) || _transform.ContainsEntity(lightUid, targetUid))
+        // HardLight: `angle == double.NaN` is always false; use IsNaN. Also reparenthesise
+        // so the parent-child containment short-circuit applies in either direction
+        // (previously the trailing `|| ContainsEntity(lightUid, targetUid)` always won
+        // due to operator precedence regardless of angle / first containment check).
+        if (double.IsNaN(angle)
+            || _transform.ContainsEntity(targetUid, lightUid)
+            || _transform.ContainsEntity(lightUid, targetUid))
         {
             angle = 0f;
         }

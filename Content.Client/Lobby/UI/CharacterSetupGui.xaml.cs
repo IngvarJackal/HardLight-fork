@@ -10,6 +10,7 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Configuration;
+using Robust.Shared.Log;
 using Robust.Shared.Prototypes;
 
 namespace Content.Client.Lobby.UI
@@ -76,10 +77,15 @@ namespace Content.Client.Lobby.UI
         {
             if (Disposed)
                 return;
-            // Only repaint if we're actually visible in the tree; OnStateEntered will
-            // call ReloadCharacterPickers anyway when the lobby parents us.
-            if (Parent != null)
-                ReloadCharacterPickers();
+            // Only repaint if we're actually visible in the tree AND the picker
+            // is currently empty -- avoids redundantly racing with
+            // LobbyUIController.PreferencesDataLoaded, which also triggers a
+            // ReloadCharacterPickers on this same event.
+            if (Parent == null)
+                return;
+            if (Characters.ChildCount > 0)
+                return;
+            ReloadCharacterPickers();
         }
 
         protected override void Dispose(bool disposing)
@@ -114,22 +120,37 @@ namespace Content.Client.Lobby.UI
             foreach (var (slot, character) in _preferencesManager.Preferences!.Characters)
             {
                 numberOfFullSlots++;
-                var characterPickerButton = new CharacterPickerButton(_entManager,
-                    _protomanager,
-                    characterButtonsGroup,
-                    character,
-                    slot == selectedSlot);
+
+                // HardLight: isolate each picker construction. If one profile is corrupt
+                // (e.g. invalid species/loadout/company prototype) and CharacterPickerButton's
+                // constructor throws, we used to lose every subsequent slot, leaving only the
+                // first character visible. Skip the broken slot instead.
+                CharacterPickerButton characterPickerButton;
+                try
+                {
+                    characterPickerButton = new CharacterPickerButton(_entManager,
+                        _protomanager,
+                        characterButtonsGroup,
+                        character,
+                        slot == selectedSlot);
+                }
+                catch (Exception e)
+                {
+                    Logger.GetSawmill("lobby").Error($"Failed to build character picker for slot {slot}: {e}");
+                    continue;
+                }
 
                 Characters.AddChild(characterPickerButton);
 
+                var capturedSlot = slot;
                 characterPickerButton.OnPressed += args =>
                 {
-                    SelectCharacter?.Invoke(slot);
+                    SelectCharacter?.Invoke(capturedSlot);
                 };
 
                 characterPickerButton.OnDeletePressed += () =>
                 {
-                    DeleteCharacter?.Invoke(slot);
+                    DeleteCharacter?.Invoke(capturedSlot);
                 };
             }
 

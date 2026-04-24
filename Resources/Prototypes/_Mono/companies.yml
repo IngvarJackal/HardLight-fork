@@ -84,6 +84,12 @@
   color: "#FFEA00" 
 
 - type: company
+  id: SBS
+  form: Protagonist
+  name: Starbound Blue Shield Services
+  color: "#005DBF" # strong blue
+
+- type: company
   id: HELGG
   form: Protagonist
   name: Holy Empire of the Lords Golden Grace
@@ -259,7 +265,7 @@
   id: SELF
   form: Antagonist
   name: Silicon Engine Liberation Front
-  color: "#2e0f43" # very dark purple
+  color: "#5a1d83" # Dark Violet
 
 - type: company
   id: ARC
@@ -274,3 +280,11 @@
   name: Gorlex Marauders
   color: "#880808" # blood red
   disabled: true # locked because literally nukies
+
+- type: company
+  id: AID
+  form: Protagonist
+  name: AEGIS Initiative Division
+  color: "#B8477C" # Berry Crush
+  logins:
+  - Dhizi

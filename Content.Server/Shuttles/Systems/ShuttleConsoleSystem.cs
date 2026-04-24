@@ -494,6 +494,11 @@ public sealed partial class ShuttleConsoleSystem : SharedShuttleConsoleSystem
         var wepQuery = EntityQueryEnumerator<ShuttleComponent>();
         while (wepQuery.MoveNext(out var gridUid, out var shuttle))
         {
+            // Skip the vast majority of shuttles that have no active WEP state.
+            // WepBoostActive flips on activation; WepPowerApplied stays true through the recharge ramp.
+            if (!shuttle.WepBoostActive && !shuttle.WepPowerApplied)
+                continue;
+
             // WEP boost expired — begin recharge ramp.
             if (shuttle.WepBoostActive && _timing.CurTime >= shuttle.WepBoostExpiry)
             {

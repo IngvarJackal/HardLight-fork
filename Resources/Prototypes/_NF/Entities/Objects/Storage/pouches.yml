@@ -305,7 +305,9 @@
         - Tool
         - GasAnalyzer
         - SprayPainter
-        - Flashlight # Hardlight end
+        - Flashlight
+      tags:
+        - CableCoil # Hardlight end
   - type: Sprite
     layers:
     - state: base
@@ -662,7 +664,8 @@
         - Mop # rags
         - WetFloorSign
         - Plunger
-        - Soap # Hardlight end
+        - Soap
+        - Spray # Hardlight end
   - type: Sprite
     layers:
     - state: base

@@ -794,6 +794,44 @@ public sealed partial class ShuttleSystem
         return false;
     }
 
+    // HardLight: capped variant for the shipyard purchase fast path. See DockingSystem.Shuttle.cs
+    // for the rationale; in short, we sample a spatially-spread, priority-aware subset of docks
+    // on each side, and fall back to the full uncapped search inside GetDockingConfig if the
+    // capped pass returns nothing. All other call sites keep the original behaviour.
+    /// <summary>
+    /// HardLight: capped variant of <see cref="TryFTLDock(EntityUid, ShuttleComponent, EntityUid, out DockingConfig?, string?, DockType)"/>
+    /// for the shipyard purchase path. Caps &lt;= 0 disable the cap on that side.
+    /// </summary>
+    public bool TryFTLDock(
+        EntityUid shuttleUid,
+        ShuttleComponent component,
+        EntityUid targetUid,
+        int maxShuttleDocks,
+        int maxGridDocks,
+        string? priorityTag = null,
+        DockType dockType = DockType.Airlock)
+    {
+        if (!_xformQuery.TryGetComponent(shuttleUid, out var shuttleXform) ||
+            !_xformQuery.TryGetComponent(targetUid, out var targetXform) ||
+            targetXform.MapUid == null ||
+            !targetXform.MapUid.Value.IsValid())
+        {
+            return false;
+        }
+
+        var config = _dockSystem.GetDockingConfig(shuttleUid, targetUid, priorityTag, dockType, maxShuttleDocks, maxGridDocks);
+
+        if (config != null)
+        {
+            FTLDock((shuttleUid, shuttleXform), config);
+            return true;
+        }
+
+        TryFTLProximity(shuttleUid, targetUid, shuttleXform, targetXform);
+        return false;
+    }
+    // End HardLight
+
     /// <summary>
     /// Forces an FTL dock.
     /// </summary>

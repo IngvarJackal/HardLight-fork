@@ -40,6 +40,27 @@ public sealed class JobTrackingSystem : SharedJobTrackingSystem
         SubscribeLocalEvent<JobTrackingComponent, MindAddedMessage>(OnJobMindAdded);
         SubscribeLocalEvent<JobTrackingComponent, MindRemovedMessage>(OnJobMindRemoved);
         SubscribeLocalEvent<ColcommRegistryRoundStartEvent>(OnColcommRegistryRoundStart); // HardLight
+        SubscribeLocalEvent<StationJobsComponent, EntityTerminatingEvent>(OnStationJobsTerminating); // HardLight
+    }
+
+    /// <summary>
+    /// HardLight: When a station is destroyed mid-round (ship sold/destroyed), release any
+    /// ColComm slots still attributed to crew whose <see cref="JobTrackingComponent.SpawnStation"/>
+    /// pointed at it. Without this, players whose body survives station deletion (e.g. transferred
+    /// to another grid, ghosted later, or in a shuttle that left) keep their ColComm slot held
+    /// until their body itself dies/cryos. Marks each tracked component inactive so its later
+    /// MindRemovedMessage does not double-refund.
+    /// </summary>
+    private void OnStationJobsTerminating(Entity<StationJobsComponent> ent, ref EntityTerminatingEvent args)
+    {
+        var query = AllEntityQuery<JobTrackingComponent>();
+        while (query.MoveNext(out var bodyUid, out var tracking))
+        {
+            if (!tracking.Active || tracking.SpawnStation != ent.Owner)
+                continue;
+
+            OpenJob((bodyUid, tracking));
+        }
     }
 
     /// <summary>
@@ -107,6 +128,11 @@ public sealed class JobTrackingSystem : SharedJobTrackingSystem
     public void OpenJob(Entity<JobTrackingComponent> ent, NetUserId? userId = null) // HardLight: Added NetUserId? userId = null
     {
         if (ent.Comp.Job is not { } job)
+            return;
+
+        // HardLight: idempotent — if the slot was already opened (e.g. by station deletion sweep
+        // or a prior disconnect grace release), don't refund again.
+        if (!ent.Comp.Active)
             return;
 
         ent.Comp.Active = false;
