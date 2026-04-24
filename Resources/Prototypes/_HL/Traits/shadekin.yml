@@ -70,7 +70,7 @@
     - ExtremeLightSensitivity
   components:
   - type: ShadekinRegeneration
-    healPerSecond: 0.18
+    healPerSecond: 0.08
     intervalSeconds: 1
     critMultiplier: 0.5
     healTypes:
