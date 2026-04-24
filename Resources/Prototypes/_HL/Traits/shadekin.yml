@@ -55,7 +55,7 @@
   name: hl-trait-shadekin-regeneration-name
   description: hl-trait-shadekin-regeneration-desc
   category: Physical
-  cost: 2
+  cost: 5
   replaceComponents: true
   whitelist:
     components:
