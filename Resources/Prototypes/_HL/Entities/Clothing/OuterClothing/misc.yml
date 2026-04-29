@@ -1,3 +1,25 @@
+# Manawa Rite Robe
+- type: entity
+  parent: [ClothingOuterStorageBase, AllowSuitStorageClothing]
+  id: ClothingOuterRobeManawaRite
+  name: Manawa Rite robe
+  description: A distinctive reinforced robe worn by members of the Manawa Rite.
+  components:
+  - type: Sprite
+    sprite: _HL/Clothing/OuterClothing/manawa_rite_robe.rsi
+  - type: Clothing
+    sprite: _HL/Clothing/OuterClothing/manawa_rite_robe.rsi
+  - type: Armor # merc web vest
+    modifiers:
+      coefficients:
+        Blunt: 0.75
+        Slash: 0.75
+        Piercing: 0.75
+        Heat: 0.80
+        Caustic: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.90
+
 - type: entity
   parent: ClothingOuterBase
   id: HLClothingOuterRobesClockwork

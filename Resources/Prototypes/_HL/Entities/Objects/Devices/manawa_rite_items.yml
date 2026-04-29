@@ -1,0 +1,21 @@
+# Onboarding duffel — opens to spawn initial faction supplies
+- type: entity
+  parent: BaseItem
+  id: ManawaRiteOnboardingPackage
+  name: Manawa Rite onboarding package
+  description: A sealed duffel containing onboarding supplies for new Manawa Rite members.
+  components:
+  - type: Sprite
+    sprite: _HL/Objects/Storage/manawa_rite_key_box.rsi
+    state: icon
+  - type: Item
+    size: Normal
+  - type: SpawnItemsOnUse
+    items:
+    - id: ClothingNeckPinManawaRite
+    - id: ClothingHeadFlowerManawaRite
+    - id: ClothingOuterRobeManawaRite
+    - id: ClothingUniformDressManawaRite
+    - id: EncryptionKeyManawaRite
+    sound:
+      path: /Audio/Effects/unwrap.ogg

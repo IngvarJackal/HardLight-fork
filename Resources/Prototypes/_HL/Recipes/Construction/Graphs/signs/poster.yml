@@ -12,6 +12,12 @@
             - material: Paper
               amount: 1
               doAfter: 1
+        # Manawa Rite
+        - to: PosterManawaRite
+          steps:
+            - material: Paper
+              amount: 1
+              doAfter: 1
         # Contraband Posters
         - to: PosterContrabandFreeTonto
           steps:
@@ -1893,6 +1899,18 @@
 
     - node: PosterDuskEnclave
       entity: PosterDuskEnclave
+      edges:
+        - to: start
+          completed:
+            - !type:SpawnPrototype
+              prototype: SheetPaper
+              amount: 1
+          steps:
+            - tool: Prying
+              doAfter: 1
+
+    - node: PosterManawaRite
+      entity: PosterManawaRite
       edges:
         - to: start
           completed:

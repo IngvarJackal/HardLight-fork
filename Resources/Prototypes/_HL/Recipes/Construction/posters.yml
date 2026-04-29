@@ -1569,3 +1569,16 @@
   canBuildInImpassable: true
   conditions:
     - !type:WallmountCondition
+
+- type: construction
+  id: PosterManawaRite
+  graph: Poster
+  startNode: start
+  targetNode: PosterManawaRite
+  category: construction-category-Poster
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canRotate: true
+  canBuildInImpassable: true
+  conditions:
+    - !type:WallmountCondition

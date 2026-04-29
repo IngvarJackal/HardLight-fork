@@ -81,7 +81,7 @@
   id: Suburbia
   form: Protagonist
   name: Suburbia
-  color: "#FFEA00" 
+  color: "#FFEA00"
 
 - type: company
   id: SBS
@@ -93,7 +93,7 @@
   id: HELGG
   form: Protagonist
   name: Holy Empire of the Lords Golden Grace
-  color: "#C4A23C" 
+  color: "#C4A23C"
 
 - type: company
   id: TBG
@@ -225,6 +225,12 @@
   disabled: true # Open to devs, technical oriented mappers, and architecture oriented engineers.
   logins:
   - Notarin
+
+- type: company
+  id: MANA
+  form: Protagonist
+  name: The Manawa Rite
+  color: "#32ff32" # pure green
 
 # ====Rogue / Antag. Companies====
 - type: company

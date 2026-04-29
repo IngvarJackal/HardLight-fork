@@ -55,3 +55,17 @@
   - type: Construction
     graph: Poster
     node: PosterDuskEnclave
+
+- type: entity
+  parent: PosterBase
+  id: PosterManawaRite
+  name: Manawa Rite poster
+  description: A Manawa Rite poster on the living pulse of the universe.
+  components:
+  - type: Sprite
+    sprite: _HL/Structures/Wallmounts/Posters/ManawaRite.rsi
+    state: manawa_rite_poster
+    scale: 0.9, 0.9
+  - type: Construction
+    graph: Poster
+    node: PosterManawaRite
