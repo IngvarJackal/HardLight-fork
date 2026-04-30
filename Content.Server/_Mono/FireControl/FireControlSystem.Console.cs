@@ -1,4 +1,5 @@
 using Content.Server.Shuttles.Systems;
+using Content.Shared._Crescent.ShipShields;
 using Content.Shared._Mono.FireControl;
 using Content.Shared.Power;
 using Content.Shared.Shuttles.BUIStates;
@@ -131,7 +132,22 @@ public sealed partial class FireControlSystem : EntitySystem
 
         var array = controllables.ToArray();
 
-        var state = new FireControlConsoleBoundInterfaceState(component.ConnectedServer != null, array, navState);
+        float? shieldHealth = null;
+        var consoleGrid = Transform(uid).GridUid;
+        if (consoleGrid != null)
+        {
+            var emitterQuery = EntityQueryEnumerator<ShipShieldEmitterComponent, TransformComponent>();
+            while (emitterQuery.MoveNext(out _, out var emitterComp, out var emitterXform))
+            {
+                if (emitterXform.GridUid != consoleGrid)
+                    continue;
+                var health = 1f - Math.Clamp(emitterComp.Damage / emitterComp.DamageLimit, 0f, 1f);
+                shieldHealth = MathF.Round(health * 100f);
+                break;
+            }
+        }
+
+        var state = new FireControlConsoleBoundInterfaceState(component.ConnectedServer != null, array, navState, shieldHealth);
         _ui.SetUiState(uid, FireControlConsoleUiKey.Key, state);
     }
 }
