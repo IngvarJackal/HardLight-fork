@@ -26,6 +26,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.8
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitMercenary
@@ -68,6 +72,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.8
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitPilot
@@ -158,6 +166,10 @@
     sprite: _NF/Clothing/OuterClothing/Hardsuits/nfsd_bronze.rsi
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Hardsuits/nfsd_bronze.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitNfsdBronze
   - type: ExplosionResistance
@@ -211,6 +223,10 @@
     sprite: _NF/Clothing/OuterClothing/Hardsuits/nfsd_sheriff.rsi
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Hardsuits/nfsd_sheriff.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,4
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitNfsdSheriff
   - type: ExplosionResistance
@@ -293,6 +309,10 @@
     sprite: _NF/Clothing/OuterClothing/Hardsuits/nfsd_combat.rsi
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Hardsuits/nfsd_combat.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,5,5
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitNfsdCombat
   - type: ExplosionResistance
@@ -321,6 +341,10 @@
     sprite: _NF/Clothing/OuterClothing/Hardsuits/nfsd_command.rsi
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Hardsuits/nfsd_command.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,5,5
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitNfsdCommand
   - type: ExplosionResistance
@@ -365,6 +389,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.9
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,4
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitScaf
@@ -398,6 +426,10 @@
   - type: ClothingSpeedModifier # So many layers of stain protection makes it very heavy
     walkModifier: 0.75
     sprintModifier: 0.75
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: FootstepModifier
     footstepSoundCollection:
@@ -415,6 +447,10 @@
     sprite: _NF/Clothing/OuterClothing/Hardsuits/pirate_elite.rsi
   - type: Clothing
     sprite: _NF/Clothing/OuterClothing/Hardsuits/pirate_elite.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,4
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitPirateElite
   - type: ExplosionResistance

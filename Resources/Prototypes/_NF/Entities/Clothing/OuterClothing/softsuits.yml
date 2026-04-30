@@ -8,8 +8,9 @@
   id: NFClothingOuterEVASuitBase
   components:
   - type: Item
+    size: Huge
     shape:
-    - 0,0,3,2
+    - 0,0,1,1
   - type: Clothing
     # For immersion
     equipSound: /Audio/Mecha/mechmove03.ogg

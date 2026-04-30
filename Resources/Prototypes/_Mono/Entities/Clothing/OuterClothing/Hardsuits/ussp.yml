@@ -8,6 +8,8 @@
     sprite: _Mono/Clothing/OuterClothing/Hardsuits/ussp_combat.rsi
   - type: Item
     size: Huge
+    shape:
+    - 0,0,4,4
   - type: Clothing
     sprite: _Mono/Clothing/OuterClothing/Hardsuits/ussp_combat.rsi
   - type: PressureProtection

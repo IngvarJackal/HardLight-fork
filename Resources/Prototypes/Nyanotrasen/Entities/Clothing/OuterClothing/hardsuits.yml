@@ -7,5 +7,9 @@
     sprite: Nyanotrasen/Clothing/OuterClothing/Hardsuits/ERTSuits/ertcentcomm.rsi
   - type: Clothing
     sprite: Nyanotrasen/Clothing/OuterClothing/Hardsuits/ERTSuits/ertcentcomm.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitERTCentcomm

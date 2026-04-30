@@ -9,6 +9,10 @@
     sprite: Clothing/OuterClothing/Hardsuits/syndicate.rsi
   - type: Clothing
     sprite: Clothing/OuterClothing/Hardsuits/syndicate.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitBasic
 
@@ -23,5 +27,9 @@
     sprite: Clothing/OuterClothing/Hardsuits/piratecaptain.rsi
   - type: Clothing
     sprite: Clothing/OuterClothing/Hardsuits/piratecaptain.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitPirateCap

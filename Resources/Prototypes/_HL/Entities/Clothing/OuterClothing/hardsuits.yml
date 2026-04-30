@@ -128,6 +128,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.95
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,4
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitInterdyne
 
@@ -212,6 +216,10 @@
     sprite: _HL/Clothing/OuterClothing/Hardsuits/colonialnavalinfantryHS.rsi
   - type: Clothing
     sprite: _HL/Clothing/OuterClothing/Hardsuits/colonialnavalinfantryHS.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,5,5
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitColonialNavalInfantry
   - type: ExplosionResistance
@@ -246,6 +254,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.7
     sprintModifier: 0.7
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ExplosionResistance
     damageCoefficient: 0.6
@@ -495,6 +507,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.8
     sprintModifier: 0.8
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,4
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitLuxmax
   - type: HarpyHideWings # Frontier, needed for Harpies

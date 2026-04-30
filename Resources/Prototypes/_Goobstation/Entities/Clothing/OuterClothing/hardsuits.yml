@@ -9,6 +9,8 @@
     sprite: _Goobstation/Clothing/OuterClothing/Hardsuits/cybersunstealth.rsi
   - type: Item
     size: Huge
+    shape:
+    - 0,0,4,4
   - type: Clothing
     sprite: _Goobstation/Clothing/OuterClothing/Hardsuits/cybersunstealth.rsi
   - type: PressureProtection

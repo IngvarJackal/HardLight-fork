@@ -24,6 +24,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.80
     sprintModifier: 0.80
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitBasic
@@ -63,6 +67,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.7
     sprintModifier: 0.7
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitAtmos
@@ -95,6 +103,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.7
     sprintModifier: 0.7
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitEngineering
@@ -124,6 +136,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.8
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitSpatio
@@ -160,6 +176,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.75
     sprintModifier: 0.75
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitSalvage
@@ -192,6 +212,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.8
     sprintModifier: 0.8
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,4
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitGoliath
@@ -229,6 +253,10 @@
   - type: TemperatureProtection
     heatingCoefficient: 0.001
     coolingCoefficient: 0.001
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,4
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitMaxim
   - type: ContainerContainer
@@ -282,6 +310,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.75
     sprintModifier: 0.75
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,4
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitSecurity
@@ -309,6 +341,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.65
     sprintModifier: 0.65
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitBrigmedic
@@ -340,6 +376,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.7
     sprintModifier: 0.7
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,4
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitWarden
@@ -372,6 +412,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.8
     sprintModifier: 0.8
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitCap
@@ -406,6 +450,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.75
     sprintModifier: 0.8
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitEngineeringWhite
@@ -434,6 +482,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.95
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitMedical
@@ -470,7 +522,7 @@
   - type: Item
     size: Huge
     shape:
-    - 0,0,4,4 #5X5, can fit in a duffel bag but nothing smaller.
+    - 0,0,3,3
   - type: Tag
     tags:
     - WhitelistChameleon
@@ -512,6 +564,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.8
     sprintModifier: 0.8
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,4
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitSecurityRed
@@ -544,6 +600,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.85
     sprintModifier: 0.9
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitLuxury
@@ -560,6 +620,8 @@
     sprite: Clothing/OuterClothing/Hardsuits/syndicate.rsi
   - type: Item
     size: Huge
+    shape:
+    - 0,0,3,3
   - type: Clothing
     sprite: Clothing/OuterClothing/Hardsuits/syndicate.rsi
   - type: PressureProtection
@@ -666,6 +728,8 @@
         Caustic: 0.5
   - type: Item
     size: Huge
+    shape:
+    - 0,0,3,3
   - type: ClothingSpeedModifier
     walkModifier: 1.0
     sprintModifier: 0.9
@@ -703,6 +767,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.9
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitSyndieCommander
@@ -737,6 +805,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.65
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,5,5
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitCybersun
@@ -772,6 +844,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.8
     sprintModifier: 0.8
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,4,4
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitWizard
@@ -802,6 +878,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.8
     sprintModifier: 0.8
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitLing
@@ -819,6 +899,8 @@
     sprite: Clothing/OuterClothing/Hardsuits/pirateeva.rsi
   - type: Item
     size: Huge
+    shape:
+    - 0,0,1,1
   - type: Clothing
     sprite: Clothing/OuterClothing/Hardsuits/pirateeva.rsi
   - type: ExplosionResistance
@@ -851,6 +933,8 @@
     sprite: Clothing/OuterClothing/Hardsuits/piratecaptain.rsi
   - type: Item
     size: Huge
+    shape:
+    - 0,0,3,3
   - type: Clothing
     sprite: Clothing/OuterClothing/Hardsuits/piratecaptain.rsi
   - type: PressureProtection
@@ -887,6 +971,10 @@
     sprite: Clothing/OuterClothing/Hardsuits/ERTSuits/ertleader.rsi
   - type: Clothing
     sprite: Clothing/OuterClothing/Hardsuits/ERTSuits/ertleader.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,5,5
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitERTLeader
 
@@ -931,6 +1019,10 @@
     sprite: Clothing/OuterClothing/Hardsuits/ERTSuits/ertmedical.rsi
   - type: Clothing
     sprite: Clothing/OuterClothing/Hardsuits/ERTSuits/ertmedical.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,5,5
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitERTMedical
   - type: ContainerContainer
@@ -968,6 +1060,10 @@
     sprite: Clothing/OuterClothing/Hardsuits/ERTSuits/ertsecurity.rsi
   - type: Clothing
     sprite: Clothing/OuterClothing/Hardsuits/ERTSuits/ertsecurity.rsi
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,5,5
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitERTSecurity
   - type: Tag
@@ -1070,6 +1166,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 1.0
     sprintModifier: 1.0
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,5,5
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitDeathsquad
@@ -1109,6 +1209,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 1.0
     sprintModifier: 1.0
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,5,5
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetCBURN
@@ -1140,6 +1244,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.9
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: Construction
     graph: ClownHardsuit
@@ -1190,6 +1298,10 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.9
+  - type: Item
+    size: Huge
+    shape:
+    - 0,0,3,3
   - type: HeldSpeedModifier
   - type: ToggleableClothing
     clothingPrototype: ClothingHeadHelmetHardsuitSanta
