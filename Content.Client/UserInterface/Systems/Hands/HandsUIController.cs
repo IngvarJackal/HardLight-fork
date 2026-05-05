@@ -1,5 +1,6 @@
 using Content.Client.Gameplay;
 using Content.Client.Hands.Systems;
+using Content.Client._NF.Interaction.Systems;
 using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Systems.Hands.Controls;
 using Content.Client.UserInterface.Systems.Hotbar.Widgets;
@@ -142,7 +143,10 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
             // Frontier start: Borg hand placeholders
             else if (_entities.TryGetComponent(hand.HeldEntity, out HandPlaceholderVisualsComponent? placeholder))
             {
-                handButton.SetEntity(placeholder.Dummy);
+                // HardLight #1236: dummy may not be spawned yet if the placeholder's
+                // state event hasn't fired by the time we load the hands; spawn it now.
+                handButton.SetEntity(_entities.System<HandPlaceholderVisualsSystem>()
+                    .EnsureDummy((hand.HeldEntity.Value, placeholder, null)));
                 handButton.Blocked = true;
             }
             // Frontier end
@@ -200,7 +204,13 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
         // Frontier start: Borg hand placeholders
         else if (_entities.TryGetComponent(entity, out HandPlaceholderVisualsComponent? placeholder))
         {
-            hand.SetEntity(placeholder.Dummy);
+            // HardLight #1236: depending on net-state ordering, the placeholder's
+            // OnAfterAutoHandleState may fire after the item lands in the player's
+            // hand. Spawn the dummy now if it isn't ready so the empty-hand icon
+            // shows on the first open of a borg module instead of staying blank
+            // until the module is closed and reopened.
+            hand.SetEntity(_entities.System<HandPlaceholderVisualsSystem>()
+                .EnsureDummy((entity, placeholder, null)));
             hand.Blocked = true;
         }
         // Frontier end

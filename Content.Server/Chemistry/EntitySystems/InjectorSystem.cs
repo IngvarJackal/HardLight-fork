@@ -3,6 +3,7 @@ using Content.Server.Body.Components;
 using Content.Server.Body.Systems;
 using Content.Server.Chat.Managers;
 using Content.Shared.Chat;
+using Robust.Server.Audio;
 using Content.Shared.Chemistry;
 using Content.Shared.Chemistry.Components;
 using Content.Shared.Chemistry.Components.SolutionManager;
@@ -32,6 +33,7 @@ public sealed class InjectorSystem : SharedInjectorSystem
     [Dependency] private readonly OpenableSystem _openable = default!;
     [Dependency] private readonly IChatManager _chat = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
+    [Dependency] private readonly AudioSystem _audio = default!;
 
     private const ChatChannel BlockInjectionDenyChannel = ChatChannel.Emotes;
 
@@ -297,6 +299,9 @@ public sealed class InjectorSystem : SharedInjectorSystem
             ("amount", removedSolution.Volume),
             ("target", Identity.Entity(target, EntityManager))), injector.Owner, user);
 
+        if (TryGetActiveMode(injector, out var bloodstreamMode) && bloodstreamMode.InjectSound != null)
+            _audio.PlayPvs(bloodstreamMode.InjectSound, injector.Owner);
+
         Dirty(injector);
         AfterInject(injector, target);
         return true;
@@ -342,6 +347,9 @@ public sealed class InjectorSystem : SharedInjectorSystem
         Popup.PopupEntity(Loc.GetString("injector-component-transfer-success-message",
             ("amount", removedSolution.Volume),
             ("target", Identity.Entity(targetEntity, EntityManager))), injector.Owner, user);
+
+        if (TryGetActiveMode(injector, out var injectMode) && injectMode.InjectSound != null)
+            _audio.PlayPvs(injectMode.InjectSound, injector.Owner);
 
         Dirty(injector);
         AfterInject(injector, targetEntity);
