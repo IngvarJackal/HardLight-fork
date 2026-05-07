@@ -1,0 +1,701 @@
+## Mana Environment — purely decorative entities with mana-incarnation descriptions.
+## All glowing objects keep their glow; no game functions (harvesting, pulsing, etc.).
+## Non-collidable props use PlaceFree placement and are anchored+disassemblable.
+## Collidable props are destructible and yield mana wood.
+
+# ---------- Non-collidable base (no Physics, off-grid anchored) ----------
+
+- type: entity
+  id: ManaEnvironmentDecoBase
+  abstract: true
+  placement:
+    mode: PlaceFree
+  components:
+  - type: Clickable
+  - type: Transform
+    anchored: true
+
+# ---------- On-grid floor overlay base (no Physics, grid-snapped, passable) ----------
+
+- type: entity
+  id: ManaEnvironmentFloorBase
+  abstract: true
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Clickable
+  - type: Transform
+    anchored: true
+
+# ---------- Dark grass (passable, LowFloors, on-grid) ----------
+
+- type: entity
+  parent: ManaEnvironmentFloorBase
+  id: ManaDarkGrassDeco
+  name: mana grass
+  description: A matting of grass-like forms drawn from mana in the image of shadow undergrowth. It is not alive — it is merely what mana imagines growth to be.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaDarkGrassDeco
+  - type: Sprite
+    sprite: Decals/Flora/flora_grass.rsi
+    color: "#007755"
+    layers:
+    - state: grassa1
+      map: ["random"]
+      shader: unshaded
+    drawdepth: LowFloors
+  - type: RandomSprite
+    available:
+    - random:
+        grassa1: ""
+        grassa2: ""
+        grassa3: ""
+        grassa4: ""
+        grassa5: ""
+        grassb1: ""
+        grassb2: ""
+        grassb3: ""
+
+# ---------- Dark stone / basalt (passable, LowFloors, on-grid) ----------
+
+- type: entity
+  parent: ManaEnvironmentFloorBase
+  id: ManaDarkStoneDeco
+  name: mana basalt
+  description: A patch of dark stone drawn from mana in the image of shadow basalt. It is not stone — it is merely what mana imagines stone to be. You could walk right over it.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaDarkStoneDeco
+  - type: Sprite
+    sprite: /Textures/Tiles/Planet/shadowbasalt.rsi
+    color: "#9955cc"
+    layers:
+    - state: basalt1
+      map: ["random"]
+      shader: unshaded
+    drawdepth: LowFloors
+  - type: RandomSprite
+    available:
+    - random:
+        basalt1: ""
+        basalt2: ""
+        basalt3: ""
+        basalt4: ""
+        basalt5: ""
+  - type: SyncSprite
+  - type: PointLight
+    radius: 1.2
+    energy: 0.6
+    color: "#9955cc"
+
+# ---------- Shadow stone — purple cracks (on-grid, buildable on walls too) ----------
+
+- type: entity
+  parent: ManaEnvironmentFloorBase
+  id: ManaShadowStoneDeco
+  name: mana cracks
+  description: Jagged purple fissures where mana bleeds through the veil. It is not damage — it is merely what mana imagines fracture to be.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaShadowStoneDeco
+  - type: Sprite
+    sprite: _HL/Effects/Projections/abyssal_crack.rsi
+    color: "#9933ff"
+    layers:
+    - state: abysscrack
+      shader: unshaded
+    drawdepth: LowFloors
+  - type: PointLight
+    radius: 1.5
+    energy: 0.8
+    color: "#9933ff"
+
+# ---------- Anomaly floral carpets (passable, LowFloors depth, off-grid) ----------
+
+- type: entity
+  parent: ManaEnvironmentDecoBase
+  id: ManaAnomalyPlantDeco
+  name: mana anomaly growth
+  description: A plant-like form drawn from mana in the image of anomaly vegetation. It is not alive — it is merely what mana imagines growth to be. There is no harvest here.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaAnomalyPlantDeco
+  - type: Sprite
+    noRot: true
+    sprite: /Textures/Objects/Specific/Hydroponics/anomaly_berry.rsi
+    layers:
+    - state: stage-2
+      shader: unshaded
+    drawdepth: LowFloors
+  - type: PointLight
+    radius: 2.0
+    energy: 1.2
+    color: "#cc55ff"
+
+- type: entity
+  parent: ManaEnvironmentDecoBase
+  id: ManaAnomalyHarvestDeco
+  name: mana anomaly cluster
+  description: A dense floor-spread of glowing mana-formed berry shapes. These are not edible — they are mana wearing the mask of anomaly produce. They will not wither.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaAnomalyHarvestDeco
+  - type: Sprite
+    noRot: true
+    sprite: /Textures/Objects/Specific/Hydroponics/anomaly_berry.rsi
+    layers:
+    - state: harvest
+      shader: unshaded
+    drawdepth: LowFloors
+  - type: PointLight
+    radius: 1.8
+    energy: 1.5
+    color: "#cc55ff"
+
+# ---------- Anomaly bulb — small off-grid prop at normal height ----------
+
+- type: entity
+  parent: ManaEnvironmentDecoBase
+  id: ManaAnomalyBulbDeco
+  name: mana anomaly bulb
+  description: A small glowing growth resembling an anomaly seedling. It is a mana-incarnation, not a real plant — it will never grow further than this.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaAnomalyBulbDeco
+  - type: Sprite
+    noRot: true
+    sprite: /Textures/Objects/Specific/Hydroponics/anomaly_berry.rsi
+    layers:
+    - state: stage-1
+      shader: unshaded
+  - type: PointLight
+    radius: 1.2
+    energy: 0.9
+    color: "#cc55ff"
+
+# ---------- Floral carpet (on-grid, passable, slowdown) ----------
+
+- type: entity
+  parent: ManaEnvironmentFloorBase
+  id: ManaFloralCarpetDeco
+  name: mana floral carpet
+  description: A dense floor carpet of mana-formed flora. It is not real vegetation — it is merely what mana imagines a garden to be. Something about it makes movement sluggish.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaFloralCarpetDeco
+  - type: Sprite
+    noRot: true
+    sprite: /Textures/Objects/Specific/Hydroponics/anomaly_berry.rsi
+    color: "#00cc88"
+    layers:
+    - state: harvest
+      map: ["random"]
+      shader: unshaded
+    drawdepth: LowFloors
+  - type: RandomSprite
+    available:
+    - random:
+        harvest: ""
+        stage-2: ""
+        stage-1: ""
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        layer:
+          - SlipLayer
+        mask:
+          - ItemMask
+        density: 1000
+        hard: false
+  - type: SpeedModifierContacts
+    walkSpeedModifier: 0.7
+    sprintSpeedModifier: 0.7
+  - type: StepTrigger
+    requiredTriggeredSpeed: 0
+    intersectRatio: 0.1
+    blacklist:
+      tags:
+        - Catwalk
+  - type: PointLight
+    radius: 2.0
+    energy: 1.2
+    color: "#00cc88"
+
+# ---------- Mana pool (on-grid, passable, slowdown + water sounds) ----------
+
+- type: entity
+  parent: ManaEnvironmentFloorBase
+  id: ManaPoolDeco
+  name: mana pool
+  description: A shimmering pool of liquid mana condensed from the aether. It is not water — it is merely what mana imagines stillness to be. Moving through it feels like wading through thought.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaPoolDeco
+  - type: SyncSprite
+  - type: Sprite
+    sprite: _HL/Tiles/Misc/manapool.rsi
+    color: "#00e8c8"
+    drawdepth: BelowFloor
+    layers:
+    - state: lava
+      shader: unshaded
+  - type: Icon
+    sprite: _HL/Tiles/Misc/manapool.rsi
+    state: full
+  - type: IconSmooth
+    key: manapool
+    base: lava
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        layer:
+          - SlipLayer
+        mask:
+          - ItemMask
+        density: 1000
+        hard: false
+  - type: SpeedModifierContacts
+    walkSpeedModifier: 0.6
+    sprintSpeedModifier: 0.6
+  - type: FootstepModifier
+    footstepSoundCollection:
+      collection: FootstepWater
+      params:
+        volume: 8
+  - type: StepTrigger
+    requiredTriggeredSpeed: 0
+    intersectRatio: 0.1
+    blacklist:
+      tags:
+        - Catwalk
+  - type: Tag
+    tags:
+      - HideContextMenu
+
+# ---------- Collidable base (anchored, grid-placed) ----------
+
+- type: entity
+  id: ManaEnvironmentCollidableBase
+  abstract: true
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Clickable
+  - type: Transform
+    anchored: true
+  - type: Physics
+    bodyType: Static
+
+# ---------- Shadow tree ----------
+
+- type: entity
+  parent: ManaEnvironmentCollidableBase
+  id: ManaShadowTreeDeco
+  name: mana tree
+  description: A tree conjured from pure mana in the likeness of the shadow woods. It is not alive — it is merely what mana imagines a tree to be. It will not drop wood.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaShadowTreeDeco
+  - type: Sprite
+    noRot: true
+    sprite: /Textures/Objects/Decoration/Flora/flora_shadow_trees.rsi
+    drawdepth: Overdoors
+    offset: 0,0.9
+    layers:
+    - state: tree01
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        tree01: ""
+        tree02: ""
+        tree03: ""
+        tree04: ""
+        tree05: ""
+        tree06: ""
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.35,-0.4,0.35,0.4"
+        density: 1000
+        layer:
+        - WallLayer
+  - type: PointLight
+    radius: 2.5
+    energy: 1.5
+    color: "#9933ff"
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Wood
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          MaterialManaWoodPlank1:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+# ---------- Boulder (on-grid, collidable, randomized) ----------
+
+- type: entity
+  parent: ManaEnvironmentCollidableBase
+  id: ManaBoulderDeco
+  name: mana boulder
+  description: A heavy stone-like mass conjured from mana. It is not rock — it is merely what mana imagines a boulder to be.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaBoulderDeco
+  - type: Sprite
+    noRot: true
+    sprite: Objects/Decoration/Flora/flora_rockssolid.rsi
+    color: "#9933ff"
+    layers:
+    - state: rocksolid01
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        rocksolid01: ""
+        rocksolid02: ""
+        rocksolid03: ""
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.4
+        density: 1000
+        layer:
+        - HalfWallLayer
+        - Opaque
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 300
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          MaterialManaWoodPlank1:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+# ---------- Crystals ----------
+
+- type: entity
+  parent: ManaEnvironmentCollidableBase
+  id: ManaCrystalTealDeco
+  name: mana crystal
+  description: A crystalline growth that is not truly crystal — it is mana imagining itself as crystal. The glow within it is genuine. If shattered, it returns to the mana that shaped it.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaCrystalTealDeco
+  - type: Sprite
+    sprite: /Textures/Structures/Decoration/crystal.rsi
+    state: crystal_grey
+    color: "#00e8c8"
+    noRot: true
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.45
+        density: 60
+        mask:
+        - MachineMask
+        layer:
+        - MidImpassable
+        - LowImpassable
+        - BulletImpassable
+        - Opaque
+  - type: PointLight
+    radius: 3
+    energy: 2.5
+    color: "#00e8c8"
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Glass
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 20
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: GlassBreak
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          MaterialManaWoodPlank1:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: ManaCrystalTealDeco
+  id: ManaCrystalPinkDeco
+  name: mana crystal
+  description: A rosy crystalline growth made of pure mana. It is not real crystal — it is merely the form mana has chosen to take. If shattered, it returns to the mana that shaped it.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaCrystalPinkDeco
+  - type: Sprite
+    sprite: /Textures/Structures/Decoration/crystal.rsi
+    state: crystal_grey
+    color: "#ff88dd"
+    noRot: true
+  - type: PointLight
+    radius: 3
+    energy: 2.5
+    color: "#ff88dd"
+
+# ---------- Chromite walls (impassable, damageable, 5 mana wood each) ----------
+
+- type: entity
+  id: ManaWallChromiteBase
+  abstract: true
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Clickable
+  - type: Transform
+    anchored: true
+    noRot: true
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+  - type: Airtight
+  - type: Occluder
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 800
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          MaterialManaWoodPlank1:
+            min: 2
+            max: 4
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: ManaWallChromiteBase
+  id: ManaWallChromiteDeco
+  name: mana chromite wall
+  description: A dense wall of chromite conjured from mana. It is not stone — it is merely what mana imagines an impenetrable barrier to be.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaWallChromiteDeco
+  - type: Sprite
+    sprite: Structures/Walls/rock.rsi
+    layers:
+    - state: rock_chromite
+    - map: [ "enum.EdgeLayer.South" ]
+      state: rock_chromite_south
+    - map: [ "enum.EdgeLayer.East" ]
+      state: rock_chromite_east
+    - map: [ "enum.EdgeLayer.North" ]
+      state: rock_chromite_north
+    - map: [ "enum.EdgeLayer.West" ]
+      state: rock_chromite_west
+  - type: Icon
+    sprite: Structures/Walls/rock.rsi
+    state: rock_chromite
+  - type: IconSmooth
+    key: walls
+    mode: NoSprite
+  - type: SmoothEdge
+
+- type: entity
+  parent: ManaWallChromiteDeco
+  id: ManaWallChromitePlasmaDeco
+  name: mana chromite plasma wall
+  description: A chromite wall infused with the memory of plasma. The phoron-tinted veins glow faintly — mana wearing the mask of volcanic mineral.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaWallChromitePlasmaDeco
+  - type: Sprite
+    sprite: Structures/Walls/rock.rsi
+    layers:
+    - state: rock_chromite
+    - map: [ "enum.EdgeLayer.South" ]
+      state: rock_chromite_south
+    - map: [ "enum.EdgeLayer.East" ]
+      state: rock_chromite_east
+    - map: [ "enum.EdgeLayer.North" ]
+      state: rock_chromite_north
+    - map: [ "enum.EdgeLayer.West" ]
+      state: rock_chromite_west
+    - state: rock_phoron
+      color: "#cc00ff"
+      shader: unshaded
+
+- type: entity
+  parent: ManaWallChromiteDeco
+  id: ManaWallChromiteArtifactDeco
+  name: mana chromite artifact wall
+  description: A chromite wall studded with formations resembling artifact fragments. They do not pulse — they are mana mimicking the alien geometry of xenoarcheological relics.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaWallChromiteArtifactDeco
+  - type: Sprite
+    sprite: Structures/Walls/rock.rsi
+    layers:
+    - state: rock_chromite
+    - map: [ "enum.EdgeLayer.South" ]
+      state: rock_chromite_south
+    - map: [ "enum.EdgeLayer.East" ]
+      state: rock_chromite_east
+    - map: [ "enum.EdgeLayer.North" ]
+      state: rock_chromite_north
+    - map: [ "enum.EdgeLayer.West" ]
+      state: rock_chromite_west
+    - state: rock_artifact_fragment
+      shader: unshaded
+
+- type: entity
+  parent: ManaWallChromiteBase
+  id: ManaWallChromiteBrickDeco
+  name: mana chromite brick wall
+  description: Dressed chromite blocks fitted together with arcane precision. It is not mortar that holds them — it is mana itself.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaWallChromiteBrickDeco
+  - type: Sprite
+    sprite: Structures/Walls/cobblebrick_chromite.rsi
+  - type: Icon
+    sprite: Structures/Walls/cobblebrick_chromite.rsi
+    state: full
+  - type: IconSmooth
+    key: cobblebricks
+    base: cobblebrick
+
+# ---------- Magic candles (off-grid, anchorable, 3 color variants) ----------
+
+- type: entity
+  parent: CandleInfinite
+  id: ManaMagicCandle1Deco
+  name: mana candle (small)
+  description: A small candle of condensed mana that never goes out. Its flame burns cold and cyan — it is not fire, it is merely what mana imagines a flame to be.
+  suffix: Mana
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaMagicCandle1Deco
+  - type: Anchorable
+  - type: Sprite
+    noRot: true
+    sprite: _HL/Objects/Factions/ManawaRite/mana_candles.rsi
+    layers:
+    - state: candle-small
+      color: "#00e8c8"
+    - state: fire-small
+      shader: unshaded
+  - type: PointLight
+    color: "#00e8c8"
+    radius: 2.0
+    power: 8
+
+- type: entity
+  parent: CandleInfinite
+  id: ManaMagicCandle2Deco
+  name: mana candle (large)
+  description: A tall candle of woven mana. Its violet flame casts long shadows that move without wind — mana wearing the form of candlelight.
+  suffix: Mana
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaMagicCandle2Deco
+  - type: Anchorable
+  - type: Sprite
+    noRot: true
+    sprite: _HL/Objects/Factions/ManawaRite/mana_candles.rsi
+    layers:
+    - state: candle-big
+      color: "#9933ff"
+    - state: fire-big
+      shader: unshaded
+  - type: PointLight
+    color: "#9933ff"
+    radius: 2.5
+    power: 10
+
+- type: entity
+  parent: CandleInfinite
+  id: ManaMagicCandle3Deco
+  name: mana candle (standing)
+  description: A standing candle of amber mana set in a spectral holder. Its warm light is more comforting than mystical — mana trying its best to feel ordinary.
+  suffix: Mana
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaMagicCandle3Deco
+  - type: Anchorable
+  - type: Sprite
+    noRot: true
+    sprite: _HL/Objects/Factions/ManawaRite/mana_candles.rsi
+    layers:
+    - state: stand-big
+      color: "#e39c40"
+    - state: fire-big
+      shader: unshaded
+  - type: PointLight
+    color: "#e39c40"
+    radius: 2.5
+    power: 10

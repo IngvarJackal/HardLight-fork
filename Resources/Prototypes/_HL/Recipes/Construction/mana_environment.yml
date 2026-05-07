@@ -1,0 +1,214 @@
+## Mana Environment — decorative props crafted from mana wood.
+
+# --- Manual mana wood conversion (50 wood + 1 bluespace crystal = 50 mana wood) ---
+
+- type: construction
+  id: ManaWoodConversion
+  graph: ManaWoodCraftingGraph
+  startNode: start
+  targetNode: result
+  category: construction-category-decorations
+  objectType: Item
+  placementMode: PlaceFree
+
+
+# --- On-grid floor overlays (passable) ---
+
+- type: construction
+  id: ManaDarkGrassDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaDarkGrassDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: true
+
+- type: construction
+  id: ManaDarkStoneDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaDarkStoneDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: true
+
+- type: construction
+  id: ManaShadowStoneDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaShadowStoneDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: true
+
+# --- Anomaly floral carpets (off-grid, passable, floor-level) ---
+
+- type: construction
+  id: ManaAnomalyPlantDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaAnomalyPlantDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: PlaceFree
+  canBuildInImpassable: true
+
+- type: construction
+  id: ManaAnomalyHarvestDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaAnomalyHarvestDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: PlaceFree
+  canBuildInImpassable: true
+
+# --- Anomaly bulb (off-grid, passable, small prop) ---
+
+- type: construction
+  id: ManaAnomalyBulbDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaAnomalyBulbDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: PlaceFree
+  canBuildInImpassable: true
+
+# --- On-grid floor with effects ---
+
+- type: construction
+  id: ManaFloralCarpetDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaFloralCarpetDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: true
+
+- type: construction
+  id: ManaPoolDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaPoolDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: true
+
+# --- Collidable props (grid-centered) ---
+
+- type: construction
+  id: ManaShadowTreeDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaShadowTreeDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+
+- type: construction
+  id: ManaBoulderDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaBoulderDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+
+- type: construction
+  id: ManaCrystalTealDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaCrystalTealDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+
+- type: construction
+  id: ManaCrystalPinkDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaCrystalPinkDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+
+# --- Chromite walls (5 mana wood, impassable) ---
+
+- type: construction
+  id: ManaWallChromiteDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaWallChromiteDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+
+- type: construction
+  id: ManaWallChromitePlasmaDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaWallChromitePlasmaDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+
+- type: construction
+  id: ManaWallChromiteArtifactDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaWallChromiteArtifactDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+
+- type: construction
+  id: ManaWallChromiteBrickDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaWallChromiteBrickDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+
+# --- Magic candles (off-grid, anchorable items) ---
+
+- type: construction
+  id: ManaMagicCandle1Deco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaMagicCandle1Deco
+  category: construction-category-decorations
+  objectType: Item
+  placementMode: PlaceFree
+
+- type: construction
+  id: ManaMagicCandle2Deco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaMagicCandle2Deco
+  category: construction-category-decorations
+  objectType: Item
+  placementMode: PlaceFree
+
+- type: construction
+  id: ManaMagicCandle3Deco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaMagicCandle3Deco
+  category: construction-category-decorations
+  objectType: Item
+  placementMode: PlaceFree

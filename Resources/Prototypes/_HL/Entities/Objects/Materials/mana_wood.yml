@@ -1,0 +1,53 @@
+- type: entity
+  parent: MaterialBase
+  id: MaterialManaWoodPlank
+  name: mana wood
+  description: A plank of wood condensed from raw mana. It is not real wood — it is merely wood as mana perceives it to be.
+  suffix: Full
+  components:
+  - type: Sprite
+    sprite: _HL/Objects/Materials/mana_wood.rsi
+    color: "#00e8c8"
+    state: wood
+    layers:
+    - state: wood
+      map: ["base"]
+  - type: Appearance
+  - type: Material
+  - type: PhysicalComposition
+    materialComposition:
+      ManaWoodPlank: 100
+  - type: Construction
+    graph: ManaWoodCraftingGraph
+    node: result
+  - type: Stack
+    count: 50
+    stackType: ManaWoodPlank
+    baseLayer: base
+    layerStates:
+    - wood
+    - wood_2
+    - wood_3
+  - type: Item
+    sprite: _HL/Objects/Materials/mana_wood.rsi
+    heldPrefix: wood
+  - type: Tag
+    tags:
+    - RawMaterial
+    - DroneUsable
+
+- type: entity
+  parent: MaterialManaWoodPlank
+  id: MaterialManaWoodPlank10
+  suffix: 10
+  components:
+  - type: Stack
+    count: 10
+
+- type: entity
+  parent: MaterialManaWoodPlank
+  id: MaterialManaWoodPlank1
+  suffix: Single
+  components:
+  - type: Stack
+    count: 1

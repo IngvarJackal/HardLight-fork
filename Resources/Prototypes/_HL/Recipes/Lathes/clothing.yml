@@ -1,31 +1,39 @@
-## Manawa Rite
+## Manawa Rite — all garments cost only mana wood (transforms magically)
 
 - type: latheRecipe
-  parent: BaseHatRecipe
   id: ClothingHeadFlowerManawaRite
   result: ClothingHeadFlowerManawaRite
+  completetime: 2
+  materials:
+    ManaWoodPlank: 100
 
 - type: latheRecipe
   id: ClothingNeckPinManawaRite
   result: ClothingNeckPinManawaRite
   completetime: 2
   materials:
-    Steel: 1
+    ManaWoodPlank: 100
 
 - type: latheRecipe
-  parent: BaseJumpsuitRecipe
   id: ClothingUniformDressManawaRite
   result: ClothingUniformDressManawaRite
+  completetime: 4
+  materials:
+    ManaWoodPlank: 300
 
 - type: latheRecipe
-  parent: BaseCoatRecipe
   id: ClothingOuterRobeManawaRite
   result: ClothingOuterRobeManawaRite
+  completetime: 6
+  materials:
+    ManaWoodPlank: 500
 
 - type: latheRecipe
-  parent: BaseCoatRecipe
   id: ClothingOuterHoodieManawaRite
   result: ClothingOuterHoodieManawaRite
+  completetime: 6
+  materials:
+    ManaWoodPlank: 500
 
 # Base prototypes
 

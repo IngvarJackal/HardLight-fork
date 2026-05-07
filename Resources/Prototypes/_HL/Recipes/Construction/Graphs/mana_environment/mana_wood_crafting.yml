@@ -1,0 +1,25 @@
+## Manual mana wood crafting: 50 wood planks + 1 bluespace crystal = 50 mana wood
+
+- type: constructionGraph
+  id: ManaWoodCraftingGraph
+  start: start
+  graph:
+
+    - node: start
+      actions:
+        - !type:DestroyEntity {}
+      edges:
+        - to: result
+          steps:
+            - material: WoodPlank
+              amount: 50
+              doAfter: 5
+            - tag: BluespaceCrystal
+              name: construction-step-insert-bluespace
+              icon:
+                sprite: Nyanotrasen/Objects/Materials/materials.rsi
+                state: bluespace
+              doAfter: 2
+
+    - node: result
+      entity: MaterialManaWoodPlank

@@ -1,4 +1,11 @@
 - type: stack
+  id: ManaWoodPlank
+  name: stack-mana-wood
+  icon: { sprite: /Textures/_HL/Objects/Materials/mana_wood.rsi, state: wood }
+  spawn: MaterialManaWoodPlank
+  maxCount: 50
+
+- type: stack
   id: Resin
   name: stack-Resin
   icon: { sprite: /Textures/_HL/Objects/Materials/resin.rsi, state: icon }
