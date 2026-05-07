@@ -72,7 +72,7 @@
   - type: SyncSprite
   - type: PointLight
     radius: 1.2
-    energy: 0.6
+    energy: 0.1
     color: "#9955cc"
 
 # ---------- Anomaly floral carpets (passable, LowFloors depth, off-grid) ----------
@@ -94,7 +94,7 @@
     drawdepth: LowFloors
   - type: PointLight
     radius: 2.5
-    energy: 2.0
+    energy: 0.1
     color: "#44ccff"
 
 - type: entity
@@ -114,7 +114,7 @@
     drawdepth: LowFloors
   - type: PointLight
     radius: 2.5
-    energy: 2.0
+    energy: 0.1
     color: "#44ccff"
 
 # ---------- Anomaly bulb — small off-grid prop at normal height ----------
@@ -135,7 +135,7 @@
     - state: stage-1
   - type: PointLight
     radius: 1.8
-    energy: 1.5
+    energy: 0.1
     color: "#44ccff"
 
 # ---------- Floral carpet (on-grid, passable, slowdown) ----------
@@ -246,7 +246,7 @@
       - HideContextMenu
   - type: PointLight
     radius: 1.0
-    energy: 0.5
+    energy: 0.1
     color: "#00e8c8"
 
 # ---------- Collidable base (anchored, grid-placed) ----------
@@ -276,7 +276,7 @@
     node: ManaShadowTreeDeco
   - type: Sprite
     noRot: true
-    sprite: /Textures/Objects/Decoration/Flora/flora_shadow_trees.rsi
+    sprite: _HL/Objects/Decoration/Flora/flora_shadow_trees.rsi
     drawdepth: Overdoors
     offset: 0,0.9
     layers:
@@ -302,7 +302,7 @@
         - WallLayer
   - type: PointLight
     radius: 2.5
-    energy: 1.5
+    energy: 0.1
     color: "#9933ff"
   - type: Damageable
     damageContainer: StructuralInorganic
@@ -403,7 +403,7 @@
         - Opaque
   - type: PointLight
     radius: 3
-    energy: 2.5
+    energy: 0.1
     color: "#00e8c8"
   - type: Damageable
     damageContainer: StructuralInorganic
@@ -441,7 +441,7 @@
     noRot: true
   - type: PointLight
     radius: 3
-    energy: 2.5
+    energy: 0.1
     color: "#ff88dd"
 
 # ---------- Chromite walls (impassable, damageable, 5 mana wood each) ----------
@@ -611,9 +611,23 @@
     - random:
         candle-small: ManaCandlePalette
   - type: PointLight
-    color: "#00e8c8"
-    radius: 1.2
-    power: 3
+    color: "#b38369"
+    radius: 2
+    power: 0.1
+
+- type: entity
+  parent: ManaMagicCandle1Deco
+  id: ManaMagicCandle1BDeco
+  name: mana candle (small)
+  suffix: Mana, Purple
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaMagicCandle1BDeco
+  - type: PointLight
+    color: "#b295b8"
+    radius: 2
+    power: 0.1
 
 - type: entity
   parent: CandleInfinite
@@ -641,9 +655,23 @@
     - random:
         candle-big: ManaCandlePalette
   - type: PointLight
-    color: "#9933ff"
-    radius: 1.5
-    power: 4
+    color: "#debe8e"
+    radius: 3
+    power: 0.1
+
+- type: entity
+  parent: ManaMagicCandle2Deco
+  id: ManaMagicCandle2BDeco
+  name: mana candle (large)
+  suffix: Mana, Purple
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaMagicCandle2BDeco
+  - type: PointLight
+    color: "#dcd3f2"
+    radius: 3
+    power: 0.1
 
 
 

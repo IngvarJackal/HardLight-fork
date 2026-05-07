@@ -15,7 +15,7 @@
     state: icon
   - type: PointLight
     radius: 1.5
-    energy: 0.5
+    energy: 0.1
     color: "#00e8c8"
   - type: ApcPowerReceiver
     powerLoad: 0

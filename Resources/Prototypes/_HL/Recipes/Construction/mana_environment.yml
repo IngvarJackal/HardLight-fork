@@ -187,10 +187,30 @@
   canBuildInImpassable: true
 
 - type: construction
+  id: ManaMagicCandle1BDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaMagicCandle1BDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: PlaceFree
+  canBuildInImpassable: true
+
+- type: construction
   id: ManaMagicCandle2Deco
   graph: ManaEnvironmentGraph
   startNode: start
   targetNode: ManaMagicCandle2Deco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: PlaceFree
+  canBuildInImpassable: true
+
+- type: construction
+  id: ManaMagicCandle2BDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaMagicCandle2BDeco
   category: construction-category-decorations
   objectType: Structure
   placementMode: PlaceFree

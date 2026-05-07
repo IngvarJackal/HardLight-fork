@@ -129,7 +129,17 @@
             - material: ManaWoodPlank
               amount: 1
               doAfter: 1
+        - to: ManaMagicCandle1BDeco
+          steps:
+            - material: ManaWoodPlank
+              amount: 1
+              doAfter: 1
         - to: ManaMagicCandle2Deco
+          steps:
+            - material: ManaWoodPlank
+              amount: 1
+              doAfter: 1
+        - to: ManaMagicCandle2BDeco
           steps:
             - material: ManaWoodPlank
               amount: 1
@@ -329,8 +339,32 @@
             - tool: Prying
               doAfter: 1
 
+    - node: ManaMagicCandle1BDeco
+      entity: ManaMagicCandle1BDeco
+      edges:
+        - to: start
+          completed:
+            - !type:SpawnPrototype
+              prototype: MaterialManaWoodPlank1
+              amount: 1
+          steps:
+            - tool: Prying
+              doAfter: 1
+
     - node: ManaMagicCandle2Deco
       entity: ManaMagicCandle2Deco
+      edges:
+        - to: start
+          completed:
+            - !type:SpawnPrototype
+              prototype: MaterialManaWoodPlank1
+              amount: 1
+          steps:
+            - tool: Prying
+              doAfter: 1
+
+    - node: ManaMagicCandle2BDeco
+      entity: ManaMagicCandle2BDeco
       edges:
         - to: start
           completed:
