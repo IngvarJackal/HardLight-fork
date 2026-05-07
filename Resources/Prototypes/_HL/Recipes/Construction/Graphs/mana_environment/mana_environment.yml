@@ -26,15 +26,6 @@
               amount: 1
               doAfter: 1
 
-        # -- Floor tiles (on-grid) --
-        - to: ManaDarkGrassFloorDeco
-          completed:
-            - !type:SnapToGrid {}
-          steps:
-            - material: ManaWoodPlank
-              amount: 1
-              doAfter: 1
-
         # -- Anomaly floral carpets (off-grid, floor-level) --
         - to: ManaAnomalyPlantDeco
           steps:
@@ -351,16 +342,6 @@
               doAfter: 1
 
 
-    - node: ManaDarkGrassFloorDeco
-      entity: ManaDarkGrassFloorDeco
-      edges:
-        - to: start
-          completed:
-            - !type:SpawnPrototype
-              prototype: MaterialManaWoodPlank1
-              amount: 1
-          steps:
-            - tool: Cutting
-              doAfter: 1
+
 
 

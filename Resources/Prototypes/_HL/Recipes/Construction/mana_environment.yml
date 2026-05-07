@@ -174,7 +174,7 @@
   placementMode: SnapgridCenter
   canBuildInImpassable: false
 
-# --- Magic candles (off-grid, anchorable items) ---
+# --- Magic candles (off-grid, anchorable) ---
 
 - type: construction
   id: ManaMagicCandle1Deco
@@ -182,8 +182,9 @@
   startNode: start
   targetNode: ManaMagicCandle1Deco
   category: construction-category-decorations
-  objectType: Item
+  objectType: Structure
   placementMode: PlaceFree
+  canBuildInImpassable: true
 
 - type: construction
   id: ManaMagicCandle2Deco
@@ -191,20 +192,10 @@
   startNode: start
   targetNode: ManaMagicCandle2Deco
   category: construction-category-decorations
-  objectType: Item
-  placementMode: PlaceFree
-
-
-# --- Floor tiles (on-grid, 1 mana wood each) ---
-
-- type: construction
-  id: ManaDarkGrassFloorDeco
-  graph: ManaEnvironmentGraph
-  startNode: start
-  targetNode: ManaDarkGrassFloorDeco
-  category: construction-category-decorations
   objectType: Structure
-  placementMode: SnapgridCenter
+  placementMode: PlaceFree
   canBuildInImpassable: true
+
+
 
 

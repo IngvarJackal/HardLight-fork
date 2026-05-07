@@ -2,7 +2,7 @@
   parent: BaseItem
   id: ManaCore
   name: mana core
-  description: A mysterious crystallized essence imbued with natural mana. It hums faintly with residual life energy.
+  description: A mysterious resin imbued with natural mana.
   components:
   - type: Sprite
     sprite: _HL/Structures/Specific/Anomalies/Cores/mana_core.rsi

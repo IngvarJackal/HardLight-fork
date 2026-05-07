@@ -1,19 +1,4 @@
-## Mana Environment — purely decorative entities with mana-incarnation descriptions.
-## All glowing objects keep their glow; no game functions (harvesting, pulsing, etc.).
-## Non-collidable props use PlaceFree placement and are anchored+disassemblable.
-## Collidable props are destructible and yield mana wood.
-
-# ---------- Non-collidable base (no Physics, off-grid anchored) ----------
-
-- type: entity
-  id: ManaEnvironmentDecoBase
-  abstract: true
-  placement:
-    mode: PlaceFree
-  components:
-  - type: Clickable
-  - type: Transform
-    anchored: true
+## Mana Environment — purely decorative entities
 
 # ---------- On-grid floor overlay base (no Physics, grid-snapped, passable) ----------
 
@@ -33,7 +18,7 @@
   parent: ManaEnvironmentFloorBase
   id: ManaDarkGrassDeco
   name: mana grass
-  description: A matting of grass-like forms drawn from mana in the image of shadow undergrowth. It is not alive — it is merely what mana imagines growth to be.
+  description: A matting of grass-like vines thrumming with mana
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
@@ -44,7 +29,6 @@
     layers:
     - state: grassa1
       map: ["random"]
-      shader: unshaded
     drawdepth: LowFloors
   - type: RandomSprite
     available:
@@ -64,7 +48,7 @@
   parent: ManaEnvironmentFloorBase
   id: ManaDarkStoneDeco
   name: mana cracks
-  description: Jagged patches of dark stone drawn from mana in the image of shadow basalt. It is not stone — it is merely what mana imagines fracture to be. You could walk right over it, and they will draw across anything beneath.
+  description: The twisted matter of reality, seeping with raw unbridled mana.
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
@@ -97,7 +81,7 @@
   parent: ManaEnvironmentFloorBase
   id: ManaAnomalyPlantDeco
   name: mana anomaly growth
-  description: A plant-like form drawn from mana in the image of anomaly vegetation. It is not alive — it is merely what mana imagines growth to be. There is no harvest here.
+  description: A plant-like mana-form in the image of anomaly vegetation.
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
@@ -117,7 +101,7 @@
   parent: ManaEnvironmentFloorBase
   id: ManaAnomalyHarvestDeco
   name: mana anomaly cluster
-  description: A dense floor-spread of glowing mana-formed berry shapes. These are not edible — they are mana wearing the mask of anomaly produce. They will not wither.
+  description: A dense floor-spread of glowing mana-formed berries.
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
@@ -139,7 +123,7 @@
   parent: ManaEnvironmentFloorBase
   id: ManaAnomalyBulbDeco
   name: mana anomaly bulb
-  description: A small glowing growth resembling an anomaly seedling. It is a mana-incarnation, not a real plant — it will never grow further than this.
+  description: A small glowing growth resembling an mana tree seedling.
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
@@ -160,7 +144,7 @@
   parent: ManaEnvironmentFloorBase
   id: ManaFloralCarpetDeco
   name: mana floral carpet
-  description: A dense floor carpet of mana-formed flora. It is not real vegetation — it is merely what mana imagines a garden to be. Something about it makes movement sluggish.
+  description: A dense floor carpet of mana-formed grass. It tangles in your legs and makes movement sluggish.
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
@@ -172,7 +156,6 @@
     layers:
     - state: kudzu_11
       map: ["random"]
-      shader: unshaded
     drawdepth: LowFloors
   - type: RandomSprite
     available:
@@ -212,7 +195,7 @@
   parent: ManaEnvironmentFloorBase
   id: ManaPoolDeco
   name: mana pool
-  description: A shimmering pool of liquid mana condensed from the aether. It is not water — it is merely what mana imagines stillness to be. Moving through it feels like wading through thought.
+  description: A shimmering pool of liquid mana. Moving through it feels like wading through ineffable.
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
@@ -220,7 +203,6 @@
   - type: SyncSprite
   - type: Sprite
     sprite: _HL/Tiles/Misc/manapool.rsi
-    color: "#00e8c8"
     drawdepth: BelowFloor
     layers:
     - state: lava
@@ -287,7 +269,7 @@
   parent: ManaEnvironmentCollidableBase
   id: ManaShadowTreeDeco
   name: mana tree
-  description: A tree conjured from pure mana in the likeness of the shadow woods. It is not alive — it is merely what mana imagines a tree to be. It will not drop wood.
+  description: A tree conjured from pure mana in the likeness of the shadow woods.
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
@@ -345,7 +327,7 @@
   parent: ManaEnvironmentCollidableBase
   id: ManaBoulderDeco
   name: mana boulder
-  description: A heavy stone-like mass conjured from mana. It is not rock — it is merely what mana imagines a boulder to be.
+  description: A heavy stone-like mass conjured by mana.
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
@@ -395,7 +377,7 @@
   parent: ManaEnvironmentCollidableBase
   id: ManaCrystalTealDeco
   name: mana crystal
-  description: A crystalline growth that is not truly crystal — it is mana imagining itself as crystal. The glow within it is genuine. If shattered, it returns to the mana that shaped it.
+  description: A crystalline mana growth.
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
@@ -447,7 +429,7 @@
   parent: ManaCrystalTealDeco
   id: ManaCrystalPinkDeco
   name: mana crystal
-  description: A rosy crystalline growth made of pure mana. It is not real crystal — it is merely the form mana has chosen to take. If shattered, it returns to the mana that shaped it.
+  description: A crystalline mana growth.
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
@@ -495,7 +477,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 150
+        damage: 300
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
@@ -509,7 +491,7 @@
   parent: ManaWallChromiteBase
   id: ManaWallChromiteDeco
   name: mana chromite wall
-  description: A dense wall of chromite conjured from mana. It is not stone — it is merely what mana imagines an impenetrable barrier to be.
+  description: A dense wall of chromite impregnated with mana.
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
@@ -538,7 +520,7 @@
   parent: ManaWallChromiteDeco
   id: ManaWallChromitePlasmaDeco
   name: mana chromite plasma wall
-  description: A chromite wall infused with the memory of plasma. The phoron-tinted veins glow faintly — mana wearing the mask of volcanic mineral.
+  description: A dense wall of chromite impregnated with mana and encrusted with plasma shards.
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
@@ -563,7 +545,7 @@
   parent: ManaWallChromiteDeco
   id: ManaWallChromiteArtifactDeco
   name: mana chromite artifact wall
-  description: A chromite wall studded with formations resembling artifact fragments. They do not pulse — they are mana mimicking the alien geometry of xenoarcheological relics.
+  description: A dense wall of chromite impregnated with mana and encrusted with artifact fragments.
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
@@ -587,7 +569,7 @@
   parent: ManaWallChromiteBase
   id: ManaWallChromiteBrickDeco
   name: mana chromite brick wall
-  description: Dressed chromite blocks fitted together with arcane precision. It is not mortar that holds them — it is mana itself.
+  description: Dressed chromite blocks fitted together with mana.
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
@@ -607,9 +589,10 @@
   parent: CandleInfinite
   id: ManaMagicCandle1Deco
   name: mana candle (small)
-  description: A small candle of condensed mana that never goes out. Its flame burns cold and cyan — it is not fire, it is merely what mana imagines a flame to be.
+  description: A small candle that never goes out, burning with the mana flame.
   suffix: Mana
   components:
+  - type: HLPersistOnShipSave
   - type: Construction
     graph: ManaEnvironmentGraph
     node: ManaMagicCandle1Deco
@@ -626,9 +609,7 @@
   - type: RandomSprite
     available:
     - random:
-        candle-small: "#00e8c8"
-    - random:
-        candle-small: "#00cc66"
+        candle-small: ManaCandlePalette
   - type: PointLight
     color: "#00e8c8"
     radius: 1.2
@@ -638,9 +619,10 @@
   parent: CandleInfinite
   id: ManaMagicCandle2Deco
   name: mana candle (large)
-  description: A tall candle of woven mana. Its violet flame casts long shadows that move without wind — mana wearing the form of candlelight.
+  description: A large candle that never goes out, burning with the mana flame.
   suffix: Mana
   components:
+  - type: HLPersistOnShipSave
   - type: Construction
     graph: ManaEnvironmentGraph
     node: ManaMagicCandle2Deco
@@ -657,9 +639,7 @@
   - type: RandomSprite
     available:
     - random:
-        candle-big: "#9933ff"
-    - random:
-        candle-big: "#00cc66"
+        candle-big: ManaCandlePalette
   - type: PointLight
     color: "#9933ff"
     radius: 1.5
@@ -669,33 +649,6 @@
 
 # ---------- Floor tiles (on-grid, LowFloors, 1 mana wood each) ----------
 
-- type: entity
-  parent: ManaEnvironmentFloorBase
-  id: ManaDarkGrassFloorDeco
-  name: dark grass floor
-  description: A tile of shadow undergrowth drawn from mana. It is not soil — it is merely what mana imagines a living floor to be.
-  components:
-  - type: Construction
-    graph: ManaEnvironmentGraph
-    node: ManaDarkGrassFloorDeco
-  - type: Sprite
-    sprite: Decals/Flora/flora_grass.rsi
-    color: "#009955"
-    layers:
-    - state: grassa1
-      map: ["random"]
-      shader: unshaded
-    drawdepth: LowFloors
-  - type: RandomSprite
-    available:
-    - random:
-        grassa1: ""
-        grassa2: ""
-        grassa3: ""
-        grassa4: ""
-        grassa5: ""
-        grassb1: ""
-        grassb2: ""
-        grassb3: ""
+
 
 

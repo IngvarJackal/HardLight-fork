@@ -2,7 +2,7 @@
   id: AltarManawaRite
   parent: BaseLathe
   name: Manawa Rite altar
-  description: A sacred altar of the Manawa Rite, used to fashion ceremonial garments.
+  description: A sacred altar of the Manawa Rite.
   components:
   - type: Sprite
     sprite: _HL/Structures/Furniture/Altars/manawa_rite_altar.rsi

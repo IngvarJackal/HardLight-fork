@@ -2,7 +2,7 @@
   parent: MaterialBase
   id: MaterialManaWoodPlank
   name: mana wood
-  description: A plank of wood condensed from raw mana. It is not real wood — it is merely wood as mana perceives it to be.
+  description: A plank of mana-shaped wood
   suffix: Full
   components:
   - type: Sprite

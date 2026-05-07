@@ -60,7 +60,7 @@
   parent: PosterBase
   id: PosterManawaRite
   name: Manawa Rite poster
-  description: A Manawa Rite poster saying 'The deeper mysteries do not yield their truths to the cautious'.
+  description: A Manawa Rite poster stating 'The deeper mysteries do not yield their truths to the cautious'.
   components:
   - type: Sprite
     sprite: _HL/Structures/Wallmounts/Posters/ManawaRite.rsi

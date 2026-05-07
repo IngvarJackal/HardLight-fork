@@ -1,0 +1,10 @@
+- type: palette
+  id: ManaCandlePalette
+  name: Mana Candle
+  colors:
+    teal: "#00a0cc"
+    green: "#00cc85"
+    rose: "#bd377e"
+    violet: "#9f4cba"
+    dark: "#222126"
+    white: "#f9faf5"
