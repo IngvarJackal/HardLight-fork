@@ -15,7 +15,7 @@ public static class ShipSaveYamlSanitizer
     /// can skip a redundant sanitizer pass for already-clean saves. Bump the version suffix
     /// when the sanitizer rules change in a way that should re-scrub previously-saved ships.
     /// </summary>
-    public const string SanitizedMarkerComment = "# hl-sanitized: 1";
+    public const string SanitizedMarkerComment = "# hl-sanitized: 3";
 
     // Implants that should not persist when found inside implanters during ship save.
     private static readonly HashSet<string> BlockedContainedImplantPrototypes = new(StringComparer.Ordinal)
@@ -41,7 +41,6 @@ public static class ShipSaveYamlSanitizer
         "ShuttleDeed",
         "IFF",
         "LinkedLifecycleGridParent",
-        "AccessReader",
         "DeviceNetwork",
         "DeviceNetworkComponent",
         "UserInterface",
@@ -139,6 +138,7 @@ public static class ShipSaveYamlSanitizer
         "PortalBlue",
         "PortalRed",
         "ReactorGasPipe",
+        "TurbineGasPipe",
         "ShipShield",
         // NullSpace items
         "ClothingEyesGlassesNullSpace",
@@ -262,9 +262,6 @@ public static class ShipSaveYamlSanitizer
                             break;
                         }
 
-                        if (!allowFillComponents && proto.Components.ContainsKey("Door"))
-                            allowFillComponents = true;
-
                         if (!allowFillComponents)
                         {
                             foreach (var name in ForcedMissingComponents)
@@ -366,20 +363,14 @@ public static class ShipSaveYamlSanitizer
                     }
                 }
 
-                var hasDoorComponent = false;
+                var hasDockingComponent = false;
                 foreach (var c in compsNotNull)
                 {
-                    if (c is MappingDataNode cm && cm.TryGet("type", out ValueDataNode? t) && t != null && t.Value == "Door")
-                    {
-                        hasDoorComponent = true;
-                        break;
-                    }
-                }
+                    if (c is not MappingDataNode cm || !cm.TryGet("type", out ValueDataNode? t) || t == null)
+                        continue;
 
-                if (hasDoorComponent)
-                {
-                    allowFillComponents = true;
-                    protoMissing = null;
+                    if (t.Value == "Docking")
+                        hasDockingComponent = true;
                 }
 
                 // Build sanitized component list for this entity.
@@ -417,6 +408,24 @@ public static class ShipSaveYamlSanitizer
 
                     if (typeName == "Transform" && hasMapGrid)
                         compMap.Remove("rot");
+
+                    if (typeName == "AccessReader")
+                    {
+                        // Keep the configured access behavior, but do not persist historical access logs.
+                        compMap.Remove("accessLog");
+                        compMap.Remove("AccessLog");
+                        compMap.Remove("loggingDisabled");
+                        compMap.Remove("LoggingDisabled");
+                    }
+
+                    if (hasDockingComponent)
+                    {
+                        if (typeName == "Door")
+                            ResetDockDoorState(compMap);
+
+                        if (typeName == "DoorBolt")
+                            ResetDockDoorBoltState(compMap);
+                    }
 
                     if (typeName == "Appearance" && paintStylePrototype != null)
                         ApplyPaintStyleToAppearance(compMap, paintStylePrototype);
@@ -869,5 +878,22 @@ public static class ShipSaveYamlSanitizer
         }
 
         appearanceDataInit["enum.PaintableVisuals.Prototype"] = new ValueDataNode(stylePrototype);
+    }
+
+    /// <summary>
+    /// Ship saves should never preserve the "held open because currently docked" runtime state.
+    /// Resetting these fields makes docking airlocks load from their normal prototype defaults.
+    /// </summary>
+    private static void ResetDockDoorState(MappingDataNode doorComp)
+    {
+        doorComp.Remove("state");
+        doorComp.Remove("partial");
+        doorComp.Remove("secondsUntilStateChange");
+        doorComp.Remove("changeAirtight");
+    }
+
+    private static void ResetDockDoorBoltState(MappingDataNode boltComp)
+    {
+        boltComp.Remove("boltsDown");
     }
 }

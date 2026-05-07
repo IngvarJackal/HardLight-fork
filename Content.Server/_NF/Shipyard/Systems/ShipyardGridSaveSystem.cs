@@ -20,6 +20,7 @@ using Content.Shared.Chemistry.Components.SolutionManager;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.DeviceLinking;
 using Content.Shared.DeviceLinking.Components;
+using Content.Shared.Doors.Components; // HardLight
 using Content.Shared.Implants.Components; // HardLight
 using Content.Shared.Light.Components; // HardLight
 using Content.Shared.Mind.Components; // HardLight
@@ -74,6 +75,11 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         "FrontierUplinkCoin",
         "Telecrystal",
         "Doubloon",
+    };
+
+    private static readonly HashSet<string> NonPersistentShipSaveEntityPrototypes = new(StringComparer.Ordinal)
+    {
+        "PillAmbuzolPlus",
     };
 
     [Dependency] private readonly IEntityManager _entityManager = default!;
@@ -500,6 +506,8 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                 var hidden = stashComp.ItemContainer?.ContainedEntity;
                 if (hidden == null)
                     continue;
+                if (IsNonPersistentShipSavePrototype(hidden.Value))
+                    continue;
                 // If already a stash, skip.
                 if (_secretStashQuery.HasComp(hidden.Value))
                     continue;
@@ -597,6 +605,8 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                 var hidden = stashComp.ItemContainer?.ContainedEntity;
                 if (hidden != null && _entityManager.EntityExists(hidden.Value))
                 {
+                    if (IsNonPersistentShipSavePrototype(hidden.Value))
+                        continue;
                     // Mark the hidden item as processed so fallback scans won't queue it for deletion.
                     processed.Add(hidden.Value);
                     preservedStashItemCount++;
@@ -723,6 +733,9 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
         // HardLight: Remove uplink currencies
         if (IsNonPersistentShipSaveCurrency(uid))
             return true;
+        // HardLight: Remove specific item prototypes that should not persist in stashes/apartments.
+        if (IsNonPersistentShipSavePrototype(uid))
+            return true;
         // HardLight: Remove used disposable implanters
         if (IsSpentDisposableImplanter(uid))
             return true;
@@ -787,6 +800,14 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
             return false;
 
         return implanter.ImplanterSlot.ContainerSlot?.ContainedEntity is not { Valid: true };
+    }
+
+    private bool IsNonPersistentShipSavePrototype(EntityUid uid)
+    {
+        if (!TryComp<MetaDataComponent>(uid, out var meta) || meta.EntityPrototype is not { } proto)
+            return false;
+
+        return NonPersistentShipSaveEntityPrototypes.Contains(proto.ID);
     }
     // HardLight end
 
@@ -863,6 +884,8 @@ public sealed class ShipyardGridSaveSystem : EntitySystem
                 return true; // Found stash root above.
             if (HasComp<MachineComponent>(owner))
                 return true; // This is so machines keep their upgraded parts.
+            if (HasComp<DoorComponent>(owner))
+                return true; // Keep inserted door electronics boards so constructed doors retain configured access.
             if (HasComp<PoweredLightComponent>(owner)) // HardLight
                 return true; // Keep bulbs inside powered lights so ship loads don't depend on ContainerFill.
             current = owner;
