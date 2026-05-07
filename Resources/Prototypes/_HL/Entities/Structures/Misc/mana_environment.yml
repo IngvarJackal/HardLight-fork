@@ -25,7 +25,7 @@
     node: ManaDarkGrassDeco
   - type: Sprite
     sprite: Decals/Flora/flora_grass.rsi
-    color: "#00aa66"
+    color: "#4ae0b3"
     layers:
     - state: grassa1
       map: ["random"]
