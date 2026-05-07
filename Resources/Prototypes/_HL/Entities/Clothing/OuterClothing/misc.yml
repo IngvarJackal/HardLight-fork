@@ -18,8 +18,19 @@
         Slash: 0.9
         Piercing: 0.4
         Heat: 0.9
-  - type: ExplosionResistance
+  - type: ExplosionResistance`
     damageCoefficient: 0.80
+  - type: Storage
+    grid:
+    - 0,0,2,1
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
 
 # Manawa Rite Robe
 - type: entity
