@@ -15,8 +15,8 @@
     state: icon
   - type: PointLight
     radius: 1.5
-    energy: 0.4
-    color: "#6aff6a"
+    energy: 0.5
+    color: "#00e8c8"
   - type: ApcPowerReceiver
     powerLoad: 0
   - type: Machine

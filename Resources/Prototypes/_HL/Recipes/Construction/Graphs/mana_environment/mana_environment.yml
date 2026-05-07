@@ -34,20 +34,6 @@
             - material: ManaWoodPlank
               amount: 1
               doAfter: 1
-        - to: ManaDarkStoneFloorDeco
-          completed:
-            - !type:SnapToGrid {}
-          steps:
-            - material: ManaWoodPlank
-              amount: 1
-              doAfter: 1
-        - to: ManaBasaltFloorDeco
-          completed:
-            - !type:SnapToGrid {}
-          steps:
-            - material: ManaWoodPlank
-              amount: 1
-              doAfter: 1
 
         # -- Anomaly floral carpets (off-grid, floor-level) --
         - to: ManaAnomalyPlantDeco
@@ -157,11 +143,6 @@
             - material: ManaWoodPlank
               amount: 1
               doAfter: 1
-        - to: ManaMagicCandle3Deco
-          steps:
-            - material: ManaWoodPlank
-              amount: 1
-              doAfter: 1
 
     # ---------- Deconstruct nodes — all yield mana wood via Prying ----------
 
@@ -174,7 +155,7 @@
               prototype: MaterialManaWoodPlank1
               amount: 1
           steps:
-            - tool: Prying
+            - tool: Cutting
               doAfter: 1
 
     - node: ManaDarkStoneDeco
@@ -198,7 +179,7 @@
               prototype: MaterialManaWoodPlank1
               amount: 1
           steps:
-            - tool: Prying
+            - tool: Cutting
               doAfter: 1
 
     - node: ManaAnomalyHarvestDeco
@@ -210,7 +191,7 @@
               prototype: MaterialManaWoodPlank1
               amount: 1
           steps:
-            - tool: Prying
+            - tool: Cutting
               doAfter: 1
 
     - node: ManaAnomalyBulbDeco
@@ -222,7 +203,7 @@
               prototype: MaterialManaWoodPlank1
               amount: 1
           steps:
-            - tool: Prying
+            - tool: Cutting
               doAfter: 1
 
     - node: ManaFloralCarpetDeco
@@ -234,7 +215,7 @@
               prototype: MaterialManaWoodPlank1
               amount: 1
           steps:
-            - tool: Prying
+            - tool: Cutting
               doAfter: 1
 
     - node: ManaPoolDeco
@@ -369,17 +350,6 @@
             - tool: Prying
               doAfter: 1
 
-    - node: ManaMagicCandle3Deco
-      entity: ManaMagicCandle3Deco
-      edges:
-        - to: start
-          completed:
-            - !type:SpawnPrototype
-              prototype: MaterialManaWoodPlank1
-              amount: 1
-          steps:
-            - tool: Prying
-              doAfter: 1
 
     - node: ManaDarkGrassFloorDeco
       entity: ManaDarkGrassFloorDeco
@@ -390,29 +360,7 @@
               prototype: MaterialManaWoodPlank1
               amount: 1
           steps:
-            - tool: Prying
+            - tool: Cutting
               doAfter: 1
 
-    - node: ManaDarkStoneFloorDeco
-      entity: ManaDarkStoneFloorDeco
-      edges:
-        - to: start
-          completed:
-            - !type:SpawnPrototype
-              prototype: MaterialManaWoodPlank1
-              amount: 1
-          steps:
-            - tool: Prying
-              doAfter: 1
 
-    - node: ManaBasaltFloorDeco
-      entity: ManaBasaltFloorDeco
-      edges:
-        - to: start
-          completed:
-            - !type:SpawnPrototype
-              prototype: MaterialManaWoodPlank1
-              amount: 1
-          steps:
-            - tool: Prying
-              doAfter: 1

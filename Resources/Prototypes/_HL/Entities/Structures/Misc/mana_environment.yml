@@ -40,7 +40,7 @@
     node: ManaDarkGrassDeco
   - type: Sprite
     sprite: Decals/Flora/flora_grass.rsi
-    color: "#007755"
+    color: "#00aa66"
     layers:
     - state: grassa1
       map: ["random"]
@@ -107,12 +107,11 @@
     sprite: /Textures/Objects/Specific/Hydroponics/anomaly_berry.rsi
     layers:
     - state: stage-2
-      shader: unshaded
     drawdepth: LowFloors
   - type: PointLight
-    radius: 2.0
-    energy: 1.2
-    color: "#cc55ff"
+    radius: 2.5
+    energy: 2.0
+    color: "#44ccff"
 
 - type: entity
   parent: ManaEnvironmentFloorBase
@@ -128,12 +127,11 @@
     sprite: /Textures/Objects/Specific/Hydroponics/anomaly_berry.rsi
     layers:
     - state: harvest
-      shader: unshaded
     drawdepth: LowFloors
   - type: PointLight
-    radius: 1.8
-    energy: 1.5
-    color: "#cc55ff"
+    radius: 2.5
+    energy: 2.0
+    color: "#44ccff"
 
 # ---------- Anomaly bulb — small off-grid prop at normal height ----------
 
@@ -151,11 +149,10 @@
     sprite: /Textures/Objects/Specific/Hydroponics/anomaly_berry.rsi
     layers:
     - state: stage-1
-      shader: unshaded
   - type: PointLight
-    radius: 1.2
-    energy: 0.9
-    color: "#cc55ff"
+    radius: 1.8
+    energy: 1.5
+    color: "#44ccff"
 
 # ---------- Floral carpet (on-grid, passable, slowdown) ----------
 
@@ -208,10 +205,6 @@
     blacklist:
       tags:
         - Catwalk
-  - type: PointLight
-    radius: 2.0
-    energy: 1.2
-    color: "#00cc88"
 
 # ---------- Mana pool (on-grid, passable, slowdown + water sounds) ----------
 
@@ -269,6 +262,10 @@
   - type: Tag
     tags:
       - HideContextMenu
+  - type: PointLight
+    radius: 1.0
+    energy: 0.5
+    color: "#00e8c8"
 
 # ---------- Collidable base (anchored, grid-placed) ----------
 
@@ -332,7 +329,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 400
+        damage: 100
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
@@ -355,7 +352,7 @@
     node: ManaBoulderDeco
   - type: Sprite
     noRot: true
-    sprite: Objects/Decoration/Flora/flora_rockssolid.rsi
+    sprite: _HL/Objects/Decoration/Flora/flora_rockssolid.rsi
     layers:
     - state: rocksolid01
       map: ["random"]
@@ -382,7 +379,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 300
+        damage: 100
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
@@ -498,7 +495,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 800
+        damage: 150
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
@@ -622,9 +619,16 @@
     sprite: _HL/Objects/Factions/ManawaRite/mana_candles.rsi
     layers:
     - state: candle-small
+      map: ["random"]
       color: "#00e8c8"
     - state: fire-small
       shader: unshaded
+  - type: RandomSprite
+    available:
+    - random:
+        candle-small: "#00e8c8"
+    - random:
+        candle-small: "#00cc66"
   - type: PointLight
     color: "#00e8c8"
     radius: 1.2
@@ -646,37 +650,22 @@
     sprite: _HL/Objects/Factions/ManawaRite/mana_candles.rsi
     layers:
     - state: candle-big
+      map: ["random"]
       color: "#9933ff"
     - state: fire-big
       shader: unshaded
+  - type: RandomSprite
+    available:
+    - random:
+        candle-big: "#9933ff"
+    - random:
+        candle-big: "#00cc66"
   - type: PointLight
     color: "#9933ff"
     radius: 1.5
     power: 4
 
-- type: entity
-  parent: CandleInfinite
-  id: ManaMagicCandle3Deco
-  name: mana flame
-  description: A standing candle of amber mana set in a spectral holder. Its warm light is more comforting than mystical — mana trying its best to feel ordinary.
-  suffix: Mana
-  components:
-  - type: Construction
-    graph: ManaEnvironmentGraph
-    node: ManaMagicCandle3Deco
-  - type: Anchorable
-  - type: Sprite
-    noRot: true
-    sprite: _HL/Objects/Factions/ManawaRite/mana_candles.rsi
-    layers:
-    - state: stand-big
-      color: "#e39c40"
-    - state: fire-big
-      shader: unshaded
-  - type: PointLight
-    color: "#e39c40"
-    radius: 1.5
-    power: 4
+
 
 # ---------- Floor tiles (on-grid, LowFloors, 1 mana wood each) ----------
 
@@ -691,7 +680,7 @@
     node: ManaDarkGrassFloorDeco
   - type: Sprite
     sprite: Decals/Flora/flora_grass.rsi
-    color: "#005533"
+    color: "#009955"
     layers:
     - state: grassa1
       map: ["random"]
@@ -709,55 +698,4 @@
         grassb2: ""
         grassb3: ""
 
-- type: entity
-  parent: ManaEnvironmentFloorBase
-  id: ManaDarkStoneFloorDeco
-  name: dark stone floor
-  description: A tile of dark volcanic stone drawn from mana. It is not rock — it is merely what mana imagines solid ground to be.
-  components:
-  - type: Construction
-    graph: ManaEnvironmentGraph
-    node: ManaDarkStoneFloorDeco
-  - type: Sprite
-    sprite: Tiles/Planet/basalt.rsi
-    color: "#334444"
-    layers:
-    - state: basalt1
-      map: ["random"]
-      shader: unshaded
-    drawdepth: LowFloors
-  - type: RandomSprite
-    available:
-    - random:
-        basalt1: ""
-        basalt2: ""
-        basalt3: ""
-        basalt4: ""
-        basalt5: ""
-  - type: SyncSprite
 
-- type: entity
-  parent: ManaEnvironmentFloorBase
-  id: ManaBasaltFloorDeco
-  name: basalt floor
-  description: A tile of shadow basalt drawn from mana. It is not stone — it is merely what mana imagines the surface of the deep shadow to be.
-  components:
-  - type: Construction
-    graph: ManaEnvironmentGraph
-    node: ManaBasaltFloorDeco
-  - type: Sprite
-    sprite: _HL/Tiles/Misc/shadowbasalt.rsi
-    layers:
-    - state: basalt1
-      map: ["random"]
-      shader: unshaded
-    drawdepth: LowFloors
-  - type: RandomSprite
-    available:
-    - random:
-        basalt1: ""
-        basalt2: ""
-        basalt3: ""
-        basalt4: ""
-        basalt5: ""
-  - type: SyncSprite

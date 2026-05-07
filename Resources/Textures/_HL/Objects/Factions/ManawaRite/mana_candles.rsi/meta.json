@@ -8,27 +8,10 @@
   },
   "states": [
     {
-      "name": "stand-small"
-    },
-    {
-      "name": "loadout"
-    },
-    {
-      "name": "stand-big"
-    },
-    {
       "name": "candle-small"
     },
     {
       "name": "candle-big"
-    },
-    {
-      "name": "inhand-left",
-      "directions": 4
-    },
-    {
-      "name": "inhand-right",
-      "directions": 4
     },
     {
       "name": "fire-small",
@@ -51,6 +34,14 @@
           0.15
         ]
       ]
+    },
+    {
+      "name": "inhand-left",
+      "directions": 4
+    },
+    {
+      "name": "inhand-right",
+      "directions": 4
     },
     {
       "name": "inhand-left-flame",

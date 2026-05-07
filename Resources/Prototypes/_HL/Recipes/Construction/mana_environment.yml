@@ -194,14 +194,6 @@
   objectType: Item
   placementMode: PlaceFree
 
-- type: construction
-  id: ManaMagicCandle3Deco
-  graph: ManaEnvironmentGraph
-  startNode: start
-  targetNode: ManaMagicCandle3Deco
-  category: construction-category-decorations
-  objectType: Item
-  placementMode: PlaceFree
 
 # --- Floor tiles (on-grid, 1 mana wood each) ---
 
@@ -215,22 +207,4 @@
   placementMode: SnapgridCenter
   canBuildInImpassable: true
 
-- type: construction
-  id: ManaDarkStoneFloorDeco
-  graph: ManaEnvironmentGraph
-  startNode: start
-  targetNode: ManaDarkStoneFloorDeco
-  category: construction-category-decorations
-  objectType: Structure
-  placementMode: SnapgridCenter
-  canBuildInImpassable: true
 
-- type: construction
-  id: ManaBasaltFloorDeco
-  graph: ManaEnvironmentGraph
-  startNode: start
-  targetNode: ManaBasaltFloorDeco
-  category: construction-category-decorations
-  objectType: Structure
-  placementMode: SnapgridCenter
-  canBuildInImpassable: true
