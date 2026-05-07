@@ -1,3 +1,32 @@
+## Manawa Rite
+
+- type: latheRecipe
+  parent: BaseHatRecipe
+  id: ClothingHeadFlowerManawaRite
+  result: ClothingHeadFlowerManawaRite
+
+- type: latheRecipe
+  id: ClothingNeckPinManawaRite
+  result: ClothingNeckPinManawaRite
+  completetime: 2
+  materials:
+    Steel: 1
+
+- type: latheRecipe
+  parent: BaseJumpsuitRecipe
+  id: ClothingUniformDressManawaRite
+  result: ClothingUniformDressManawaRite
+
+- type: latheRecipe
+  parent: BaseCoatRecipe
+  id: ClothingOuterRobeManawaRite
+  result: ClothingOuterRobeManawaRite
+
+- type: latheRecipe
+  parent: BaseCoatRecipe
+  id: ClothingOuterHoodieManawaRite
+  result: ClothingOuterHoodieManawaRite
+
 # Base prototypes
 
 - type: latheRecipe

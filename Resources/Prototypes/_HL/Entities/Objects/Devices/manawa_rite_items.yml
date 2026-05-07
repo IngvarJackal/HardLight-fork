@@ -12,10 +12,7 @@
     size: Normal
   - type: SpawnItemsOnUse
     items:
-    - id: ClothingNeckPinManawaRite
-    - id: ClothingHeadFlowerManawaRite
-    - id: ClothingOuterRobeManawaRite
-    - id: ClothingUniformDressManawaRite
     - id: EncryptionKeyManawaRite
+    - id: ManaCore
     sound:
       path: /Audio/Effects/unwrap.ogg

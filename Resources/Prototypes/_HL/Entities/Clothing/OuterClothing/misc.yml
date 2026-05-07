@@ -1,3 +1,26 @@
+# Manawa Rite Hoodie
+- type: entity
+  parent: ClothingOuterBaseToggleable
+  id: ClothingOuterHoodieManawaRite
+  name: Manawa Rite hoodie
+  description: A distinctive reinforced hoodie worn by members of the Manawa Rite.
+  components:
+  - type: Sprite
+    sprite: _HL/Clothing/OuterClothing/manawa_rite_hoodie.rsi
+  - type: Clothing
+    sprite: _HL/Clothing/OuterClothing/manawa_rite_hoodie.rsi
+  - type: ToggleableClothing
+    clothingPrototype: ClothingHeadHatHoodManawaRite
+  - type: Armor # bounty hunter flak trenchcoat stats
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.4
+        Heat: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.80
+
 # Manawa Rite Robe
 - type: entity
   parent: [ClothingOuterStorageBase, AllowSuitStorageClothing]
