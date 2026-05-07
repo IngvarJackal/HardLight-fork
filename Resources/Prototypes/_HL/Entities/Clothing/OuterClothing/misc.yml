@@ -18,7 +18,7 @@
         Slash: 0.9
         Piercing: 0.4
         Heat: 0.9
-  - type: ExplosionResistance`
+  - type: ExplosionResistance
     damageCoefficient: 0.80
   - type: Storage
     grid:
