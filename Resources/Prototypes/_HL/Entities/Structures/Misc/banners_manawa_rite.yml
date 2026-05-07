@@ -4,7 +4,7 @@
   id: BannerManawaRite
   parent: BannerBase
   name: Manawa Rite banner
-  description: A banner bearing the colors and sigil of the Manawa Rite.
+  description: A banner bearing the colors and sigil of the Manawa Rite. The motto says 'One does not study the current from the shore, one must become it'.
   components:
   - type: Sprite
     sprite: _HL/Objects/Factions/ManawaRite/decoration.rsi
