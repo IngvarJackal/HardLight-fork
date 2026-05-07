@@ -26,8 +26,22 @@
               amount: 1
               doAfter: 1
 
-        # -- Shadow stone cracks (on-grid, wall-placeable) --
-        - to: ManaShadowStoneDeco
+        # -- Floor tiles (on-grid) --
+        - to: ManaDarkGrassFloorDeco
+          completed:
+            - !type:SnapToGrid {}
+          steps:
+            - material: ManaWoodPlank
+              amount: 1
+              doAfter: 1
+        - to: ManaDarkStoneFloorDeco
+          completed:
+            - !type:SnapToGrid {}
+          steps:
+            - material: ManaWoodPlank
+              amount: 1
+              doAfter: 1
+        - to: ManaBasaltFloorDeco
           completed:
             - !type:SnapToGrid {}
           steps:
@@ -165,18 +179,6 @@
 
     - node: ManaDarkStoneDeco
       entity: ManaDarkStoneDeco
-      edges:
-        - to: start
-          completed:
-            - !type:SpawnPrototype
-              prototype: MaterialManaWoodPlank1
-              amount: 1
-          steps:
-            - tool: Prying
-              doAfter: 1
-
-    - node: ManaShadowStoneDeco
-      entity: ManaShadowStoneDeco
       edges:
         - to: start
           completed:
@@ -369,6 +371,42 @@
 
     - node: ManaMagicCandle3Deco
       entity: ManaMagicCandle3Deco
+      edges:
+        - to: start
+          completed:
+            - !type:SpawnPrototype
+              prototype: MaterialManaWoodPlank1
+              amount: 1
+          steps:
+            - tool: Prying
+              doAfter: 1
+
+    - node: ManaDarkGrassFloorDeco
+      entity: ManaDarkGrassFloorDeco
+      edges:
+        - to: start
+          completed:
+            - !type:SpawnPrototype
+              prototype: MaterialManaWoodPlank1
+              amount: 1
+          steps:
+            - tool: Prying
+              doAfter: 1
+
+    - node: ManaDarkStoneFloorDeco
+      entity: ManaDarkStoneFloorDeco
+      edges:
+        - to: start
+          completed:
+            - !type:SpawnPrototype
+              prototype: MaterialManaWoodPlank1
+              amount: 1
+          steps:
+            - tool: Prying
+              doAfter: 1
+
+    - node: ManaBasaltFloorDeco
+      entity: ManaBasaltFloorDeco
       edges:
         - to: start
           completed:

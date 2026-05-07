@@ -34,16 +34,6 @@
   placementMode: SnapgridCenter
   canBuildInImpassable: true
 
-- type: construction
-  id: ManaShadowStoneDeco
-  graph: ManaEnvironmentGraph
-  startNode: start
-  targetNode: ManaShadowStoneDeco
-  category: construction-category-decorations
-  objectType: Structure
-  placementMode: SnapgridCenter
-  canBuildInImpassable: true
-
 # --- Anomaly floral carpets (off-grid, passable, floor-level) ---
 
 - type: construction
@@ -53,7 +43,7 @@
   targetNode: ManaAnomalyPlantDeco
   category: construction-category-decorations
   objectType: Structure
-  placementMode: PlaceFree
+  placementMode: SnapgridCenter
   canBuildInImpassable: true
 
 - type: construction
@@ -63,10 +53,10 @@
   targetNode: ManaAnomalyHarvestDeco
   category: construction-category-decorations
   objectType: Structure
-  placementMode: PlaceFree
+  placementMode: SnapgridCenter
   canBuildInImpassable: true
 
-# --- Anomaly bulb (off-grid, passable, small prop) ---
+# --- Anomaly bulb (on-grid, passable, small prop) ---
 
 - type: construction
   id: ManaAnomalyBulbDeco
@@ -75,7 +65,7 @@
   targetNode: ManaAnomalyBulbDeco
   category: construction-category-decorations
   objectType: Structure
-  placementMode: PlaceFree
+  placementMode: SnapgridCenter
   canBuildInImpassable: true
 
 # --- On-grid floor with effects ---
@@ -212,3 +202,35 @@
   category: construction-category-decorations
   objectType: Item
   placementMode: PlaceFree
+
+# --- Floor tiles (on-grid, 1 mana wood each) ---
+
+- type: construction
+  id: ManaDarkGrassFloorDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaDarkGrassFloorDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: true
+
+- type: construction
+  id: ManaDarkStoneFloorDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaDarkStoneFloorDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: true
+
+- type: construction
+  id: ManaBasaltFloorDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaBasaltFloorDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: true

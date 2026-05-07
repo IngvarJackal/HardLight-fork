@@ -63,20 +63,20 @@
 - type: entity
   parent: ManaEnvironmentFloorBase
   id: ManaDarkStoneDeco
-  name: mana basalt
-  description: A patch of dark stone drawn from mana in the image of shadow basalt. It is not stone — it is merely what mana imagines stone to be. You could walk right over it.
+  name: mana cracks
+  description: Jagged patches of dark stone drawn from mana in the image of shadow basalt. It is not stone — it is merely what mana imagines fracture to be. You could walk right over it, and they will draw across anything beneath.
   components:
   - type: Construction
     graph: ManaEnvironmentGraph
     node: ManaDarkStoneDeco
   - type: Sprite
-    sprite: /Textures/Tiles/Planet/shadowbasalt.rsi
+    sprite: _HL/Tiles/Misc/shadowbasalt.rsi
     color: "#9955cc"
     layers:
     - state: basalt1
       map: ["random"]
       shader: unshaded
-    drawdepth: LowFloors
+    drawdepth: Overdoors
   - type: RandomSprite
     available:
     - random:
@@ -91,33 +91,10 @@
     energy: 0.6
     color: "#9955cc"
 
-# ---------- Shadow stone — purple cracks (on-grid, buildable on walls too) ----------
-
-- type: entity
-  parent: ManaEnvironmentFloorBase
-  id: ManaShadowStoneDeco
-  name: mana cracks
-  description: Jagged purple fissures where mana bleeds through the veil. It is not damage — it is merely what mana imagines fracture to be.
-  components:
-  - type: Construction
-    graph: ManaEnvironmentGraph
-    node: ManaShadowStoneDeco
-  - type: Sprite
-    sprite: _HL/Effects/Projections/abyssal_crack.rsi
-    color: "#9933ff"
-    layers:
-    - state: abysscrack
-      shader: unshaded
-    drawdepth: LowFloors
-  - type: PointLight
-    radius: 1.5
-    energy: 0.8
-    color: "#9933ff"
-
 # ---------- Anomaly floral carpets (passable, LowFloors depth, off-grid) ----------
 
 - type: entity
-  parent: ManaEnvironmentDecoBase
+  parent: ManaEnvironmentFloorBase
   id: ManaAnomalyPlantDeco
   name: mana anomaly growth
   description: A plant-like form drawn from mana in the image of anomaly vegetation. It is not alive — it is merely what mana imagines growth to be. There is no harvest here.
@@ -138,7 +115,7 @@
     color: "#cc55ff"
 
 - type: entity
-  parent: ManaEnvironmentDecoBase
+  parent: ManaEnvironmentFloorBase
   id: ManaAnomalyHarvestDeco
   name: mana anomaly cluster
   description: A dense floor-spread of glowing mana-formed berry shapes. These are not edible — they are mana wearing the mask of anomaly produce. They will not wither.
@@ -161,7 +138,7 @@
 # ---------- Anomaly bulb — small off-grid prop at normal height ----------
 
 - type: entity
-  parent: ManaEnvironmentDecoBase
+  parent: ManaEnvironmentFloorBase
   id: ManaAnomalyBulbDeco
   name: mana anomaly bulb
   description: A small glowing growth resembling an anomaly seedling. It is a mana-incarnation, not a real plant — it will never grow further than this.
@@ -193,19 +170,21 @@
     node: ManaFloralCarpetDeco
   - type: Sprite
     noRot: true
-    sprite: /Textures/Objects/Specific/Hydroponics/anomaly_berry.rsi
+    sprite: Objects/Misc/kudzuflower.rsi
     color: "#00cc88"
     layers:
-    - state: harvest
+    - state: kudzu_11
       map: ["random"]
       shader: unshaded
     drawdepth: LowFloors
   - type: RandomSprite
     available:
     - random:
-        harvest: ""
-        stage-2: ""
-        stage-1: ""
+        kudzu_11: ""
+        kudzu_12: ""
+        kudzu_13: ""
+        kudzu_14: ""
+        kudzu_15: ""
   - type: Physics
     bodyType: Static
   - type: Fixtures
@@ -377,7 +356,6 @@
   - type: Sprite
     noRot: true
     sprite: Objects/Decoration/Flora/flora_rockssolid.rsi
-    color: "#9933ff"
     layers:
     - state: rocksolid01
       map: ["random"]
@@ -649,8 +627,8 @@
       shader: unshaded
   - type: PointLight
     color: "#00e8c8"
-    radius: 2.0
-    power: 8
+    radius: 1.2
+    power: 3
 
 - type: entity
   parent: CandleInfinite
@@ -673,13 +651,13 @@
       shader: unshaded
   - type: PointLight
     color: "#9933ff"
-    radius: 2.5
-    power: 10
+    radius: 1.5
+    power: 4
 
 - type: entity
   parent: CandleInfinite
   id: ManaMagicCandle3Deco
-  name: mana candle (standing)
+  name: mana flame
   description: A standing candle of amber mana set in a spectral holder. Its warm light is more comforting than mystical — mana trying its best to feel ordinary.
   suffix: Mana
   components:
@@ -697,5 +675,89 @@
       shader: unshaded
   - type: PointLight
     color: "#e39c40"
-    radius: 2.5
-    power: 10
+    radius: 1.5
+    power: 4
+
+# ---------- Floor tiles (on-grid, LowFloors, 1 mana wood each) ----------
+
+- type: entity
+  parent: ManaEnvironmentFloorBase
+  id: ManaDarkGrassFloorDeco
+  name: dark grass floor
+  description: A tile of shadow undergrowth drawn from mana. It is not soil — it is merely what mana imagines a living floor to be.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaDarkGrassFloorDeco
+  - type: Sprite
+    sprite: Decals/Flora/flora_grass.rsi
+    color: "#005533"
+    layers:
+    - state: grassa1
+      map: ["random"]
+      shader: unshaded
+    drawdepth: LowFloors
+  - type: RandomSprite
+    available:
+    - random:
+        grassa1: ""
+        grassa2: ""
+        grassa3: ""
+        grassa4: ""
+        grassa5: ""
+        grassb1: ""
+        grassb2: ""
+        grassb3: ""
+
+- type: entity
+  parent: ManaEnvironmentFloorBase
+  id: ManaDarkStoneFloorDeco
+  name: dark stone floor
+  description: A tile of dark volcanic stone drawn from mana. It is not rock — it is merely what mana imagines solid ground to be.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaDarkStoneFloorDeco
+  - type: Sprite
+    sprite: Tiles/Planet/basalt.rsi
+    color: "#334444"
+    layers:
+    - state: basalt1
+      map: ["random"]
+      shader: unshaded
+    drawdepth: LowFloors
+  - type: RandomSprite
+    available:
+    - random:
+        basalt1: ""
+        basalt2: ""
+        basalt3: ""
+        basalt4: ""
+        basalt5: ""
+  - type: SyncSprite
+
+- type: entity
+  parent: ManaEnvironmentFloorBase
+  id: ManaBasaltFloorDeco
+  name: basalt floor
+  description: A tile of shadow basalt drawn from mana. It is not stone — it is merely what mana imagines the surface of the deep shadow to be.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaBasaltFloorDeco
+  - type: Sprite
+    sprite: _HL/Tiles/Misc/shadowbasalt.rsi
+    layers:
+    - state: basalt1
+      map: ["random"]
+      shader: unshaded
+    drawdepth: LowFloors
+  - type: RandomSprite
+    available:
+    - random:
+        basalt1: ""
+        basalt2: ""
+        basalt3: ""
+        basalt4: ""
+        basalt5: ""
+  - type: SyncSprite

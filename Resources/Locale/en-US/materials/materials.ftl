@@ -49,10 +49,7 @@ stack-Royal-Resin = { $count ->
    *[other] { $count } blobs of royal resin
 }
 
-stack-mana-wood = { $count ->
-    [one] 1 plank of mana wood
-   *[other] { $count } planks of mana wood
-}
+stack-mana-wood = mana wood
 
 # Mana Wood
 materials-mana-wood = mana wood
