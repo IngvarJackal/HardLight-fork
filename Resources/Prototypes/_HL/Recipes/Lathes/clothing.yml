@@ -1,6 +1,15 @@
 ## Manawa Rite — all garments cost only mana wood (transforms magically)
 
 - type: latheRecipe
+  id: RingOfLesserTransmogrification
+  result: RingOfLesserTransmogrification
+  completetime: 8
+  materials:
+    Diamond: 100
+    Gold: 1000
+
+
+- type: latheRecipe
   id: ClothingHeadFlowerManawaRite
   result: ClothingHeadFlowerManawaRite
   completetime: 2

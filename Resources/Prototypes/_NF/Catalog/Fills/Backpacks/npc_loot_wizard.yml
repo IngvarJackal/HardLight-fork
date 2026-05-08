@@ -269,6 +269,8 @@
         prob: 0.3
       - id: icepage
         prob: 0.07
+      - id: RingOfLesserTransmogrification
+        prob: 0.05
     sound:
       path: /Audio/Items/jumpsuit_equip.ogg
 
