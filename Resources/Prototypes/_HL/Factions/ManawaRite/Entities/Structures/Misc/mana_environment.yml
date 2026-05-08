@@ -25,22 +25,22 @@
     node: ManaDarkGrassDeco
   - type: Sprite
     sprite: Decals/Flora/flora_grass.rsi
-    color: "#4ae0b3"
     layers:
     - state: grassa1
       map: ["random"]
+      color: "#4ae0b3"
     drawdepth: LowFloors
   - type: RandomSprite
     available:
     - random:
-        grassa1: ""
-        grassa2: ""
-        grassa3: ""
-        grassa4: ""
-        grassa5: ""
-        grassb1: ""
-        grassb2: ""
-        grassb3: ""
+        grassa1: ManaGrassPalette
+        grassa2: ManaGrassPalette
+        grassa3: ManaGrassPalette
+        grassa4: ManaGrassPalette
+        grassa5: ManaGrassPalette
+        grassb1: ManaGrassPalette
+        grassb2: ManaGrassPalette
+        grassb3: ManaGrassPalette
 
 # ---------- Dark stone / basalt (passable, LowFloors, on-grid) ----------
 
@@ -55,20 +55,20 @@
     node: ManaDarkStoneDeco
   - type: Sprite
     sprite: _HL/Factions/ManawaRite/Tiles/Misc/shadowbasalt.rsi
-    color: "#9955cc"
     layers:
     - state: basalt1
       map: ["random"]
       shader: unshaded
+      color: "#9955cc"
     drawdepth: Overdoors
   - type: RandomSprite
     available:
     - random:
-        basalt1: ""
-        basalt2: ""
-        basalt3: ""
-        basalt4: ""
-        basalt5: ""
+        basalt1: ManaBasaltPalette
+        basalt2: ManaBasaltPalette
+        basalt3: ManaBasaltPalette
+        basalt4: ManaBasaltPalette
+        basalt5: ManaBasaltPalette
   - type: SyncSprite
   - type: PointLight
     radius: 1.2
@@ -152,19 +152,19 @@
   - type: Sprite
     noRot: true
     sprite: Objects/Misc/kudzuflower.rsi
-    color: "#00cc88"
     layers:
     - state: kudzu_11
       map: ["random"]
+      color: "#00cc88"
     drawdepth: LowFloors
   - type: RandomSprite
     available:
     - random:
-        kudzu_11: ""
-        kudzu_12: ""
-        kudzu_13: ""
-        kudzu_14: ""
-        kudzu_15: ""
+        kudzu_11: ManaFloralPalette
+        kudzu_12: ManaFloralPalette
+        kudzu_13: ManaFloralPalette
+        kudzu_14: ManaFloralPalette
+        kudzu_15: ManaFloralPalette
   - type: Physics
     bodyType: Static
   - type: Fixtures
