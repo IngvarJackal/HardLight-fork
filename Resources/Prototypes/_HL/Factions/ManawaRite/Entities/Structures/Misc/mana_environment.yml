@@ -321,6 +321,180 @@
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
 
+# ---------- Normal tree ----------
+
+- type: entity
+  parent: ManaEnvironmentCollidableBase
+  id: ManaNormalTreeDeco
+  name: mana tree
+  description: A tree conjured from pure mana in the likeness of the common wood.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaNormalTreeDeco
+  - type: Sprite
+    noRot: true
+    sprite: Objects/Decoration/Flora/flora_trees.rsi
+    drawdepth: Overdoors
+    offset: 0,0.9
+    layers:
+    - state: tree01
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        tree01: ""
+        tree02: ""
+        tree03: ""
+        tree04: ""
+        tree05: ""
+        tree06: ""
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.35,-0.4,0.35,0.4"
+        density: 1000
+        layer:
+        - WallLayer
+  - type: PointLight
+    radius: 2.5
+    energy: 0.1
+    color: "#9933ff"
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Wood
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          MaterialManaWoodPlank1:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+# ---------- Large tree ----------
+
+- type: entity
+  parent: ManaEnvironmentCollidableBase
+  id: ManaLargeTreeDeco
+  name: mana tree (large)
+  description: A towering tree conjured from pure mana.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaLargeTreeDeco
+  - type: Sprite
+    noRot: true
+    sprite: _HL/Factions/ManawaRite/Objects/Decoration/Flora/flora_treeslarge.rsi
+    drawdepth: Overdoors
+    offset: 0,1.55
+    layers:
+    - state: treelarge01
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        treelarge01: ""
+        treelarge02: ""
+        treelarge03: ""
+        treelarge04: ""
+        treelarge05: ""
+        treelarge06: ""
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.18,-0.35,0.18,0.35"
+        density: 1000
+        layer:
+        - WallLayer
+  - type: PointLight
+    radius: 2.5
+    energy: 0.1
+    color: "#9933ff"
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Wood
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          MaterialManaWoodPlank1:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+# ---------- Glowing tree ----------
+
+- type: entity
+  parent: ManaEnvironmentCollidableBase
+  id: ManaGlowingTreeDeco
+  name: mana tree (glowing)
+  description: A tree conjured from pure mana, radiating with inner light.
+  components:
+  - type: Construction
+    graph: ManaEnvironmentGraph
+    node: ManaGlowingTreeDeco
+  - type: Sprite
+    noRot: true
+    sprite: _HL/Factions/ManawaRite/Objects/Decoration/Flora/flora_treeslight.rsi
+    drawdepth: Overdoors
+    offset: 0,0.9
+    layers:
+    - state: tree01
+      map: ["random"]
+  - type: RandomSprite
+    available:
+    - random:
+        tree01: ""
+        tree02: ""
+        tree03: ""
+        tree04: ""
+        tree05: ""
+        tree06: ""
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.35,-0.4,0.35,0.4"
+        density: 1000
+        layer:
+        - WallLayer
+  - type: PointLight
+    radius: 3.5
+    energy: 2.0
+    color: "#9933ff"
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Wood
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          MaterialManaWoodPlank1:
+            min: 1
+            max: 1
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
 # ---------- Boulder (on-grid, collidable, randomized) ----------
 
 - type: entity
