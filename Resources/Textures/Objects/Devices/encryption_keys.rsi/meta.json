@@ -53,7 +53,6 @@
 	{"name": "crypt_avali"},
 	{"name": "crypt_avaliblue"},
     {"name": "starbound_label"},
-	{"name": "duskenclave_label"},
-	{"name": "manawa_rite_label"}
+	{"name": "duskenclave_label"}
   ]
 }

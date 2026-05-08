@@ -1,0 +1,14 @@
+# Manawa Rite Pin
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckPinManawaRite
+  name: Manawa Rite pin
+  description: A small pin bearing the sigil of the Manawa Rite.
+  components:
+  - type: Item
+    size: Tiny
+  - type: Sprite
+    sprite: _HL/Factions/ManawaRite/Clothing/Neck/Pins/manawa_rite_pin.rsi
+  - type: Clothing
+    sprite: _HL/Factions/ManawaRite/Clothing/Neck/Pins/manawa_rite_pin.rsi
+    slots: [ neck ]

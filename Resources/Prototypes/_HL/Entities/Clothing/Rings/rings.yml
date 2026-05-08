@@ -16,26 +16,6 @@
   - type: Construction
     node: ring
 
-# Ring of Lesser Transmogrification
-- type: entity
-  parent: BaseItem
-  id: RingOfLesserTransmogrification
-  name: ring of lesser transmogrification
-  description: A curious ring threaded with glamourous mana.
-  components:
-  - type: Sprite
-    sprite: _Floof/Clothing/Under/Gloves/Rings/golddiamondring.rsi
-    state: icon
-  - type: Clothing
-    sprite: _Floof/Clothing/Under/Gloves/Rings/golddiamondring.rsi
-    slots: [ accessory, accessoryalt ]
-  - type: Appearance
-  - type: Item
-    size: Tiny
-  - type: Tag
-    tags:
-    - Ring
-  - type: RingOfTransmogrification
 
 - type: entity
   parent: BaseItem

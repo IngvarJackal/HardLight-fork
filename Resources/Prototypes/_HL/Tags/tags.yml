@@ -1,7 +1,4 @@
 - type: Tag
-  id: ManaCore
-
-- type: Tag
   id: BorgSecurityLLeg
 
 - type: Tag

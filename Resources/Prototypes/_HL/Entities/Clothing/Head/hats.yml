@@ -74,14 +74,3 @@
   - type: Clothing
     sprite: _HL/Clothing/Head/duskenclaveberet.rsi
 
-# Manawa Rite Flower
-- type: entity
-  parent: ClothingHeadHatBeret
-  id: ClothingHeadFlowerManawaRite
-  name: Manawa Rite flower
-  description: A ceremonial flower worn by members of the Manawa Rite.
-  components:
-  - type: Sprite
-    sprite: _HL/Clothing/Head/manawa_rite_flower
-  - type: Clothing
-    sprite: _HL/Clothing/Head/manawa_rite_flower

@@ -99,10 +99,3 @@
   color: "#00ff95"
   longRange: true
 
-- type: radioChannel
-  id: ManawaRite
-  name: chat-radio-manawa-rite
-  keycode: '.'
-  frequency: 1377
-  color: "#32ff32"
-  longRange: true

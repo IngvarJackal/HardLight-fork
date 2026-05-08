@@ -1,15 +1,3 @@
-# Manawa Rite Dress
-- type: entity
-  parent: ClothingUniformBase
-  id: ClothingUniformDressManawaRite
-  name: Manawa Rite dress
-  description: A ceremonial undergarment worn by members of the Manawa Rite.
-  components:
-  - type: Sprite
-    sprite: _HL/Clothing/Uniforms/manawa_rite_dress.rsi
-  - type: Clothing
-    sprite: _HL/Clothing/Uniforms/manawa_rite_dress.rsi
-
 - type: entity
   parent: ClothingUniformBase
   id: ClothingUniformFiresuitCroptop

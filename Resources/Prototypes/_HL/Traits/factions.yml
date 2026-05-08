@@ -14,14 +14,3 @@
     actions:
     - ActionDuskEnclaveOnboarding
 
-- type: trait
-  id: ManawaRiteOnboarding
-  name: manawa-rite-onboarding-name
-  description: manawa-rite-onboarding-desc
-  category: FactionOnboarding
-  cost: 0
-  logins: ["IngvarJackal"]  # fill in SS14 username(s) of the Manawa Rite head player(s)
-  components:
-  - type: ActionGrant
-    actions:
-    - ActionManawaRiteOnboarding

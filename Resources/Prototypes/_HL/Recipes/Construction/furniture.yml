@@ -80,26 +80,6 @@
   placementMode: SnapgridCenter
   canBuildInImpassable: true
 
-# Manawa Rite Banners
-- type: construction
-  id: BannerManawaRite
-  graph: ManawaRiteBannersGraph
-  startNode: start
-  targetNode: BannerManawaRiteNode
-  category: construction-category-furniture
-  objectType: Structure
-  placementMode: SnapgridCenter
-  canBuildInImpassable: true
-
-- type: construction
-  id: FlagManawaRite
-  graph: ManawaRiteBannersGraph
-  startNode: start
-  targetNode: FlagManawaRiteNode
-  category: construction-category-furniture
-  objectType: Structure
-  placementMode: SnapgridCenter
-  canBuildInImpassable: true
 
 # Banners
 - type: construction

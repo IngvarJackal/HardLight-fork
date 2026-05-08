@@ -1,24 +1,5 @@
 - type: entity
   parent: ClothingHeadBase
-  id: ClothingHeadHatHoodManawaRite
-  categories: [ HideSpawnMenu ]
-  name: Manawa Rite hood
-  description: A hood worn by members of the Manawa Rite.
-  components:
-  - type: Sprite
-    sprite: _HL/Clothing/Head/Hoods/manawa_rite_hood.rsi
-  - type: Clothing
-    sprite: _HL/Clothing/Head/Hoods/manawa_rite_hood.rsi
-  - type: Tag
-    tags:
-    - HamsterWearable
-    - WhitelistChameleon
-  - type: HideLayerClothing
-    slots:
-    - Hair
-
-- type: entity
-  parent: ClothingHeadBase
   id: ClothingHeadHatHoodClockwork
   name: clockwork hood
   description: What is a clockwork cult without clockwork hoods?

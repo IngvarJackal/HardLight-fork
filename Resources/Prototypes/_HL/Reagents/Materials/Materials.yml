@@ -1,13 +1,4 @@
 - type: material
-  id: ManaWoodPlank
-  name: materials-mana-wood
-  unit: materials-unit-plank
-  icon: { sprite: /Textures/_HL/Objects/Materials/mana_wood.rsi, state: wood }
-  color: "#00e8c8"
-  stackEntity: MaterialManaWoodPlank1
-  price: 0.5
-
-- type: material
   id: Resin
   name: materials-Resin
   unit: materials-unit-Resin

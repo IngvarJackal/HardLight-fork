@@ -1,0 +1,13 @@
+- type: entity
+  parent: PosterBase
+  id: PosterManawaRite
+  name: Manawa Rite poster
+  description: A Manawa Rite poster stating 'The deeper mysteries do not yield their truths to the cautious'.
+  components:
+  - type: Sprite
+    sprite: _HL/Factions/ManawaRite/Structures/Wallmounts/Posters/ManawaRite.rsi
+    state: manawa_rite_poster
+    scale: 0.9, 0.9
+  - type: Construction
+    graph: ManawaRitePosterGraph
+    node: PosterManawaRite

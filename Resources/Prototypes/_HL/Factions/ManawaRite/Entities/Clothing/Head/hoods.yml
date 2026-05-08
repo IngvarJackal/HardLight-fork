@@ -1,0 +1,18 @@
+- type: entity
+  parent: ClothingHeadBase
+  id: ClothingHeadHatHoodManawaRite
+  categories: [ HideSpawnMenu ]
+  name: Manawa Rite hood
+  description: A hood worn by members of the Manawa Rite.
+  components:
+  - type: Sprite
+    sprite: _HL/Factions/ManawaRite/Clothing/Head/Hoods/manawa_rite_hood.rsi
+  - type: Clothing
+    sprite: _HL/Factions/ManawaRite/Clothing/Head/Hoods/manawa_rite_hood.rsi
+  - type: Tag
+    tags:
+    - HamsterWearable
+    - WhitelistChameleon
+  - type: HideLayerClothing
+    slots:
+    - Hair
