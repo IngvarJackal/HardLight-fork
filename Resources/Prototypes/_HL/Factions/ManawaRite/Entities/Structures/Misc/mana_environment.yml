@@ -321,64 +321,6 @@
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
 
-# ---------- Normal tree ----------
-
-- type: entity
-  parent: ManaEnvironmentCollidableBase
-  id: ManaNormalTreeDeco
-  name: mana tree
-  description: A tree conjured from pure mana in the likeness of the common wood.
-  components:
-  - type: Construction
-    graph: ManaEnvironmentGraph
-    node: ManaNormalTreeDeco
-  - type: Sprite
-    noRot: true
-    sprite: Objects/Decoration/Flora/flora_trees.rsi
-    drawdepth: Overdoors
-    offset: 0,0.9
-    layers:
-    - state: tree01
-      map: ["random"]
-  - type: RandomSprite
-    available:
-    - random:
-        tree01: ""
-        tree02: ""
-        tree03: ""
-        tree04: ""
-        tree05: ""
-        tree06: ""
-  - type: Fixtures
-    fixtures:
-      fix1:
-        shape:
-          !type:PhysShapeAabb
-          bounds: "-0.35,-0.4,0.35,0.4"
-        density: 1000
-        layer:
-        - WallLayer
-  - type: PointLight
-    radius: 2.5
-    energy: 0.1
-    color: "#9933ff"
-  - type: Damageable
-    damageContainer: StructuralInorganic
-    damageModifierSet: Wood
-  - type: Destructible
-    thresholds:
-    - trigger:
-        !type:DamageTrigger
-        damage: 100
-      behaviors:
-      - !type:SpawnEntitiesBehavior
-        spawn:
-          MaterialManaWoodPlank1:
-            min: 1
-            max: 1
-      - !type:DoActsBehavior
-        acts: [ "Destruction" ]
-
 # ---------- Large tree ----------
 
 - type: entity
@@ -475,8 +417,8 @@
         layer:
         - WallLayer
   - type: PointLight
-    radius: 3.5
-    energy: 2.0
+    radius: 2.5
+    energy: 0.1
     color: "#9933ff"
   - type: Damageable
     damageContainer: StructuralInorganic

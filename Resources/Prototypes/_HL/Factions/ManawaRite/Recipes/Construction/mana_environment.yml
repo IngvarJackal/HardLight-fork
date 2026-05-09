@@ -102,6 +102,27 @@
   placementMode: SnapgridCenter
   canBuildInImpassable: false
 
+
+- type: construction
+  id: ManaLargeTreeDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaLargeTreeDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+
+- type: construction
+  id: ManaGlowingTreeDeco
+  graph: ManaEnvironmentGraph
+  startNode: start
+  targetNode: ManaGlowingTreeDeco
+  category: construction-category-decorations
+  objectType: Structure
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+
 - type: construction
   id: ManaBoulderDeco
   graph: ManaEnvironmentGraph
