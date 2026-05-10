@@ -1119,6 +1119,11 @@
   - type: Damageable
     damageContainer: Biological
     damageModifierSet: ProtoResomi
+  - type: Vocal # Bring resomi sounds to proto-resomi
+    sounds:
+      Male: UnisexProtoResomi
+      Unsexed: UnisexProtoResomi
+      Female: UnisexProtoResomi
   - type: HumanoidAppearance
     species: ProtoResomi
     hideLayersOnEquip:
@@ -2438,6 +2443,11 @@
       shiveringHeatRegulation: 2000
       normalBodyTemperature: 261
       thermalRegulationTemperatureThreshold: 1
+    - type: Vocal # Bring avali sounds to proto-avali
+      sounds:
+        Male: MaleProtoAvali
+        Female: FemaleProtoAvali
+        Unsexed: MaleProtoAvali
     - type: Stasis
       enterStasisAction: ActionStasisEnter
       exitStasisAction: ActionStasisExit
