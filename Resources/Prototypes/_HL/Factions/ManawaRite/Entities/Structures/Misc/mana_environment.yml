@@ -71,8 +71,8 @@
         basalt5: ManaBasaltPalette
   - type: SyncSprite
   - type: PointLight
-    radius: 1.2
-    energy: 0.1
+    radius: 1.7
+    energy: 1.0
     color: "#9955cc"
 
 # ---------- Anomaly floral carpets (passable, LowFloors depth, off-grid) ----------
@@ -93,8 +93,8 @@
     - state: stage-2
     drawdepth: LowFloors
   - type: PointLight
-    radius: 2.5
-    energy: 0.1
+    radius: 3.5
+    energy: 2.0
     color: "#44ccff"
 
 - type: entity
@@ -113,8 +113,8 @@
     - state: harvest
     drawdepth: LowFloors
   - type: PointLight
-    radius: 2.5
-    energy: 0.1
+    radius: 3.5
+    energy: 2.0
     color: "#44ccff"
 
 # ---------- Anomaly bulb — small off-grid prop at normal height ----------
@@ -134,8 +134,8 @@
     layers:
     - state: stage-1
   - type: PointLight
-    radius: 1.8
-    energy: 0.1
+    radius: 2.3
+    energy: 1.0
     color: "#44ccff"
 
 # ---------- Floral carpet (on-grid, passable, slowdown) ----------
@@ -245,8 +245,8 @@
     tags:
       - HideContextMenu
   - type: PointLight
-    radius: 1.0
-    energy: 0.1
+    radius: 1.5
+    energy: 1.0
     color: "#00e8c8"
 
 # ---------- Collidable base (anchored, grid-placed) ----------
@@ -301,8 +301,8 @@
         layer:
         - WallLayer
   - type: PointLight
-    radius: 2.5
-    energy: 0.1
+    radius: 3.0
+    energy: 1.0
     color: "#9933ff"
   - type: Damageable
     damageContainer: StructuralInorganic
@@ -359,8 +359,8 @@
         layer:
         - WallLayer
   - type: PointLight
-    radius: 2.5
-    energy: 0.1
+    radius: 3.0
+    energy: 1.0
     color: "#9933ff"
   - type: Damageable
     damageContainer: StructuralInorganic
@@ -417,8 +417,8 @@
         layer:
         - WallLayer
   - type: PointLight
-    radius: 2.5
-    energy: 0.1
+    radius: 3.0
+    energy: 1.0
     color: "#9933ff"
   - type: Damageable
     damageContainer: StructuralInorganic
@@ -518,8 +518,8 @@
         - BulletImpassable
         - Opaque
   - type: PointLight
-    radius: 3
-    energy: 0.1
+    radius: 3.5
+    energy: 1.0
     color: "#00e8c8"
   - type: Damageable
     damageContainer: StructuralInorganic
@@ -556,8 +556,8 @@
     color: "#ff88dd"
     noRot: true
   - type: PointLight
-    radius: 3
-    energy: 0.1
+    radius: 3.5
+    energy: 1.0
     color: "#ff88dd"
 
 # ---------- Chromite walls (impassable, damageable, 5 mana wood each) ----------
@@ -727,9 +727,9 @@
     - random:
         candle-small: ManaCandlePalette
   - type: PointLight
-    color: "#b38369"
-    radius: 2
-    power: 0.1
+    color: "#D1713E"
+    radius: 2.5
+    power: 1.0
 
 - type: entity
   parent: ManaMagicCandle1Deco
@@ -741,9 +741,9 @@
     graph: ManaEnvironmentGraph
     node: ManaMagicCandle1BDeco
   - type: PointLight
-    color: "#b295b8"
-    radius: 2
-    power: 0.1
+    color: "#46CAA5"
+    radius: 2.5
+    power: 1.0
 
 - type: entity
   parent: CandleInfinite
@@ -771,9 +771,9 @@
     - random:
         candle-big: ManaCandlePalette
   - type: PointLight
-    color: "#debe8e"
-    radius: 3
-    power: 0.1
+    color: "#E3A057"
+    radius: 3.5
+    power: 1.0
 
 - type: entity
   parent: ManaMagicCandle2Deco
@@ -785,9 +785,9 @@
     graph: ManaEnvironmentGraph
     node: ManaMagicCandle2BDeco
   - type: PointLight
-    color: "#dcd3f2"
-    radius: 3
-    power: 0.1
+    color: "#62C9E1"
+    radius: 3.5
+    power: 1.0
 
 
 
