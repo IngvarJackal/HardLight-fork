@@ -3722,3 +3722,27 @@ Entries:
       message: Migrated StaminaSystem to SharedStaminaSystem.
   id: 398
   time: '2026-05-07T05:21:43.0000000+00:00'
+- author: Aureuix
+  changes:
+    - type: Fix
+      message: Fixed Kitsune using the wrong emote sound for squeak.
+  id: 399
+  time: '2026-05-08T06:45:13.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Fix
+      message: Directional wall ambient occlusion now makes sense.
+  id: 400
+  time: '2026-05-08T06:45:51.0000000+00:00'
+- author: fenndragon
+  changes:
+    - type: Tweak
+      message: Updates engine to latest from upstream
+  id: 401
+  time: '2026-05-10T10:48:59.0000000+00:00'
+- author: DDoubleDee
+  changes:
+    - type: Tweak
+      message: Proto-Avali/Resomi now make emote sounds like normal avali/resomi
+  id: 402
+  time: '2026-05-10T10:49:58.0000000+00:00'

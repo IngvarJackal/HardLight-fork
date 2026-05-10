@@ -254,7 +254,47 @@
     multiplier: 3
   - type: CrawlUnderObjects
     sneakSpeedModifier: 0.55
-    squeezeRadiusScale: 0.9
+    squeezeRadiusScale: 0.75
+    unsqueezedRadiusScale: 1.05
+
+- type: trait
+  id: VeryBig
+  name: very-big-name
+  description: very-big-text
+  category: Physical
+  cost: 3
+  replaceComponents: true
+  mutuallyExclusiveTraits:
+  - Small
+  - Tiny
+  components:
+  - type: SizeAttribute
+    tall: true
+  - type: TallWhitelist
+    scale: 1.5
+    borgScale: 1.1
+    borgFixtureRadius: 0.45
+    densityMultiplier: 1.25
+    cosmeticOnly: false
+  - type: CritThresholdModifier
+    critThresholdDelta: 25
+  - type: GunAccuracyModifier
+    spreadMultiplier: 1.25
+  - type: MeleeDamageModifier
+    flatBonus: 2
+    damageType: Blunt
+  - type: ThrowStrengthModifier
+    multiplier: 1.35
+  - type: TraitZoomModifier
+    multiplier: 1.15
+  - type: TraitMovementSpeedModifier
+    walkMultiplier: 0.7
+    sprintMultiplier: 0.75
+  - type: TraitCyborgPowerDrawModifier
+    multiplier: 3
+  - type: CrawlUnderObjects
+    sneakSpeedModifier: 0.55
+    squeezeRadiusScale: 0.65
     unsqueezedRadiusScale: 1.05
 
 - type: trait

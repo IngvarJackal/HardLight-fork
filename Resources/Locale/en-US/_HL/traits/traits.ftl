@@ -43,6 +43,8 @@ pooltoy-text = You're a living inflatable, whether by some weird mutation or by 
 
 big-name = Big
 big-text = You are noticeably larger than average.
+very-big-name = Very Big
+very-big-text = You are significantly larger than average.  This has brought you no benefits over merely being big except learning how to squeeze into tight spaces.
 small-name = Small
 small-text = You are noticeably smaller than average.
 tiny-name = Tiny
