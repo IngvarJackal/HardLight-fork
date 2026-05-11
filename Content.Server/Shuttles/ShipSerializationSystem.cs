@@ -64,6 +64,7 @@ using Content.Shared.Labels.Components;
 using Content.Shared.Labels.EntitySystems;
 using Content.Shared.Sprite;
 using Content.Shared.Tag;
+using Content.Shared.Clothing.Components;
 
 namespace Content.Server.Shuttles.Save
 {
@@ -3147,10 +3148,15 @@ namespace Content.Server.Shuttles.Save
                         // Do not clear powered light bulb containers; ships would spawn dark.
                         if (containerId == Content.Server.Light.EntitySystems.PoweredLightSystem.LightBulbContainer)
                             continue;
-                        // Clear default spawned items - we'll restore saved contents later
+                        // Clear default spawned items - we'll restore saved contents later.
+                        // Null out AttachedClothingComponent.AttachedUid first so that deleting
+                        // an auto-spawned helmet doesn't trigger OnRemoveAttached, which would
+                        // strip ToggleableClothingComponent off the parent suit.
                         var defaultItems = container.ContainedEntities.ToList();
                         foreach (var defaultItem in defaultItems)
                         {
+                            if (_entityManager.TryGetComponent<AttachedClothingComponent>(defaultItem, out var attached))
+                                attached.AttachedUid = EntityUid.Invalid;
                             _containerSystem.Remove(defaultItem, container);
                             _entityManager.DeleteEntity(defaultItem);
                         }
