@@ -65,6 +65,7 @@ using Content.Shared.Labels.EntitySystems;
 using Content.Shared.Sprite;
 using Content.Shared.Tag;
 using Content.Shared.Clothing.Components;
+using Content.Server.Clothing.Systems;
 
 namespace Content.Server.Shuttles.Save
 {
@@ -92,6 +93,7 @@ namespace Content.Server.Shuttles.Save
         [Dependency] private readonly ConstructionSystem _constructionSystem = default!;
         [Dependency] private readonly LabelSystem _labelSystem = default!;
         [Dependency] private readonly TagSystem _tagSystem = default!;
+        [Dependency] private readonly ChameleonClothingSystem _chameleonSystem = default!;
         // Note: For EntityDeserializer we use IoCManager.Instance directly to avoid extra injected fields.
 
         private ISawmill _sawmill = default!;
@@ -2163,6 +2165,11 @@ namespace Content.Server.Shuttles.Save
                 var d = SerializeRandomSpriteComponent(randomSprite);
                 if (d != null) entityData.Components.Add(d);
             }
+            if (_entityManager.TryGetComponent<ChameleonClothingComponent>(uid, out var chameleon))
+            {
+                var d = SerializeChameleonClothingComponent(chameleon);
+                if (d != null) entityData.Components.Add(d);
+            }
         }
 
         private void RestoreRoomComponents(EntityUid uid, EntityData entityData)
@@ -2183,6 +2190,8 @@ namespace Content.Server.Shuttles.Save
                     RestorePaperComponent(uid, componentData);
                 else if (componentData.Type == "RandomSpriteComponent" && componentData.Properties.Any())
                     RestoreRandomSpriteComponent(uid, componentData);
+                else if (componentData.Type == "ChameleonClothingComponent" && componentData.Properties.Any())
+                    RestoreChameleonClothingComponent(uid, componentData);
                 // StorageComponent locations handled in RestoreStorageLocations post-pass
             }
         }
@@ -2424,6 +2433,26 @@ namespace Content.Server.Shuttles.Save
                 comp.Selected[layer] = (state, color);
             }
             Dirty(uid, comp);
+        }
+
+        private ComponentData? SerializeChameleonClothingComponent(ChameleonClothingComponent comp)
+        {
+            if (string.IsNullOrEmpty(comp.Default))
+                return null;
+            return new ComponentData
+            {
+                Type = "ChameleonClothingComponent",
+                Properties = new Dictionary<string, object> { ["Default"] = comp.Default }
+            };
+        }
+
+        private void RestoreChameleonClothingComponent(EntityUid uid, ComponentData componentData)
+        {
+            if (!componentData.Properties.TryGetValue("Default", out var protoObj))
+                return;
+            var protoId = protoObj?.ToString();
+            if (!string.IsNullOrEmpty(protoId))
+                _chameleonSystem.SetSelectedPrototype(uid, protoId, forceUpdate: true);
         }
 
         private ComponentData? SerializeStorageLocationsComponent(EntityUid entityUid, StorageComponent storage)

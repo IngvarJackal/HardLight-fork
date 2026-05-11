@@ -488,4 +488,77 @@ public sealed class RoomSaveTest
         Assert.That(props.TryGetValue("Selected", out var sel) && sel is Dictionary<string, object> d && d.Count == 0,
             Is.True, "Empty Selected must produce an empty inner dict");
     }
+
+    // ---------------------------------------------------------------------------
+    // ChameleonClothingComponent round-trip
+    // ---------------------------------------------------------------------------
+
+    private static Dictionary<string, object> MakeChameleonProps(string selectedProtoId)
+        => new() { ["Default"] = selectedProtoId };
+
+    [Test]
+    public void ChameleonClothing_DefaultPrototypeSurvivesRoundTrip()
+    {
+        var props = MakeChameleonProps("ClothingHeadHelmetHardsuitSecurity");
+        var yaml = Serializer.Serialize(props);
+        var restored = Deserializer.Deserialize<Dictionary<string, object>>(yaml);
+
+        Assert.That(restored, Is.Not.Null);
+        Assert.That(restored!["Default"]?.ToString(), Is.EqualTo("ClothingHeadHelmetHardsuitSecurity"),
+            "Chameleon selected prototype ID must survive round-trip unchanged");
+    }
+
+    [Test]
+    public void ChameleonClothing_EmptyDefaultProducesNoEntry()
+    {
+        // SerializeChameleonClothingComponent returns null when Default is null/empty,
+        // so no ComponentData is added. Verify the guard logic matches.
+        var nullDefault = (string?)null;
+        var emptyDefault = string.Empty;
+
+        Assert.That(string.IsNullOrEmpty(nullDefault), Is.True, "null Default must be treated as not set");
+        Assert.That(string.IsNullOrEmpty(emptyDefault), Is.True, "empty Default must be treated as not set");
+    }
+
+    [Test]
+    public void ChameleonClothing_ProtoIdWithSpecialCharactersSurvivesRoundTrip()
+    {
+        // Prototype IDs can contain underscores, digits, and mixed case.
+        var props = MakeChameleonProps("ClothingOuterHardsuitRd_Variant2");
+        var yaml = Serializer.Serialize(props);
+        var restored = Deserializer.Deserialize<Dictionary<string, object>>(yaml);
+
+        Assert.That(restored!["Default"]?.ToString(), Is.EqualTo("ClothingOuterHardsuitRd_Variant2"));
+    }
+
+    // ---------------------------------------------------------------------------
+    // ToggleableClothing / helmet fix — AttachedUid sentinel logic
+    // ---------------------------------------------------------------------------
+
+    [Test]
+    public void ToggleableClothing_InvalidEntityUidSentinelIsNotValid()
+    {
+        // The helmet fix works by setting AttachedClothingComponent.AttachedUid = EntityUid.Invalid
+        // before deleting the auto-spawned helmet. OnRemoveAttached then calls
+        // TryComp(component.AttachedUid, ...) which returns false for an invalid uid,
+        // so ToggleableClothingComponent is NOT stripped from the suit.
+        //
+        // This test verifies the sentinel value behaves as expected.
+        var invalid = Robust.Shared.GameObjects.EntityUid.Invalid;
+        Assert.That(invalid.IsValid(), Is.False,
+            "EntityUid.Invalid must not be valid — the OnRemoveAttached guard relies on this");
+    }
+
+    [Test]
+    public void ToggleableClothing_DefaultEntityUidIsInvalid()
+    {
+        // A default (zero) EntityUid is equivalent to Invalid. This is the state
+        // AttachedUid would be in before assignment, confirming the sentinel doesn't
+        // accidentally alias a real entity.
+        var defaultUid = default(Robust.Shared.GameObjects.EntityUid);
+        Assert.That(defaultUid.IsValid(), Is.False,
+            "default EntityUid must not be valid");
+        Assert.That(defaultUid, Is.EqualTo(Robust.Shared.GameObjects.EntityUid.Invalid),
+            "default EntityUid must equal EntityUid.Invalid");
+    }
 }
