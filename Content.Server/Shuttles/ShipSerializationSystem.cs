@@ -65,6 +65,7 @@ using Content.Shared.Labels.EntitySystems;
 using Content.Shared.Sprite;
 using Content.Shared.Tag;
 using Content.Shared.Clothing.Components;
+using Content.Shared.Clothing.EntitySystems;
 using Content.Server.Clothing.Systems;
 
 namespace Content.Server.Shuttles.Save
@@ -94,6 +95,7 @@ namespace Content.Server.Shuttles.Save
         [Dependency] private readonly LabelSystem _labelSystem = default!;
         [Dependency] private readonly TagSystem _tagSystem = default!;
         [Dependency] private readonly ChameleonClothingSystem _chameleonSystem = default!;
+        [Dependency] private readonly ToggleableClothingSystem _toggleableClothingSystem = default!;
         // Note: For EntityDeserializer we use IoCManager.Instance directly to avoid extra injected fields.
 
         private ISawmill _sawmill = default!;
@@ -3178,14 +3180,14 @@ namespace Content.Server.Shuttles.Save
                         if (containerId == Content.Server.Light.EntitySystems.PoweredLightSystem.LightBulbContainer)
                             continue;
                         // Clear default spawned items - we'll restore saved contents later.
-                        // Null out AttachedClothingComponent.AttachedUid first so that deleting
-                        // an auto-spawned helmet doesn't trigger OnRemoveAttached, which would
+                        // Disconnect AttachedClothingComponent first so that deleting an
+                        // auto-spawned helmet doesn't trigger OnRemoveAttached, which would
                         // strip ToggleableClothingComponent off the parent suit.
                         var defaultItems = container.ContainedEntities.ToList();
                         foreach (var defaultItem in defaultItems)
                         {
                             if (_entityManager.TryGetComponent<AttachedClothingComponent>(defaultItem, out var attached))
-                                attached.AttachedUid = EntityUid.Invalid;
+                                _toggleableClothingSystem.DisconnectAttachedClothing(attached);
                             _containerSystem.Remove(defaultItem, container);
                             _entityManager.DeleteEntity(defaultItem);
                         }
