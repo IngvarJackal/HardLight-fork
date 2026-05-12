@@ -409,3 +409,18 @@
   - type: Amputee
     removeBodyPart: Arm
     partSymmetry: Right
+
+- type: trait
+  id: HardSkin
+  name: trait-hardskin-name
+  description: trait-hardskin-desc
+  category: Physical
+  cost: -4
+  speciesBlacklist:
+  - IPC
+  - Synth
+  components:
+  - type: BlockInjection
+    blockHypospray: true
+    blockInjectOnProjectile: true
+    blockReason: hardskin

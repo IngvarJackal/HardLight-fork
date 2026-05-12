@@ -909,33 +909,33 @@
     reagents:
       - Mutadone
 
-- type: geneticMutation
-  id: SevereMyopia
-  name: "Severe Myopia"
-  desc: "Subject has terrible eyesight."
-  popupText: "Everything gets a little blurry"
-  instability: -10
-  components:
-  - type: PermanentBlindness # TODO: Make system to ensure and set PermanentBlindness component instead.
-    blindness: 4
+# - type: geneticMutation # Hardlight: These don't seem to work with mutadone? Disabling until a fix is found.
+#   id: SevereMyopia
+#   name: "Severe Myopia"
+#   desc: "Subject has terrible eyesight."
+#   popupText: "Everything gets a little blurry"
+#   instability: -10
+#   components:
+#   - type: PermanentBlindness # TODO: Make system to ensure and set PermanentBlindness component instead.
+#     blindness: 4
+#
+# - type: geneticMutation
+#   id: Blindness
+#   name: "Total Blindness"
+#   desc: "Subject is completely blind."
+#   popupText: "You can't see a thing"
+#   instability: -20
+#   components:
+#   - type: PermanentBlindness # TODO: Make system to ensure and set PermanentBlindness component instead.
 
-- type: geneticMutation
-  id: Blindness
-  name: "Total Blindness"
-  desc: "Subject is completely blind."
-  popupText: "You can't see a thing"
-  instability: -20
-  components:
-  - type: PermanentBlindness # TODO: Make system to ensure and set PermanentBlindness component instead.
-
-- type: geneticMutation
-  id: Unrevivable
-  name: "Do Not Resuscitate"
-  desc: "Subject cannot be revived by any means. Death is permanent."
-  popupText: "You feel your mortality"
-  instability: -20
-  components:
-  - type: Unrevivable
+# - type: geneticMutation # Hardlight: Overly punishing
+#   id: Unrevivable
+#   name: "Do Not Resuscitate"
+#   desc: "Subject cannot be revived by any means. Death is permanent."
+#   popupText: "You feel your mortality"
+#   instability: -20
+#   components:
+#   - type: Unrevivable
 
 - type: geneticMutation
   id: BloodToxification
