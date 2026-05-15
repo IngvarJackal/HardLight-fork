@@ -240,9 +240,11 @@
         path: /Audio/Effects/Lightning/lightningbolt.ogg
     - type: SpawnOnTrigger 
       proto: EffectFlashBluespace
+    - type: GlobalPvs
+    - type: BluespaceFlasherVisuals
+      radius: 12.5
     - type: BluespacePulseOnTrigger
       radius: 12
-      rangeIndicatorPrototype: EffectNullspaceFlasherRange
     - type: Sprite
       sprite: _HL/Objects/Weapons/bflash.rsi
       layers:

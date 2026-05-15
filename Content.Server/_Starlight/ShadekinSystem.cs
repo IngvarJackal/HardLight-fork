@@ -13,6 +13,7 @@ using Robust.Shared.Player;
 using Content.Shared.Chat;
 using Robust.Shared.Timing;
 using Content.Shared._HL.Traits.Physical;
+using Content.Shared._Starlight.NullSpace;
 
 
 namespace Content.Server._Starlight;
@@ -260,7 +261,7 @@ public sealed class ShadekinSystem : EntitySystem
 
             var lightExposure = 0f;
 
-            if (!_container.IsEntityInContainer(uid))
+            if (!_container.IsEntityInContainer(uid) && !HasComp<NullSpaceComponent>(uid))
                 lightExposure = GetLightExposure(uid);
 
             if (lightExposure >= 15f)

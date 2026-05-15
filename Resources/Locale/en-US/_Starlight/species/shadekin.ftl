@@ -12,3 +12,4 @@ shadekin-alert-4 = [color=green]Light Exposure:[/color] [color=red]EXTREME[/colo
                     LIGHTS... I NEED DARKNESS! its burns!
 
 phase-fail-generic = I can't phase!
+phase-fail-flasher = I can't phase here — a bluespace flasher is blocking the way!

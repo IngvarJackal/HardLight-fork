@@ -26,6 +26,7 @@ using Content.Shared._Starlight;
 using Content.Shared.Actions;
 using Robust.Server.Containers;
 using Robust.Shared.Containers;
+using Content.Shared.Clothing.Components;
 
 namespace Content.Server._Starlight.NullSpace;
 
@@ -258,6 +259,16 @@ public sealed class EtherealSystem : SharedEtherealSystem
 
                 if (HasComp<NullPhaseComponent>(equipped))
                     continue;
+
+                // Retract any attached clothing piece (e.g. hardsuit helmet) before hiding the item
+                // so it ends up nested inside the item's own container rather than getting lost.
+                if (TryComp<ToggleableClothingComponent>(equipped, out var toggleable)
+                    && toggleable.Container != null
+                    && toggleable.Container.ContainedEntity == null
+                    && toggleable.ClothingUid != null)
+                {
+                    _inventory.TryUnequip(uid, toggleable.Slot, force: true, inventory: inventory);
+                }
 
                 if (!_container.Insert(equipped, hiddenContainer))
                     continue;

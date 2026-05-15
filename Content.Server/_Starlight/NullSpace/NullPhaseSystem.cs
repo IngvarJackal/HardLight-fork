@@ -119,9 +119,15 @@ public sealed class EtherealPhaseSystem : EntitySystem
     private void Toggle(EntityUid uid, NullPhaseComponent component, bool toggle)
     {
         if (toggle)
+        {
             _actionsSystem.AddAction(uid, ref component.PhaseAction, "NullPhaseAction", uid);
+            EnsureComp<ShowNullSpaceComponent>(uid);
+        }
         else
+        {
             _actionsSystem.RemoveAction(uid, component.PhaseAction);
+            RemComp<ShowNullSpaceComponent>(uid);
+        }
     }
 
     public bool Phase(EntityUid uid)
@@ -149,6 +155,18 @@ public sealed class EtherealPhaseSystem : EntitySystem
             {
                 _popup.PopupEntity(Loc.GetString("phase-fail-generic"), uid, uid);
                 return false;
+            }
+
+            foreach (var flasher in _lookup.GetEntitiesInRange<BluespacePulseOnTriggerComponent>(Transform(uid).Coordinates, 30))
+            {
+                if (!Transform(flasher).Anchored)
+                    continue;
+
+                if (_lookup.GetEntitiesInRange(flasher, flasher.Comp.Radius).Contains(uid))
+                {
+                    _popup.PopupEntity(Loc.GetString("phase-fail-flasher"), uid, uid);
+                    return false;
+                }
             }
 
             EnsureComp<NullSpaceComponent>(uid);

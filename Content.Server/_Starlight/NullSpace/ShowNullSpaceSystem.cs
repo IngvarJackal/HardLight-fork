@@ -13,7 +13,7 @@ public sealed class ShowEtherealSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<ShowNullSpaceComponent, MapInitEvent>(OnInit);
+        SubscribeLocalEvent<ShowNullSpaceComponent, ComponentStartup>(OnInit);
         SubscribeLocalEvent<ShowNullSpaceComponent, ComponentShutdown>(OnShutdown);
         SubscribeLocalEvent<ShowNullSpaceComponent, GotEquippedEvent>(OnEquipped);
         SubscribeLocalEvent<ShowNullSpaceComponent, GotUnequippedEvent>(OnUnequipped);
@@ -21,7 +21,7 @@ public sealed class ShowEtherealSystem : EntitySystem
         SubscribeLocalEvent<ShowNullSpaceComponent, AttackAttemptEvent>(OnAttackAttempt);
     }
 
-    private void OnInit(EntityUid uid, ShowNullSpaceComponent component, MapInitEvent args)
+    private void OnInit(EntityUid uid, ShowNullSpaceComponent component, ComponentStartup args)
     {
         Toggle(uid, true);
     }
