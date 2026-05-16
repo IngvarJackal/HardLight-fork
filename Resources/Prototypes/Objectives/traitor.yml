@@ -101,6 +101,9 @@
     title: objective-condition-maroon-person-title
   - type: PickRandomPerson
     filters: # Starlight
+    # Anomaly players cannot be targeted.
+    - !type:JobMindFilter
+      job: Anomaly
     # Can't have multiple objectives to kill the same person.
     - !type:TargetObjectiveMindFilter
       blacklist:
@@ -132,6 +135,9 @@
       whitelist:
         components:
         - CommandStaff
+    # Anomaly players cannot be targeted.
+    - !type:JobMindFilter
+      job: Anomaly
     # Can't have multiple objectives to kill the same person.
     - !type:TargetObjectiveMindFilter
       blacklist:

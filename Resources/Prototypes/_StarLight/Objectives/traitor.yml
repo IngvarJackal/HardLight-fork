@@ -16,6 +16,9 @@
         blacklist:
           components:
           - TeachALessonTarget
+      # Shadekins (Anomaly role) cannot be targeted - they are not standard crew.
+      - !type:JobMindFilter
+        job: Anomaly
 
 - type: entity
   parent: [BaseTraitorObjective, BaseTeachALessonObjective]
