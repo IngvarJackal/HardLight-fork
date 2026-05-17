@@ -33,7 +33,7 @@ public abstract class SharedTapeRecorderSystem : EntitySystem
 
     // Maximum approximate transcript character length before the tape stops accepting new messages.
     // Accounts for per-line formatting overhead (~30 chars for timestamp + markup).
-    private const int MaxTranscriptLength = 6000;
+    private const int MaxTranscriptLength = 5900;
 
     private static int MessageLength(TapeCassetteRecordedMessage msg) =>
         (msg.Name?.Length ?? 0) + msg.Message.Length + 30;
@@ -150,13 +150,14 @@ public abstract class SharedTapeRecorderSystem : EntitySystem
         foreach (var msg in tape.Comp.Buffer)
         {
             var msgLength = MessageLength(msg);
-            if (tape.Comp.TranscriptLength + msgLength > MaxTranscriptLength)
+            var wouldExceed = tape.Comp.TranscriptLength + msgLength > MaxTranscriptLength;
+            tape.Comp.RecordedData.Add(msg);
+            tape.Comp.TranscriptLength += msgLength;
+            if (wouldExceed)
             {
                 transcriptFull = true;
                 break;
             }
-            tape.Comp.RecordedData.Add(msg);
-            tape.Comp.TranscriptLength += msgLength;
         }
 
         tape.Comp.Buffer.Clear();
