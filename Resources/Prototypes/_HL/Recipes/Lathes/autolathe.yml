@@ -1,6 +1,6 @@
 - type: latheRecipe
-  id: CassetteTapeBluespace
-  result: CassetteTapeBluespace
+  id: CassetteTapeAdvanced
+  result: CassetteTapeAdvanced
   categories:
   - Tools
   completetime: 4
