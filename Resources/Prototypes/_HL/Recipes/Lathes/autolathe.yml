@@ -1,4 +1,15 @@
 - type: latheRecipe
+  id: CassetteTapeBluespace
+  result: CassetteTapeBluespace
+  categories:
+  - Tools
+  completetime: 4
+  materials:
+    Steel: 50
+    Plastic: 150
+    Plasma: 50
+
+- type: latheRecipe
   id: InjectorCollar
   result: ClothingNeckInjectorCollar
   completetime: 5

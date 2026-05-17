@@ -1,0 +1,12 @@
+- type: entity
+  parent: CassetteTape
+  id: CassetteTapeBluespace
+  name: bluespace cassette tape
+  description: A bluespace-infused magnetic tape that can hold up to 90 minutes of content.
+  components:
+  - type: TapeCassette
+    maxCapacity: 5400
+    repairWhitelist:
+      tags:
+      - Screwdriver
+      - Write
