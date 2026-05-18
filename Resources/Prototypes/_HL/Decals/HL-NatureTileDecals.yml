@@ -127,17 +127,8 @@
   snapCardinals: false
   defaultSnap: false
   sprite:
-    sprite: /Textures/Nyanotrasen/Objects/Tiles/tiles.rsi
-    state: bedrock
-
-- type: decal
-  id: TileAstroDirt
-  tags: ["flora", "station", "markings"]
-  snapCardinals: false
-  defaultSnap: false
-  sprite:
-    sprite: /Textures/_Starlight/Objects/Tiles/tiles.rsi
-    state: tile_astro_dirt
+    sprite: /Textures/Objects/Tiles/tile.rsi
+    state: floor-bedrock
 
 # --- Snow / Ice ---
 - type: decal
@@ -147,7 +138,7 @@
   defaultSnap: false
   sprite:
     sprite: /Textures/Objects/Tiles/tile.rsi
-    state: snow
+    state: floor-snow
 
 - type: decal
   id: TileIce
@@ -156,7 +147,7 @@
   defaultSnap: false
   sprite:
     sprite: /Textures/Objects/Tiles/tile.rsi
-    state: astroice
+    state: floor-ice
 
 - type: decal
   id: TilePermafrost
@@ -166,26 +157,6 @@
   sprite:
     sprite: /Textures/Objects/Tiles/tile.rsi
     state: permafrost
-
-# --- Lava ---
-- type: decal
-  id: TileLava
-  tags: ["rock", "station", "markings"]
-  snapCardinals: false
-  defaultSnap: false
-  sprite:
-    sprite: /Textures/Tiles/Planet/lava.rsi
-    state: full
-
-# --- Liquid Plasma ---
-- type: decal
-  id: TileLiquidPlasma
-  tags: ["rock", "station", "markings"]
-  snapCardinals: false
-  defaultSnap: false
-  sprite:
-    sprite: /Textures/Tiles/Planet/liquid_plasma.rsi
-    state: full
 
 # --- Water / Pools ---
 - type: decal
@@ -208,19 +179,10 @@
 
 # --- Astro variants ---
 - type: decal
-  id: TileAstroIce
-  tags: ["flora", "station", "markings"]
-  snapCardinals: false
-  defaultSnap: false
-  sprite:
-    sprite: /Textures/Objects/Tiles/tile.rsi
-    state: astroice
-
-- type: decal
   id: TileAstroAsteroid
   tags: ["rock", "station", "markings"]
   snapCardinals: false
   defaultSnap: false
   sprite:
     sprite: /Textures/Objects/Tiles/tile.rsi
-    state: astro-asteroid
+    state: floor-astroasteroid

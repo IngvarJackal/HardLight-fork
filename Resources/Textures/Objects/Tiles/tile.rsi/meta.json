@@ -352,6 +352,30 @@
             "name": "low_desert"
         },
         {
+            "name": "floor-snow"
+        },
+        {
+            "name": "floor-ice"
+        },
+        {
+            "name": "floor-grass"
+        },
+        {
+            "name": "floor-grassjungle"
+        },
+        {
+            "name": "floor-grassdark"
+        },
+        {
+            "name": "floor-grasslight"
+        },
+        {
+            "name": "floor-astroasteroid"
+        },
+        {
+            "name": "floor-bedrock"
+        },
+        {
             "name": "bcircuit-inhand-left",
             "directions": 4
         },
