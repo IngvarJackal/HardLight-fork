@@ -99,7 +99,7 @@
   snapCardinals: false
   defaultSnap: false
   sprite:
-    sprite: /Textures/Tiles/Planet/Desert
+    sprite: /Textures/Objects/Tiles/tile.rsi
     state: desert
 
 - type: decal
@@ -108,8 +108,8 @@
   snapCardinals: false
   defaultSnap: false
   sprite:
-    sprite: /Textures/Tiles/Planet/Desert
-    state: lowdesert
+    sprite: /Textures/Objects/Tiles/tile.rsi
+    state: low_desert
 
 # --- Dirt ---
 - type: decal
@@ -146,7 +146,7 @@
   snapCardinals: false
   defaultSnap: false
   sprite:
-    sprite: /Textures/Tiles/Planet/Snow
+    sprite: /Textures/Objects/Tiles/tile.rsi
     state: snow
 
 - type: decal
@@ -155,8 +155,8 @@
   snapCardinals: false
   defaultSnap: false
   sprite:
-    sprite: /Textures/Tiles/Planet/Snow
-    state: ice
+    sprite: /Textures/Objects/Tiles/tile.rsi
+    state: astroice
 
 - type: decal
   id: TilePermafrost
@@ -164,7 +164,7 @@
   snapCardinals: false
   defaultSnap: false
   sprite:
-    sprite: /Textures/Tiles/Planet/Snow
+    sprite: /Textures/Objects/Tiles/tile.rsi
     state: permafrost
 
 # --- Lava ---

@@ -343,6 +343,15 @@
             "name": "astroice"
         },
         {
+            "name": "permafrost"
+        },
+        {
+            "name": "desert"
+        },
+        {
+            "name": "low_desert"
+        },
+        {
             "name": "bcircuit-inhand-left",
             "directions": 4
         },
