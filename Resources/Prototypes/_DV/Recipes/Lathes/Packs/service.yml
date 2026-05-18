@@ -4,5 +4,4 @@
   id: ReportingStatic
   recipes:
   - CassetteTape
-  - CassetteTapeAdvanced
   - TapeRecorder
