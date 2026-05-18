@@ -43,3 +43,17 @@
   completetime: 6
   materials:
     ManaWoodPlank: 500
+
+- type: latheRecipe
+  id: ClothingOuterRobeManawaRiteAlt
+  result: ClothingOuterRobeManawaRiteAlt
+  completetime: 6
+  materials:
+    ManaWoodPlank: 500
+
+- type: latheRecipe
+  id: ClothingOuterHoodieManawaRiteAlt
+  result: ClothingOuterHoodieManawaRiteAlt
+  completetime: 6
+  materials:
+    ManaWoodPlank: 500

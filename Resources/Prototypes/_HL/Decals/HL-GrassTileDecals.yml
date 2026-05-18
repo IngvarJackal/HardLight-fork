@@ -1,0 +1,46 @@
+# Full-tile grass decals sourced from tile RSIs, usable as floor paint.
+
+- type: decal
+  id: TileGrass
+  tags: ["flora", "station", "markings"]
+  snapCardinals: false
+  defaultSnap: false
+  sprite:
+    sprite: /Textures/Objects/Tiles/tile.rsi
+    state: grass
+
+- type: decal
+  id: TileGrassJungle
+  tags: ["flora", "station", "markings"]
+  snapCardinals: false
+  defaultSnap: false
+  sprite:
+    sprite: /Textures/Objects/Tiles/tile.rsi
+    state: grassjungle
+
+- type: decal
+  id: TileAstrograss
+  tags: ["flora", "station", "markings"]
+  snapCardinals: false
+  defaultSnap: false
+  sprite:
+    sprite: /Textures/Objects/Tiles/tile.rsi
+    state: astrograss
+
+- type: decal
+  id: TileGrassDark
+  tags: ["flora", "station", "markings"]
+  snapCardinals: false
+  defaultSnap: false
+  sprite:
+    sprite: /Textures/Nyanotrasen/Objects/Tiles/tiles.rsi
+    state: grassdark
+
+- type: decal
+  id: TileGrassLight
+  tags: ["flora", "station", "markings"]
+  snapCardinals: false
+  defaultSnap: false
+  sprite:
+    sprite: /Textures/Nyanotrasen/Objects/Tiles/tiles.rsi
+    state: grasslight

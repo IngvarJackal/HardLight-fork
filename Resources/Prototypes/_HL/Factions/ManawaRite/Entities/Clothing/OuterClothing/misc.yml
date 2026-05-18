@@ -53,3 +53,59 @@
         Caustic: 0.9
   - type: ExplosionResistance
     damageCoefficient: 0.90
+
+# Manawa Rite Hoodie (alt) — robe defense profile
+- type: entity
+  parent: ClothingOuterBaseToggleable
+  id: ClothingOuterHoodieManawaRiteAlt
+  name: Manawa Rite hoodie (alt)
+  description: A distinctive reinforced hoodie worn by members of the Manawa Rite.
+  components:
+  - type: Sprite
+    sprite: _HL/Factions/ManawaRite/Clothing/OuterClothing/manawa_rite_hoodie.rsi
+  - type: Clothing
+    sprite: _HL/Factions/ManawaRite/Clothing/OuterClothing/manawa_rite_hoodie.rsi
+  - type: ToggleableClothing
+    clothingPrototype: ClothingHeadHatHoodManawaRite
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.75
+        Slash: 0.75
+        Piercing: 0.75
+        Heat: 0.80
+        Caustic: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.90
+  - type: Storage
+    grid:
+    - 0,0,2,1
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+
+# Manawa Rite Robe (alt) — hoodie defense profile
+- type: entity
+  parent: [ClothingOuterStorageBase, AllowSuitStorageClothing]
+  id: ClothingOuterRobeManawaRiteAlt
+  name: Manawa Rite robe (alt)
+  description: A distinctive reinforced robe worn by members of the Manawa Rite.
+  components:
+  - type: Sprite
+    sprite: _HL/Factions/ManawaRite/Clothing/OuterClothing/manawa_rite_robe.rsi
+  - type: Clothing
+    sprite: _HL/Factions/ManawaRite/Clothing/OuterClothing/manawa_rite_robe.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.4
+        Heat: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.80
