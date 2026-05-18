@@ -3998,3 +3998,25 @@ Entries:
       message: Health analyzers now show metabolizing chemicals.
   id: 429
   time: '2026-05-16T17:09:49.0000000+00:00'
+- author: Fasuh
+  changes:
+    - type: Add
+      message: Added aphrodisiac visual effect.
+    - type: Add
+      message: Added option in settings to disable aphrodisiac visual effects.
+  id: 430
+  time: '2026-05-18T06:29:59.0000000+00:00'
+- author: SeaborneProto
+  changes:
+    - type: Add
+      message: 'Added pregnancy markings! '
+  id: 431
+  time: '2026-05-18T06:32:44.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: SecurityVends now offer pizza boxes for 1 FUC.
+    - type: Add
+      message: Added stripper poles.
+  id: 432
+  time: '2026-05-18T06:40:43.0000000+00:00'
