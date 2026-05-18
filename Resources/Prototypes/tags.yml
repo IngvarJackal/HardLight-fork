@@ -765,6 +765,9 @@
   id: HighRiskItem
 
 - type: Tag
+  id: Hypospray
+
+- type: Tag
   id: HighSecDoor
 
 - type: Tag
@@ -1220,6 +1223,9 @@
 
 - type: Tag
   id: RollingPin
+
+- type: Tag
+  id: RoomSaveable # Unanchored items with this tag are preserved in room saves
 
 - type: Tag
   id: SaltShaker

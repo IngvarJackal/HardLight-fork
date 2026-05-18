@@ -320,6 +320,7 @@
   - type: StunVisuals
   - type: LayingDown
   - type: OfferItem # _HL
+  - type: StumbleOnMissingLeg # _HL: limp until you fall when missing legs
 
   - type: Carriable # Goobstation
   - type: Genetics # Funkystation - Genetics

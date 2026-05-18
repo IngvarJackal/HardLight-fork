@@ -10,6 +10,10 @@
   joinNotifyCrew: false
   whitelisted: true
   setPreference: true
+  requirements:
+    - !type:SpeciesRequirement
+      species:
+        - Shadekin
   access:
     - Maintenance
   accessGroups:
@@ -17,9 +21,7 @@
   special:
     - !type:AddComponentSpecial
       components:
-        - type: Brighteye
-          energy: 200
-        - type: NullSpace
+        - type: NullPhase
         - type: MailDisabled
         - type: SpecialSectorStationRecord
           recordGeneration: NoRecord

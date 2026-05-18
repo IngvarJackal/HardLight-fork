@@ -3776,3 +3776,307 @@ Entries:
       message: DNR mutation is now disabled.
   id: 406
   time: '2026-05-10T11:07:15.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: All members of Command can now issue command bounties.
+  id: 407
+  time: '2026-05-12T21:56:31.0000000+00:00'
+- author: IngvarJackal
+  changes:
+    - type: Fix
+      message: Room saves no longer freeze the game on save or load
+    - type: Fix
+      message: Room save files shrunk from ~4 MB to ~50 KB
+    - type: Fix
+      message: >-
+        Spray-painted walls and objects now preserve their style after a room
+        load
+    - type: Fix
+      message: Material silo contents are now preserved after a room load
+    - type: Fix
+      message: >-
+        Item positions inside bags and crates are now preserved after a room
+        load
+    - type: Fix
+      message: Stack counts are now preserved after a room load
+    - type: Fix
+      message: >-
+        Paint colors (PaintedComponent), item labels, paper content/stamps, and
+        plushie appearances now survive room loads
+    - type: Fix
+      message: >-
+        Unanchored tools and equipment are no longer saved in rooms (and turning
+        non-interactable); only items tagged `RoomSaveable` (plushies, pillows,
+        potted plants) are kept
+    - type: Add
+      message: >-
+        `RoomSaveable` tag — add to any prototype to preserve it when unanchored
+        in a room save
+  id: 408
+  time: '2026-05-13T06:42:35.0000000+00:00'
+- author: IngvarJackal
+  changes:
+    - type: Tweak
+      message: Shadekin don't inhale foam any more
+  id: 409
+  time: '2026-05-13T06:54:37.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: STC can once again be selected as a round-start job.
+    - type: Add
+      message: The HM can now access traffic control consoles.
+    - type: Fix
+      message: The STC now correctly has access to traffic control consoles.
+  id: 410
+  time: '2026-05-13T06:55:08.0000000+00:00'
+- author: Illumos
+  changes:
+    - type: Add
+      message: Marriage Axe from Starlight
+  id: 411
+  time: '2026-05-13T06:58:04.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Fix
+      message: >-
+        Wooden televisions should no longer incorrectly use modular console
+        sprites.
+  id: 412
+  time: '2026-05-13T09:16:55.0000000+00:00'
+- author: Kronyxxx
+  changes:
+    - type: Add
+      message: >-
+        Added Non-Con Aggressor and Non-Con Victim consent toggles. The Non-Con
+        HUD marker is now color- and shape-coded based on the target's role(s):
+        red/horns-up for aggressor, blue/horns-down for victim, purple/both for
+        either. Existing Non-Con users who don't pick a role keep the original
+        red marker.
+    - type: Add
+      message: >-
+        Added a "Use colorblind-friendly Non-Con marker colors" toggle in the
+        Consent menu. When enabled, the Non-Con role markers use a
+        colorblind-safe amber/teal-green/lavender palette instead of
+        red/blue/purple. Affects only the local viewer.
+  id: 413
+  time: '2026-05-13T09:18:30.0000000+00:00'
+- author: Illumos
+  changes:
+    - type: Fix
+      message: Maybe hopefully fix the manifest
+  id: 414
+  time: '2026-05-13T09:28:12.0000000+00:00'
+- author: fenndragon
+  changes:
+    - type: Remove
+      message: Removed nullphase/shadekin changes
+    - type: Remove
+      message: 'temporarily removed the Anomaly job role '
+  id: 415
+  time: '2026-05-13T09:29:56.0000000+00:00'
+- author: fenndragon
+  changes:
+    - type: Add
+      message: Adds a new lethal security turret that targets contraband carriers
+    - type: Add
+      message: 'Added the first Livewire checkpoint to Core station  '
+    - type: Tweak
+      message: CDets no longer fire on command or security
+    - type: Tweak
+      message: CDets now go offline during Red alert or higher
+  id: 416
+  time: '2026-05-13T10:10:27.0000000+00:00'
+- author: re-silvered
+  changes:
+    - type: Fix
+      message: Fixed context menu incorrect display
+  id: 417
+  time: '2026-05-13T23:13:35.0000000+00:00'
+- author: Sully669
+  changes:
+    - type: Fix
+      message: Fixed plastitanium structure cost to 250
+  id: 418
+  time: '2026-05-13T23:14:36.0000000+00:00'
+- author: re-silvered
+  changes:
+    - type: Fix
+      message: Fixed some service roles not recording playtime
+  id: 419
+  time: '2026-05-13T23:16:21.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: >-
+        Added a new system to allow reagents to spoil, currently only being
+        utilized by Nanites.
+    - type: Add
+      message: >-
+        Synths now bleed a mix of SynthBlood and Nanites, the latter of which
+        immediately spoils into InertNanites when bled.
+    - type: Tweak
+      message: >-
+        Completely reworked Synth bloodstreams in preparation for future
+        improvements.
+    - type: Tweak
+      message: >-
+        Characters with the Synthetic trait now bleed dark purple instead of
+        cyan blue.
+    - type: Tweak
+      message: >-
+        Nanites now spoil into InertNanites unless store in cryostasis beakers,
+        cryostasis syringes, or Synths.
+  id: 420
+  time: '2026-05-13T23:17:53.0000000+00:00'
+- author: Magniras
+  changes:
+    - type: Remove
+      message: Removed ambuzol syringes from FUC vendor
+  id: 421
+  time: '2026-05-15T00:46:13.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: >-
+        Wallmount station maps, mass scanners, and advanced radars now correctly
+        glow in the dark.
+    - type: Add
+      message: >-
+        Wallmount station maps, mass scanners, and advanced radars now correctly
+        reflect state when unpowered.
+  id: 422
+  time: '2026-05-15T00:46:48.0000000+00:00'
+- author: re-silvered
+  changes:
+    - type: Tweak
+      message: Made it so that old redundant rescue beacons are deleted on roundend
+  id: 423
+  time: '2026-05-16T08:08:58.0000000+00:00'
+- author: re-silvered
+  changes:
+    - type: Fix
+      message: Fixed expeditions refusing to leave if attempted to end too early.
+  id: 424
+  time: '2026-05-16T08:09:20.0000000+00:00'
+- author: re-silvered
+  changes:
+    - type: Fix
+      message: Fixed rule links not appearing
+  id: 425
+  time: '2026-05-16T08:09:53.0000000+00:00'
+- author: re-silvered
+  changes:
+    - type: Fix
+      message: Fixed ghosts seeing whisper obfuscation
+  id: 426
+  time: '2026-05-16T08:16:14.0000000+00:00'
+- author: IngvarJackal
+  changes:
+    - type: Tweak
+      message: Nullspace fixes, part 2
+  id: 427
+  time: '2026-05-16T08:17:27.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Fix
+      message: >-
+        Cloning either with a cloning pod or through the paradox clone event now
+        respects the target character's traits and custom height settings.
+    - type: Fix
+      message: >-
+        Spawning characters through the admin action now respects character
+        traits and custom height settings.
+  id: 428
+  time: '2026-05-16T17:09:25.0000000+00:00'
+- author: Illumos
+  changes:
+    - type: Add
+      message: Hand labelers now lets you save/load labels
+    - type: Add
+      message: Health analyzers now show metabolizing chemicals.
+  id: 429
+  time: '2026-05-16T17:09:49.0000000+00:00'
+- author: Fasuh
+  changes:
+    - type: Add
+      message: Added aphrodisiac visual effect.
+    - type: Add
+      message: Added option in settings to disable aphrodisiac visual effects.
+  id: 430
+  time: '2026-05-18T06:29:59.0000000+00:00'
+- author: SeaborneProto
+  changes:
+    - type: Add
+      message: 'Added pregnancy markings! '
+  id: 431
+  time: '2026-05-18T06:32:44.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: SecurityVends now offer pizza boxes for 1 FUC.
+    - type: Add
+      message: Added stripper poles.
+  id: 432
+  time: '2026-05-18T06:40:43.0000000+00:00'
+- author: biteymcstabface
+  changes:
+    - type: Tweak
+      message: >-
+        Reverts shadekin regeneration trait values to those proposed in initial
+        PR
+    - type: Fix
+      message: >-
+        Makes shadekin regeneration traits mutually exclusive with all other
+        regen traits, not just platelets
+  id: 433
+  time: '2026-05-18T18:13:56.0000000+00:00'
+- author: biteymcstabface
+  changes:
+    - type: Tweak
+      message: Reduced range of phase shift light flickering by 40%
+  id: 434
+  time: '2026-05-18T18:23:02.0000000+00:00'
+- author: Typheus
+  changes:
+    - type: Fix
+      message: >-
+        High Security Door/Glass Airlock deconstruction instructions now show
+        proper steps
+  id: 435
+  time: '2026-05-18T18:23:43.0000000+00:00'
+- author: Illumos
+  changes:
+    - type: Add
+      message: Flat Bonemask marking
+    - type: Add
+      message: Beak Bonemask marking
+  id: 436
+  time: '2026-05-18T18:24:43.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Tweak
+      message: >-
+        FTL with private shuttles, in addition to being on expedition maps/the
+        ColComm map, all now count towards "arrived at ColComm" objectives,
+        meaning the evac shuttle is no longer the only official way to arrive at
+        ColComm.
+  id: 437
+  time: '2026-05-18T18:31:59.0000000+00:00'
+- author: re-silvered
+  changes:
+    - type: Fix
+      message: Fixed geneticist station pay 0 -> 24k
+    - type: Tweak
+      message: Lowered prisoner station pay 20k -> 5k
+  id: 438
+  time: '2026-05-18T18:35:49.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Tweak
+      message: >-
+        Medical tracking implants now only execute emergency extractions when
+        the target is located on an expedition map.
+  id: 439
+  time: '2026-05-18T18:41:50.0000000+00:00'

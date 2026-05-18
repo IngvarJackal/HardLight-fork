@@ -65,6 +65,7 @@
   - ContractorBackpackItems
   - ContractorHandItems
   - NFSpeciesSpecific
+  - PassengerNeck
 
 - type: roleLoadout
   id: JobBartender

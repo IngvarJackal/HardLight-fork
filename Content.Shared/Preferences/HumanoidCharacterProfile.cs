@@ -148,6 +148,13 @@ namespace Content.Shared.Preferences
         [DataField]
         public string Company { get; private set; } = "None";
 
+        /// <summary>
+        /// Compatibility-only field for loading legacy profile blobs.
+        /// This value is accepted during deserialization but not used by gameplay.
+        /// </summary>
+        [DataField]
+        public string? CriminalRecordEntry { get; private set; }
+
         public HumanoidCharacterProfile(
             string name,
             string flavortext,

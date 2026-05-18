@@ -149,4 +149,18 @@ public sealed class HLCCVars
     /// </summary>
     public static readonly CVarDef<bool> CryoTeleportation =
         CVarDef.Create("game.cryo_teleportation", true, CVar.SERVERONLY);
+
+    // Stumble-on-missing-leg tuning. Live-editable via the `cvar` console
+    // command; values <= 0 fall back to the per-component DataField default.
+    public static readonly CVarDef<float> StumbleChance =
+        CVarDef.Create("hardlight.stumble.chance", 0.15f, CVar.SERVERONLY,
+            desc: "Probability [0..1] a partial-leg entity stumbles when its distance threshold is reached. <=0 disables stumbles entirely.");
+
+    public static readonly CVarDef<float> StumbleTiles =
+        CVarDef.Create("hardlight.stumble.tiles", 10f, CVar.SERVERONLY,
+            desc: "Tiles a partial-leg entity must walk between stumble checks. <=0 uses the per-component default.");
+
+    public static readonly CVarDef<float> StumbleKnockdownSeconds =
+        CVarDef.Create("hardlight.stumble.knockdown_seconds", 2.5f, CVar.SERVERONLY,
+            desc: "How long the stumble knockdown lasts. <=0 uses the per-component default.");
 }

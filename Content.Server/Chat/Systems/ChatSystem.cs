@@ -6,6 +6,7 @@ using Content.Server.Administration.Managers;
 using Content.Server.Chat.Managers;
 using Content.Server.GameTicking;
 using Content.Server.Players.RateLimiting;
+using Content.Server.Radio.EntitySystems;
 using Content.Server.Speech.Prototypes;
 using Content.Server.Speech.EntitySystems;
 using Content.Server.Players;
@@ -47,8 +48,6 @@ namespace Content.Server.Chat.Systems;
 /// </summary>
 public sealed partial class ChatSystem : SharedChatSystem
 {
-    private const string XenoglossyPowerId = "XenoglossyPower";
-
     [Dependency] private readonly IReplayRecordingManager _replay = default!;
     [Dependency] private readonly IConfigurationManager _configurationManager = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
@@ -582,7 +581,7 @@ public sealed partial class ChatSystem : SharedChatSystem
             if (MessageRangeCheck(session, data, range) != MessageRangeCheckResult.Full)
                 continue; // Won't get logged to chat, and ghosts are too far away to see the pop-up, so we just won't send it to them.
 
-            if (data.Range <= WhisperClearRange)
+            if (data.Range <= WhisperClearRange || data.Observer != ObserverType.NoObserver)
             {
                 var understoodMessage = HasXenoglossy(listener) ? originalMessage : message;
                 var understoodWrappedMessage = HasXenoglossy(listener) ? wrappedOriginalMessage : wrappedMessage;
@@ -845,8 +844,7 @@ public sealed partial class ChatSystem : SharedChatSystem
 
     private bool HasXenoglossy(EntityUid uid)
     {
-        return TryComp<PsionicComponent>(uid, out var psionic)
-            && psionic.ActivePowers.Any(power => power.ID == XenoglossyPowerId);
+        return RadioSystem.HasXenoglossy(uid, EntityManager);
     }
 
     /// <summary>
