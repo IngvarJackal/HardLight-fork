@@ -3998,3 +3998,85 @@ Entries:
       message: Health analyzers now show metabolizing chemicals.
   id: 429
   time: '2026-05-16T17:09:49.0000000+00:00'
+- author: Fasuh
+  changes:
+    - type: Add
+      message: Added aphrodisiac visual effect.
+    - type: Add
+      message: Added option in settings to disable aphrodisiac visual effects.
+  id: 430
+  time: '2026-05-18T06:29:59.0000000+00:00'
+- author: SeaborneProto
+  changes:
+    - type: Add
+      message: 'Added pregnancy markings! '
+  id: 431
+  time: '2026-05-18T06:32:44.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: SecurityVends now offer pizza boxes for 1 FUC.
+    - type: Add
+      message: Added stripper poles.
+  id: 432
+  time: '2026-05-18T06:40:43.0000000+00:00'
+- author: biteymcstabface
+  changes:
+    - type: Tweak
+      message: >-
+        Reverts shadekin regeneration trait values to those proposed in initial
+        PR
+    - type: Fix
+      message: >-
+        Makes shadekin regeneration traits mutually exclusive with all other
+        regen traits, not just platelets
+  id: 433
+  time: '2026-05-18T18:13:56.0000000+00:00'
+- author: biteymcstabface
+  changes:
+    - type: Tweak
+      message: Reduced range of phase shift light flickering by 40%
+  id: 434
+  time: '2026-05-18T18:23:02.0000000+00:00'
+- author: Typheus
+  changes:
+    - type: Fix
+      message: >-
+        High Security Door/Glass Airlock deconstruction instructions now show
+        proper steps
+  id: 435
+  time: '2026-05-18T18:23:43.0000000+00:00'
+- author: Illumos
+  changes:
+    - type: Add
+      message: Flat Bonemask marking
+    - type: Add
+      message: Beak Bonemask marking
+  id: 436
+  time: '2026-05-18T18:24:43.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Tweak
+      message: >-
+        FTL with private shuttles, in addition to being on expedition maps/the
+        ColComm map, all now count towards "arrived at ColComm" objectives,
+        meaning the evac shuttle is no longer the only official way to arrive at
+        ColComm.
+  id: 437
+  time: '2026-05-18T18:31:59.0000000+00:00'
+- author: re-silvered
+  changes:
+    - type: Fix
+      message: Fixed geneticist station pay 0 -> 24k
+    - type: Tweak
+      message: Lowered prisoner station pay 20k -> 5k
+  id: 438
+  time: '2026-05-18T18:35:49.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Tweak
+      message: >-
+        Medical tracking implants now only execute emergency extractions when
+        the target is located on an expedition map.
+  id: 439
+  time: '2026-05-18T18:41:50.0000000+00:00'

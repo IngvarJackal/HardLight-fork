@@ -149,8 +149,8 @@ namespace Content.Shared.Preferences
         public string Company { get; private set; } = "None";
 
         /// <summary>
-        /// DEPRECATED: Removed field from PR #1779 revert. Kept for deserialization compatibility only.
-        /// This field is accepted during profile load but never used.
+        /// Compatibility-only field for loading legacy profile blobs.
+        /// This value is accepted during deserialization but not used by gameplay.
         /// </summary>
         [DataField]
         public string? CriminalRecordEntry { get; private set; }
