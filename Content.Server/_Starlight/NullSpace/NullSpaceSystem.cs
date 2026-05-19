@@ -238,6 +238,21 @@ public sealed class EtherealSystem : SharedEtherealSystem
                 return;
             }
         }
+
+        // Second pass: all neighbours were MobMask-blocked (e.g. surrounded by windows/shutters).
+        // Settle for any tile free of solid walls so the entity is at least not geometry-clipping.
+        foreach (var i in indices)
+        {
+            var tileIndices = currentTile.Value.GridIndices + AdjacentOffsets[i];
+            if (!_mapSystem.TryGetTileRef(currentTile.Value.GridUid, grid, tileIndices, out var candidate))
+                continue;
+
+            if (!_turf.IsTileBlocked(candidate, CollisionGroup.Impassable))
+            {
+                _transform.SetCoordinates(uid, _turf.GetTileCenter(candidate));
+                return;
+            }
+        }
     }
 
     private Span<int> ShuffledRange(Span<int> buffer)
